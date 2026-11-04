@@ -4,42 +4,42 @@
 
 # PokeSurvivor 한국어 모드
 
-메뉴부터 포켓몬 이름, 기술 설명까지. 익숙한 한국어로 플레이하세요.
+메뉴, 포켓몬 이름, 기술 설명을 한국어로 바꾸는 Chrome 확장 프로그램입니다.
+
+An unofficial PokeSurvivor Korean language patch for Chrome.
 
 [![CI](https://github.com/evan-choi/pokesurvivor-kor/actions/workflows/ci.yml/badge.svg)](https://github.com/evan-choi/pokesurvivor-kor/actions/workflows/ci.yml)
 ![Chrome 119+](https://img.shields.io/badge/Chrome-119%2B-4285F4?logo=googlechrome&logoColor=white)
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-2EA44F)
 [![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm_Noncommercial-6F42C1)](LICENSE)
 
-[**다운로드**](https://github.com/evan-choi/pokesurvivor-kor/archive/refs/heads/main.zip) · [설치 방법](#설치) · [번역 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [개발 안내](docs/development.md)
+[**다운로드**](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean-0.1.0.zip) · [프로젝트 소개](https://evan-choi.github.io/pokesurvivor-kor/) · [설치 방법](#설치) · [번역 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [개발 안내](docs/development.md)
 
 </div>
 
-[PokeSurvivor](https://pokesurvivor.pro/play)에 **한국어** 선택지를 추가하는 비공식 Chrome extension입니다. 번역 데이터가 확장 프로그램에 들어 있어 API key나 외부 번역 서버가 필요하지 않습니다.
+**한국어** · [English](README.en.md)
+
+[포케서바이버(PokeSurvivor)](https://pokesurvivor.pro/play)의 비공식 한글패치입니다. 설치하면 게임 설정에서 한국어를 선택할 수 있습니다. 번역 데이터가 확장 프로그램에 들어 있어 API key나 외부 번역 서버가 필요하지 않습니다.
 
 <p align="center">
   <img src="docs/assets/settings-korean.png" width="640" alt="게임 설정의 그래픽 탭에 추가된 한국어 버튼과 한국어로 표시되는 설정 항목">
 </p>
 
-## 주요 기능
+## 번역과 표시
 
-| 기능 | 내용 |
-| --- | --- |
-| 한국어 메뉴 | 설정, 도감, 강화, 미션, 업데이트 내역과 각종 안내 |
-| 익숙한 명칭 | PokéAPI 한국어 데이터를 바탕으로 한 포켓몬 이름·별칭 1,041개와 기술명 |
-| 전투 번역 | 기술 설명, 레벨 상승 선택지, 전투 중 표시되는 문구 |
-| 읽기 편한 화면 | 한국어 글꼴, 줄 간격, 버튼과 카드 정렬 조정 |
-| 간편한 전환 | 게임 안의 한국어 버튼 또는 Chrome 툴바에서 켜고 끄기 |
+설정, 도감, 강화, 미션, 업데이트 내역과 안내문을 번역합니다. 기술 설명, 레벨 상승 선택지, 전투 중 표시되는 문구에도 적용됩니다. 포켓몬 이름·별칭 1,041개와 기술명은 PokéAPI의 한국어 데이터를 기준으로 합니다.
+
+한국어 글꼴과 줄 간격을 적용하고, 버튼과 카드의 정렬을 조정했습니다. 게임 안의 한국어 버튼이나 Chrome 툴바에서 번역을 켜고 끌 수 있습니다.
 
 ## 설치
 
 **Chrome 119 이상**이 필요합니다. 설치할 때 Node.js나 빌드는 필요하지 않습니다.
 
-1. [저장소 ZIP](https://github.com/evan-choi/pokesurvivor-kor/archive/refs/heads/main.zip)을 내려받아 압축을 풉니다.
+1. [한글패치 ZIP](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean-0.1.0.zip)을 내려받아 압축을 풉니다.
 2. Chrome 주소창에 `chrome://extensions`를 입력합니다.
 3. 오른쪽 위의 **개발자 모드**를 켭니다.
-4. **압축해제된 확장 프로그램을 로드합니다**를 누릅니다.
-5. 압축을 푼 `pokesurvivor-kor-main` 폴더 **안의 `extension` 폴더**를 선택합니다.
+4. **압축해제된 확장 프로그램을 로드합니다** 버튼을 누릅니다.
+5. 압축을 풀어 생긴 `pokesurvivor-korean-0.1.0` 폴더를 선택합니다. **`manifest.json`이 바로 들어 있는 폴더**입니다.
 6. [게임 페이지](https://pokesurvivor.pro/play)를 열거나 새로고침합니다.
 
 > 선택한 폴더를 열었을 때 `manifest.json`이 바로 보여야 합니다. 설치 후에는 해당 폴더를 이동하거나 삭제하지 마세요.
@@ -49,9 +49,9 @@
 폴더 선택 오류나 적용 문제가 있다면 [설치 도움말](docs/install.md)을 참고하세요.
 
 <details>
-<summary>설치용 ZIP을 따로 만든 경우</summary>
+<summary>저장소 소스 코드로 설치하는 경우</summary>
 
-`npm run package` 또는 GitHub Actions에서 받은 `pokesurvivor-korean-0.1.0.zip`은 압축을 풀어 생긴 폴더 자체를 선택합니다. 이 ZIP은 최상위에 `manifest.json`을 포함합니다. 저장소 ZIP의 `extension/` 폴더와 내용이 같습니다.
+[저장소 ZIP](https://github.com/evan-choi/pokesurvivor-kor/archive/refs/heads/main.zip)을 내려받거나 Git으로 clone했다면 프로젝트 안의 **`extension/` 폴더**를 선택합니다. `npm run package` 또는 GitHub Actions에서 만든 설치용 ZIP은 최상위에 `manifest.json`을 포함하므로, 압축을 풀어 생긴 폴더 자체를 선택합니다.
 
 </details>
 
@@ -65,7 +65,7 @@
 
 ## 번역 범위와 제한
 
-기본 게임 문구 1,188개에 추가 메뉴, 계정·연결 오류 안내, 업데이트 내역 번역을 더했습니다. 동적으로 나타나는 메뉴와 카드에도 적용됩니다.
+게임의 기본 문구 1,188개와 추가 메뉴, 계정·연결 오류 안내, 업데이트 내역을 번역합니다. 플레이 중 새로 나타나는 메뉴와 카드에도 적용됩니다.
 
 게임 바깥의 사이트 안내문, 외부 로그인 페이지, 채팅·닉네임 등 사용자가 입력한 내용은 번역하지 않습니다. 게임이 번역하지 않도록 지정한 내용과 Arceus 등장 연출처럼 글자를 한 글자씩 그리는 일부 제목도 원래 표기를 유지합니다.
 

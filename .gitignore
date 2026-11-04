@@ -9,6 +9,7 @@ node_modules/
 /playwright/.cache/
 /coverage/
 /.nyc_output/
+/_workspace/
 
 # Local configuration and secrets (keep documented examples)
 .env
