@@ -184,6 +184,53 @@ test('multiplayer waiting messages preserve names and translate list separators'
   await expect(frame.locator('#lvl-wait')).toHaveText('Lucky Robin, Brave Otter 대기 중…');
 });
 
+test('profile title selector keeps its action on a separate line with and without unlocked titles', async () => {
+  await page.locator('iframe').evaluate((iframe) => {
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+    document.body.style.margin = '0';
+  });
+  await frame.locator('body').evaluate((body) => {
+    body.insertAdjacentHTML('beforeend', `
+      <style>
+        #goals-body { width: calc(100% - 32px); max-width: 760px; margin: 16px; }
+        #goals-body, #goals-body * { box-sizing: border-box; }
+        #goals-body .field { width: 100%; padding: 10px 12px; border: 2px solid; font-size: 17px; }
+        #goals-body .btn { padding: 10px 20px; border: 3px solid; font-size: 17px; }
+      </style>
+      <section id="scr-goals"><div id="goals-body"></div></section>
+    `);
+  });
+  const select = frame.locator('#goals-body > select');
+  const button = frame.locator('#goals-body > button');
+  for (const hasTitle of [false, true]) {
+    await frame.locator('#goals-body').evaluate((body, hasTitle) => {
+      // The game omits this block-level hint once the player earns a title.
+      const hint = hasTitle ? '' : '<p class="note">Consigue logros para desbloquear títulos.</p>';
+      const titleOption = hasTitle ? '<option value="bright">Brillante</option>' : '';
+      body.innerHTML = '<h3>Título</h3><select class="field" style="max-width:320px"><option value="">(Sin título)</option>' + titleOption + '</select>' + hint + '<button class="btn gold" style="margin-top:16px">Ver mi perfil público</button>';
+    }, hasTitle);
+    await expect(button).toHaveText('내 공개 프로필 보기');
+    await select.selectOption(hasTitle ? 'bright' : '');
+    for (const width of [1200, 640, 360]) {
+      await page.setViewportSize({ width, height: 800 });
+      const fieldRect = await select.boundingBox();
+      const actionRect = await button.boundingBox();
+      const bodyRect = await frame.locator('#goals-body').boundingBox();
+      expect(actionRect.y - (fieldRect.y + fieldRect.height)).toBeGreaterThanOrEqual(12);
+      expect(Math.abs(actionRect.x - fieldRect.x)).toBeLessThan(1);
+      expect(actionRect.x + actionRect.width).toBeLessThanOrEqual(bodyRect.x + bodyRect.width + 1);
+      expect(fieldRect.x + fieldRect.width).toBeLessThanOrEqual(bodyRect.x + bodyRect.width + 1);
+    }
+    await expect(select).toHaveValue(hasTitle ? 'bright' : '');
+  }
+  await popup.locator('#enabled').uncheck();
+  await expect(select).toHaveCSS('display', 'inline-block');
+  await expect(select).toHaveValue('bright');
+  await page.setViewportSize({ width: 1280, height: 720 });
+});
+
 test('leaves canvas text outside the game and letter-animated boss headings unchanged', async () => {
   const measure = (page) => page.evaluate(() => {
     const canvas = document.createElement('canvas');

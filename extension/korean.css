@@ -115,6 +115,11 @@ html.psko-enabled .card .txt {
   min-width: 0;
 }
 
+/* Earning a title removes the hint that kept the profile action on its own line. */
+html.psko-enabled #goals-body > select.field {
+  display: block;
+}
+
 html.psko-enabled .card .nm {
   line-height: 1.35;
 }
