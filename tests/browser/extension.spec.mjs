@@ -1,7 +1,7 @@
 import { test, expect, chromium } from '@playwright/test';
 import path from 'node:path';
 
-const extensionPath = path.resolve('extension');
+const extensionPath = path.resolve(process.env.PSKO_EXTENSION_PATH || 'extension');
 const game = `<!doctype html><html lang="en"><body>
   <div id="tap-start">Press to start</div>
   <section id="scr-settings"><h1>Settings</h1><div id="set-body">

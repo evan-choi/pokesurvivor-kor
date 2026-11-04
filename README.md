@@ -6,11 +6,13 @@
 
 Chrome 119 이상이 필요합니다. 설치를 위한 빌드나 Node.js는 필요하지 않습니다.
 
-1. 이 프로젝트를 내려받아 압축을 풉니다.
+1. 배포 파일 `pokesurvivor-korean-0.1.0.zip`을 내려받아 압축을 풉니다.
 2. Chrome 주소창에 `chrome://extensions`를 입력합니다.
 3. 오른쪽 위의 **개발자 모드**를 켭니다.
-4. **압축해제된 확장 프로그램을 로드합니다**를 누르고, 이 프로젝트 안의 `extension/` 폴더를 선택합니다. `manifest.json`이 있는 폴더입니다.
+4. **압축해제된 확장 프로그램을 로드합니다**를 누르고, 압축을 풀어 생긴 `pokesurvivor-korean-0.1.0/` 폴더를 선택합니다. 해당 폴더를 열었을 때 `manifest.json`이 바로 보여야 합니다.
 5. [게임 페이지](https://pokesurvivor.pro/play)를 열거나, 이미 열려 있다면 새로고침합니다.
+
+저장소의 소스 코드를 내려받았다면 프로젝트 안의 `extension/` 폴더를 선택하세요. 배포 ZIP과 소스 코드 모두 `manifest.json`이 바로 들어 있는 폴더를 불러오면 됩니다.
 
 처음 설치하면 한국어 모드가 켜져 있습니다. 프로젝트 파일을 갱신한 뒤에는 `chrome://extensions`에서 이 확장 프로그램의 새로고침 버튼을 누르고 게임 페이지도 새로고침하세요.
 
@@ -53,7 +55,7 @@ npm run test:browser
 npm run package
 ```
 
-`npm test`는 번역 처리와 데이터 검증을 실행합니다. `npm run test:browser`는 Playwright로 extension의 브라우저 동작을 확인합니다. `npm run package`는 `dist/pokesurvivor-korean-0.1.0.zip`을 만듭니다. 압축을 풀고 그 안의 `extension/` 폴더를 Chrome에 불러오면 됩니다.
+`npm test`는 번역 처리와 데이터 검증을 실행합니다. `npm run test:browser`는 Playwright로 extension의 브라우저 동작을 확인합니다. `npm run package`는 `dist/pokesurvivor-korean-0.1.0.zip`을 만듭니다. ZIP 최상위에 `manifest.json`과 확장 프로그램 파일들이 들어 있으므로, 압축을 풀어 생긴 `pokesurvivor-korean-0.1.0/` 폴더 자체를 Chrome에 불러오면 됩니다.
 
 실제 사이트에서 확인하려면 `npm run test:live`를 실행합니다. 임시 브라우저에서 게스트로 접속해 설정과 플레이 화면을 확인하고 `test-results/live/`에 스크린샷을 남깁니다. 플레이 시작 전부터 서버에 저장하는 요청을 차단해 테스트 점수가 등록되지 않게 합니다.
 
