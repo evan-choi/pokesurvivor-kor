@@ -512,7 +512,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Mundo Misterioso",
     "Mystery Dungeon",
-    "이상한 던전"
+    "불가사의 던전"
   ],
   [
     "Entrar",

@@ -103,3 +103,23 @@ test('canvas uses Korean measurements and preserves drawing state', async () => 
   expect(original.font).toBe(original.originalFont);
   expect(errors).toEqual([]);
 });
+
+test('leaves canvas text outside the game and letter-animated boss headings unchanged', async () => {
+  const measure = (page) => page.evaluate(() => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.font = '20px monospace';
+    return ctx.measureText('Bulbasaur').width;
+  });
+  const hostWidth = await measure(page);
+  const bossWidth = await frame.locator('canvas').evaluate((canvas) => {
+    const ctx = canvas.getContext('2d');
+    ctx.font = '20px monospace';
+    return ctx.measureText('THE JUDGMENT').width;
+  });
+  await popup.locator('#enabled').uncheck();
+  await expect(frame.locator('#pokemon')).toHaveText('Bulbasaur');
+  expect(await measure(page)).toBe(hostWidth);
+  expect(await frame.locator('canvas').evaluate((canvas) => canvas.getContext('2d').measureText('THE JUDGMENT').width)).toBe(bossWidth);
+  expect(errors).toEqual([]);
+});

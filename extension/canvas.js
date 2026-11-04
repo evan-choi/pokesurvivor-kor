@@ -2,10 +2,14 @@
   'use strict';
 
   let enabled = false;
+  let gameDocument = false;
+  const detectGame = () => { gameDocument = !!document.querySelector('#tap-start, #scr-settings'); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', detectGame, { once: true });
+  else detectGame();
   // The game animates these two headings one letter at a time. Keep their
   // measurements in the original language so letter placement remains correct.
   const animatedHeadings = new Set(['THE JUDGMENT', 'OF ARCEUS', 'LA SENTENCIA', 'DE ARCEUS']);
-  const translate = (text) => enabled && !animatedHeadings.has(text) ? globalThis.PSKO.translate(text) : text;
+  const translate = (text) => enabled && gameDocument && !animatedHeadings.has(text) ? globalThis.PSKO.translate(text) : text;
   document.addEventListener('psko:settings', (event) => {
     if (typeof event.detail === 'boolean') enabled = event.detail;
   });

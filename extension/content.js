@@ -15,7 +15,11 @@
     const previous = entries?.get(key);
     // Game rerenders always become the new original, even for reused nodes.
     const source = previous && value === previous.translated ? previous.source : value;
-    const translated = enabled ? globalThis.PSKO.translate(source) : source;
+    let translated = enabled ? globalThis.PSKO.translate(source) : source;
+    if (enabled && key === 'text' && source.trim().toLowerCase() === 'normal') {
+      if (node.parentElement.closest('#set-body [data-k="stick"]')) translated = source.replace(/normal/i, '보통');
+      if (node.parentElement.closest('#dex-detail .seg [data-v="0"]')) translated = source.replace(/normal/i, '일반');
+    }
     if (!entries) originals.set(node, entries = new Map());
     entries.set(key, { source, translated });
     if (value !== translated) write(translated);
@@ -90,7 +94,7 @@
 
   function setEnabled(value) {
     enabled = value;
-    if (!document.body || !isGame()) return;
+    if (!observer || !document.body || !isGame()) return;
     document.documentElement.classList.toggle('psko-enabled', enabled);
     // Only change the embedded game's language metadata, not the surrounding website.
     if (document.querySelector('#scr-settings, #tap-start')) {
