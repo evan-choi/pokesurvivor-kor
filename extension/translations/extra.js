@@ -1,5 +1,10 @@
 // Hosted build additions that are not part of the game's Spanish/English dictionary.
 globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
+  // The normal partner button has no suffix; the {x} variant requires one.
+  ['Elegir de compañero', 'Choose as partner', '파트너로 선택'],
+  // The game's own translator can partially translate this before our observer runs.
+  ['Choose de partner', 'Choose de partner', '파트너로 선택'],
+  ['Choose de partner{x}', 'Choose de partner{x}', '파트너로 선택{x}'],
   // Region names from PokéAPI region_names.csv (Korean language ID 3).
   ['Kanto', 'Kanto', '관동'],
   ['Johto', 'Johto', '성도'],

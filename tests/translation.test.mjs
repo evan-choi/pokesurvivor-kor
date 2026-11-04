@@ -31,6 +31,15 @@ for (const name of [...gameDictionaries.map(([name]) => name), 'extra', 'pokemon
 evaluate(context, 'translation-core.js');
 const translate = context.PSKO.translate;
 
+test('partner selection translates the complete button with or without a shiny suffix', () => {
+  for (const text of ['Elegir de compañero', 'Choose as partner', 'Choose de partner']) {
+    assert.equal(translate(text), '파트너로 선택', text);
+  }
+  for (const text of ['Elegir de compañero (shiny)', 'Choose as partner (shiny)', 'Choose de partner (shiny)']) {
+    assert.equal(translate(text), '파트너로 선택 (색이 다른)', text);
+  }
+});
+
 test('Psychic is distinguished as a type or a move', () => {
   assert.equal(translate('Psychic'), '에스퍼');
   assert.equal(translate('Psíquico'), '에스퍼');

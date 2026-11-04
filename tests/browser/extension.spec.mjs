@@ -121,6 +121,25 @@ test('move titles and tooltips use move names while type badges retain type name
   await expect(frame.locator('.move-icons span')).toHaveAttribute('title', 'Psychic');
 });
 
+test('partner selection remains a complete sentence after the game updates the button', async () => {
+  await frame.locator('#dex-detail').evaluate((detail) => {
+    const button = document.createElement('button');
+    button.id = 'dex-pick';
+    button.textContent = 'Elegir de compañero';
+    detail.append(button);
+  });
+  const button = frame.locator('#dex-pick');
+  await expect(button).toHaveText('파트너로 선택');
+  // The game's own Spanish/English translator may run before the extension.
+  await button.evaluate((element) => { element.textContent = 'Choose de partner'; });
+  await expect(button).toHaveText('파트너로 선택');
+  await button.evaluate((element) => { element.textContent = 'Elegir de compañero (shiny)'; });
+  await expect(button).toHaveText('파트너로 선택 (색이 다른)');
+  await popup.locator('#enabled').uncheck();
+  await expect(button).toHaveText('Elegir de compañero (shiny)');
+  expect(errors).toEqual([]);
+});
+
 test('leaves canvas text outside the game and letter-animated boss headings unchanged', async () => {
   const measure = (page) => page.evaluate(() => {
     const canvas = document.createElement('canvas');
