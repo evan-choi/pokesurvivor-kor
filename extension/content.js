@@ -2,13 +2,22 @@
   'use strict';
 
   const attributes = ['title', 'placeholder', 'aria-label', 'alt'];
-  const excluded = 'script, style, code, pre, textarea, [contenteditable]:not([contenteditable="false"]), [translate="no"], [data-psko-ui]';
+  const excluded = 'script, style, code, pre, textarea, [contenteditable]:not([contenteditable="false"]), [data-psko-ui]';
   const originals = new WeakMap();
   let enabled = false;
   let observer;
   let originalLang;
   let pendingLanguageButton;
   const isGame = () => document.querySelector('#tap-start, #scr-settings');
+
+  function isProtected(element) {
+    const owner = element.closest('[translate="no"]');
+    if (!owner) return false;
+    // These containers contain fixed game copy, not player-entered names or room codes.
+    if (owner.matches('#news-body > .news-day, #rk-me > span')) return false;
+    if (owner.matches('#user-pill > span') && owner.parentElement.querySelector('.sync.guest')) return false;
+    return true;
+  }
 
   function replaceValue(node, key, value, write) {
     let entries = originals.get(node);
@@ -26,6 +35,27 @@
       );
     const translate = moveName ? globalThis.PSKO.translateMove : globalThis.PSKO.translate;
     let translated = enabled ? translate(source) : source;
+    if (enabled && key === 'text' && element.matches('.bind-slot option[value=""]') && /^(Free|Libre)$/i.test(source.trim())) {
+      translated = source.replace(/Free|Libre/i, '빈 슬롯');
+    }
+    if (enabled && key === 'text' && element.closest('button') && /^(Save|Guardar)$/i.test(source.trim())) {
+      translated = source.replace(/Save|Guardar/i, '저장');
+    }
+    if (enabled && key === 'text' && element.closest('#set-body') && element.tagName !== 'KBD' && /^(o|or)$/i.test(source.trim())) {
+      translated = source.replace(/o(?:r)?/i, '또는');
+    }
+    if (enabled && key === 'text' && element.matches('#scr-pause .kbd-hint') && node.previousSibling?.textContent.trim() === 'WASD' && /^(move|moverse) ·$/i.test(source.trim())) {
+      translated = source.replace(/move(?:rse)?/i, '이동');
+    }
+    if (enabled && key === 'text' && element.id === 'lvl-wait') {
+      const choosing = /^(?:Faltan por elegir:|Still choosing:)\s*(.+)$/.exec(source.trim());
+      const waiting = /^(?:Esperando a|Waiting for)\s+(.+?)(?:…|\.\.\.)$/.exec(source.trim());
+      const match = choosing || waiting;
+      if (match) {
+        const players = match[1].split(/,\s*| y /).map((name) => name === 'tú' ? '나' : name).join(', ');
+        translated = choosing ? `아직 선택 중: ${players}` : `${players} 대기 중…`;
+      }
+    }
     if (enabled && key === 'text' && source.trim().toLowerCase() === 'normal') {
       if (node.parentElement.closest('#set-body [data-k="stick"]')) translated = source.replace(/normal/i, '보통');
       if (node.parentElement.closest('#dex-detail .seg [data-v="0"]')) translated = source.replace(/normal/i, '일반');
@@ -39,10 +69,15 @@
     const element = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
     if (!element || element.nodeType !== Node.ELEMENT_NODE || element.closest(excluded)) return;
     if (node.nodeType === Node.TEXT_NODE) {
+      if (isProtected(element)) return;
       replaceValue(node, 'text', node.nodeValue, (text) => { node.nodeValue = text; });
     } else {
       for (const attr of attributes) {
         if (element.hasAttribute(attr)) {
+          if (isProtected(element)) {
+            const source = originals.get(element)?.get(attr)?.source || element.getAttribute(attr);
+            if (attr !== 'title' || !/^(Ver su (?:perfil|profile)|View (?:their|his|her) profile)$/i.test(source.trim())) continue;
+          }
           replaceValue(element, attr, element.getAttribute(attr), (text) => element.setAttribute(attr, text));
         }
       }

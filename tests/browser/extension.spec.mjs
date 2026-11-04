@@ -140,6 +140,50 @@ test('partner selection remains a complete sentence after the game updates the b
   expect(errors).toEqual([]);
 });
 
+test('translates authored protected notices without translating player names or room codes', async () => {
+  await frame.locator('body').evaluate((body) => {
+    body.insertAdjacentHTML('beforeend', `
+      <div id="news-body"><article class="news-day" translate="no"><h3>Recover your account with Gmail</h3></article></div>
+      <span translate="no" id="player-name" title="Ver su Profile">Pikachu</span>
+      <b translate="no" id="room-code">FIRE012345</b>
+      <div id="user-pill"><span translate="no">Guest</span><i class="sync guest"></i></div>
+    `);
+  });
+  await expect(frame.locator('#news-body h3')).toHaveText('Gmail로 계정 복구');
+  await expect(frame.locator('#player-name')).toHaveText('Pikachu');
+  await expect(frame.locator('#player-name')).toHaveAttribute('title', '프로필 보기');
+  await expect(frame.locator('#room-code')).toHaveText('FIRE012345');
+  await expect(frame.locator('#user-pill span')).toHaveText('게스트');
+  await popup.locator('#enabled').uncheck();
+  await expect(frame.locator('#news-body h3')).toHaveText('Recover your account with Gmail');
+  await expect(frame.locator('#player-name')).toHaveAttribute('title', 'Ver su Profile');
+});
+
+test('resolves ambiguous action labels and keeps keyboard hints intact', async () => {
+  await frame.locator('body').evaluate((body) => {
+    document.querySelector('#set-body').insertAdjacentHTML('beforeend', '<div id="key-choice"><kbd>Esc</kbd> o <kbd>P</kbd></div>');
+    body.insertAdjacentHTML('beforeend', `
+      <label class="bind-slot"><select><option value="">Free</option></select></label>
+      <button id="save-layout">Save</button>
+      <section id="scr-pause"><p class="kbd-hint"><kbd>WASD</kbd> move · <kbd>1</kbd>–<kbd>4</kbd> move · </p></section>
+    `);
+  });
+  await expect(frame.locator('.bind-slot option')).toHaveText('빈 슬롯');
+  await expect(frame.locator('#save-layout')).toHaveText('저장');
+  await expect(frame.locator('#key-choice')).toHaveText('Esc 또는 P');
+  await expect(frame.locator('.kbd-hint')).toHaveText('WASD 이동 · 1–4 기술 ·');
+  expect(errors).toEqual([]);
+});
+
+test('multiplayer waiting messages preserve names and translate list separators', async () => {
+  await frame.locator('body').evaluate((body) => {
+    body.insertAdjacentHTML('beforeend', '<p id="lvl-wait">Faltan por elegir: Pikachu, Alice y tú</p>');
+  });
+  await expect(frame.locator('#lvl-wait')).toHaveText('아직 선택 중: Pikachu, Alice, 나');
+  await frame.locator('#lvl-wait').evaluate((node) => { node.textContent = 'Waiting for Lucky Robin y Brave Otter…'; });
+  await expect(frame.locator('#lvl-wait')).toHaveText('Lucky Robin, Brave Otter 대기 중…');
+});
+
 test('leaves canvas text outside the game and letter-animated boss headings unchanged', async () => {
   const measure = (page) => page.evaluate(() => {
     const canvas = document.createElement('canvas');

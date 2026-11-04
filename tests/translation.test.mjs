@@ -25,7 +25,7 @@ function readMessages(name) {
 }
 
 const context = vm.createContext({});
-for (const name of [...gameDictionaries.map(([name]) => name), 'extra', 'pokemon']) {
+for (const name of [...gameDictionaries.map(([name]) => name), 'extra', 'interface', 'changelog', 'pokemon']) {
   evaluate(context, `translations/${name}.js`);
 }
 evaluate(context, 'translation-core.js');
@@ -47,7 +47,7 @@ test('Psychic is distinguished as a type or a move', () => {
   assert.equal(context.PSKO.translateMove('  PSÍQUICO  '), '  사이코키네시스  ');
   assert.equal(context.PSKO.translateMove('Bone Rush'), '본러시');
   assert.equal(context.PSKO.translateMove('Psychic Fangs'), '사이코팽');
-  assert.equal(context.PSKO.translateMove('Psychic Fangs Lv.3'), '사이코팽 Lv.3');
+  assert.equal(context.PSKO.translateMove('Psychic Fangs Lv.3'), '사이코팽 레벨 3');
   assert.equal(context.PSKO.translateMove(null), null);
 });
 
@@ -70,6 +70,30 @@ test('all 1,188 game messages have complete translations and matching placeholde
     }
   }
   assert.equal(total, 1188);
+});
+
+test('audited interface and changelog text resolves as a complete phrase in both input forms', () => {
+  for (const file of ['interface', 'changelog']) {
+    for (const [source, intermediate, korean] of readMessages(file)) {
+      const count = (text) => (text.match(/\{x\}/g) || []).length;
+      assert.equal(count(source), count(korean), source);
+      assert.equal(count(intermediate), count(korean), intermediate);
+      if (count(source)) continue;
+      assert.equal(translate(source), korean, source);
+      assert.equal(translate(intermediate), korean, intermediate);
+    }
+  }
+});
+
+test('handles native partial translations, Chinese notices, and localized durations', () => {
+  assert.equal(translate('Estás como guest: '), '게스트로 플레이 중: ');
+  assert.equal(translate('You have su shiny'), '색이 다른 모습을 보유 중입니다');
+  assert.equal(translate('Buscar por Name'), '이름으로 검색');
+  assert.equal(translate('Impulsivo'), '즉흥적');
+  assert.equal(translate('Web oficial: pokesurvivor.pro · si alguien te pide pagar, no somos nosotros'), '공식 웹사이트: pokesurvivor.pro · 이 게임은 무료입니다');
+  assert.equal(translate('Se renuevan en 2 h 15 min'), '2시간 15분 후 갱신');
+  assert.equal(translate('Psychic Nv.5'), '에스퍼 레벨 5');
+  assert.equal(translate('登录窗口被浏览器拦截，请允许弹出窗口后重试。'), '로그인 팝업이 차단됐습니다. 팝업을 허용한 뒤 다시 시도하세요.');
 });
 
 test('starter Pokémon and names with punctuation use Korean species names', () => {
@@ -133,6 +157,13 @@ test('unknown text, whitespace, and numeric-only labels remain intact', () => {
 test('dictionary terms do not replace parts of unrelated words or identifiers', () => {
   const text = 'Firefly SquirtleTrainer my_Pikachu';
   assert.equal(translate(text), text);
+});
+
+test('unknown sentences and nicknames are not partially translated', () => {
+  for (const text of ['Brave Otter', 'Lucky Robin', 'Choose some unknown option']) {
+    assert.equal(translate(text), text);
+  }
+  assert.equal(translate('Brave Otter joins you!'), 'Brave Otter 합류!');
 });
 
 test('repeated translation leaves Korean text unchanged', () => {

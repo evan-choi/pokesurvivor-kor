@@ -52,15 +52,23 @@
         return target.replace(/\{x\}/g, () => translateBody(match[index++], depth + 1, moveName));
       }
     }
-    return termPattern ? text.replace(termPattern, (term) => lookup(term, moveName)) : text;
+    const translated = termPattern ? text.replace(termPattern, (term) => lookup(term, moveName)) : text;
+    // Unknown sentences and player names must not become a few Korean words
+    // surrounded by untranslated prose. Known templates still translate their full text.
+    const remaining = translated
+      .replace(/\b(?:HP|XP|EXP|FPS|DPS|PC)\b/g, '')
+      .replace(/\b(?:Nv|Lv|No)\.\s*\d+/g, '')
+      .replace(/\b\d+(?:[.,]\d+)?\s*(?:ms|min|s|m|h|d)\b/g, '');
+    return translated !== text && /[\p{Script=Latin}\p{Script=Han}]/u.test(remaining) ? text : translated;
   }
 
   function translate(text, moveName = false) {
-    if (typeof text !== 'string' || !/[a-záéíóúñü]/i.test(text)) return text;
+    if (typeof text !== 'string' || !/[\p{Script=Latin}\p{Script=Han}]/u.test(text)) return text;
     const cacheKey = (moveName ? 'move:' : 'text:') + text;
     if (cache.has(cacheKey)) return cache.get(cacheKey);
     const [, before, body, after] = /^(\s*)([\s\S]*?)(\s*)$/.exec(text);
-    const translated = translateBody(normalize(body), 0, moveName);
+    const translated = translateBody(normalize(body), 0, moveName)
+      .replace(/(?<![\p{L}\p{N}_])(?:Nv|Lv)\.\s*(\d+)/gu, '레벨 $1');
     // Keep formatting completely intact when the dictionary has no match.
     const result = translated === normalize(body) ? text : before + translated + after;
     if (cache.size >= 4000) cache.clear();

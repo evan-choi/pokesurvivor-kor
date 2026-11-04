@@ -10,7 +10,7 @@ if (!process.argv.includes('--online')) {
 }
 
 const context = vm.createContext({});
-for (const file of ['moves', 'menus', 'progress', 'settings', 'extra', 'pokemon']) {
+for (const file of ['moves', 'menus', 'progress', 'settings', 'extra', 'interface', 'changelog', 'pokemon']) {
   vm.runInContext(await readFile(new URL(`../extension/translations/${file}.js`, import.meta.url), 'utf8'), context);
 }
 vm.runInContext(await readFile(new URL('../extension/translation-core.js', import.meta.url), 'utf8'), context);
