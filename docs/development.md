@@ -4,6 +4,16 @@
 
 Chrome extension은 `extension/` 안의 JavaScript와 CSS를 그대로 사용합니다. 테스트에는 Node.js 24 이상과 npm이, 압축 파일 생성에는 `zip` 명령이 필요합니다.
 
+## 번역 처리와 권한
+
+Manifest V3 확장 프로그램이며 런타임 의존성은 없습니다. 번역 데이터를 확장 프로그램에 포함해 기기 안에서 처리합니다. 외부 번역 서비스나 API key는 사용하지 않습니다.
+
+`storage` 권한은 한국어 모드 설정을 저장하는 데 씁니다. 페이지 접근 범위는 `https://pokesurvivor.pro/*`, `https://www.pokesurvivor.pro/*`와 그 안의 게임 iframe입니다. 게임 계정·저장 데이터·점수는 수정하지 않습니다.
+
+기본 게임 문구 1,188개와 추가 메뉴·안내문을 번역합니다. 포켓몬 이름·별칭 1,041개와 기술명은 PokéAPI의 한국어 데이터를 기준으로 합니다.
+
+## 개발 환경과 검사
+
 ```sh
 npm ci
 npx playwright install chromium

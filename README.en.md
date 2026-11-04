@@ -8,7 +8,6 @@ A Chrome extension that translates PokeSurvivor menus, Pokémon names, and move 
 
 [![CI](https://github.com/evan-choi/pokesurvivor-kor/actions/workflows/ci.yml/badge.svg)](https://github.com/evan-choi/pokesurvivor-kor/actions/workflows/ci.yml)
 ![Chrome 119+](https://img.shields.io/badge/Chrome-119%2B-4285F4?logo=googlechrome&logoColor=white)
-![Manifest V3](https://img.shields.io/badge/Manifest-V3-2EA44F)
 [![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm_Noncommercial-6F42C1)](LICENSE)
 
 [**Download**](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip) · [Project website](https://evan-choi.github.io/pokesurvivor-kor/en/) · [Install](#install) · [Report a translation](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml)
@@ -17,7 +16,7 @@ A Chrome extension that translates PokeSurvivor menus, Pokémon names, and move 
 
 [한국어](README.md) · **English**
 
-This unofficial language patch adds a **한국어** (Korean) option to the settings in [PokeSurvivor](https://pokesurvivor.pro/play). Translations are included in the extension and run on your device. You do not need an API key or an external translation service.
+This unofficial language patch adds a **한국어** (Korean) option to the settings in [PokeSurvivor](https://pokesurvivor.pro/play).
 
 <p align="center">
   <img src="docs/assets/settings-korean.png" width="640" alt="PokeSurvivor graphics settings translated into Korean, with a Korean language button">
@@ -26,13 +25,13 @@ This unofficial language patch adds a **한국어** (Korean) option to the setti
 ## Features
 
 - Korean menus, move descriptions, upgrades, missions, notices, and battle text.
-- 1,041 Pokémon names and aliases based on Korean name data from PokéAPI.
+- Pokémon and move names in Korean.
 - Korean font, spacing, button, and card layout adjustments.
 - Language switching from the game settings or the extension popup.
 
 ## Install
 
-Requires **Chrome 119 or later**. No Node.js installation or build step is needed to use the extension.
+Requires **Chrome 119 or later**.
 
 1. [Download the extension ZIP](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip) and extract it.
 2. Open `chrome://extensions` in Chrome.
@@ -56,29 +55,15 @@ Korean mode is enabled on first installation. In the game, select **Settings →
 
 You can also toggle **한국어로 플레이** in the extension popup. Your choice is saved for the next visit. Changing the game's original language may reload the game.
 
-## Scope and privacy
-
-The patch includes 1,188 base game messages plus additional interface notices and changelog translations. It also translates menus and cards that appear while playing.
+## Translation limits
 
 The patch does not translate the surrounding website, external login pages, chat messages, or player names. It also leaves some content untranslated when the game marks it that way. Some animated titles drawn one letter at a time, including Arceus encounter headings, keep their original text. Unknown sentences remain unchanged, so a game update may introduce untranslated text.
 
-The extension uses `storage` to remember whether Korean mode is enabled. Page access is limited to `pokesurvivor.pro`, `www.pokesurvivor.pro`, and the game frames they open. It does not send text to a translation server or modify game accounts, save data, or scores.
+The extension does not change game accounts, save data, or scores.
 
 ## Development and contributions
 
-Requires Node.js 24 or later and npm. The extension runs directly from the JavaScript and CSS in `extension/`, with no runtime dependencies.
-
-```sh
-npm ci
-npx playwright install chromium
-npm test
-npm run test:browser
-npm run package
-```
-
-Translations are in `extension/translations/`. Preserve the source text and the number and order of `{x}` placeholders. When reporting a problem, include the screen, current text, suggested translation, and a screenshot with personal information hidden.
-
-The [development guide](docs/development.md) and [contribution guide](CONTRIBUTING.md) are in Korean. They cover live-site checks and name validation commands. Report bugs or suggest translations through [GitHub Issues](https://github.com/evan-choi/pokesurvivor-kor/issues).
+To contribute translations or code, see the [development guide](docs/development.md) and [contribution guide](CONTRIBUTING.md), both in Korean. Report bugs or suggest translations through [GitHub Issues](https://github.com/evan-choi/pokesurvivor-kor/issues).
 
 ## License and credits
 

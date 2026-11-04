@@ -1,6 +1,6 @@
 # PokeSurvivor 한국어 모드 설치
 
-Chrome 119 이상이 필요합니다. 설치에 Node.js나 빌드는 필요하지 않습니다.
+Chrome 119 이상이 필요합니다.
 
 1. 설치 ZIP의 압축을 풉니다.
 2. Chrome 주소창에 `chrome://extensions`를 입력합니다.

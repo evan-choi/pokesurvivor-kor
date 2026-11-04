@@ -10,7 +10,6 @@ An unofficial PokeSurvivor Korean language patch for Chrome.
 
 [![CI](https://github.com/evan-choi/pokesurvivor-kor/actions/workflows/ci.yml/badge.svg)](https://github.com/evan-choi/pokesurvivor-kor/actions/workflows/ci.yml)
 ![Chrome 119+](https://img.shields.io/badge/Chrome-119%2B-4285F4?logo=googlechrome&logoColor=white)
-![Manifest V3](https://img.shields.io/badge/Manifest-V3-2EA44F)
 [![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm_Noncommercial-6F42C1)](LICENSE)
 
 [**다운로드**](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip) · [프로젝트 소개](https://evan-choi.github.io/pokesurvivor-kor/) · [설치 방법](#설치) · [번역 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [개발 안내](docs/development.md)
@@ -19,7 +18,7 @@ An unofficial PokeSurvivor Korean language patch for Chrome.
 
 **한국어** · [English](README.en.md)
 
-[포케서바이버(PokeSurvivor)](https://pokesurvivor.pro/play)의 비공식 한글패치입니다. 설치하면 게임 설정에서 한국어를 선택할 수 있습니다. 번역 데이터가 확장 프로그램에 들어 있어 API key나 외부 번역 서버가 필요하지 않습니다.
+[포케서바이버(PokeSurvivor)](https://pokesurvivor.pro/play)의 비공식 한글패치입니다. 설치하면 게임 설정에서 한국어를 선택할 수 있습니다.
 
 <p align="center">
   <img src="docs/assets/settings-korean.png" width="640" alt="게임 설정의 그래픽 탭에 추가된 한국어 버튼과 한국어로 표시되는 설정 항목">
@@ -27,13 +26,13 @@ An unofficial PokeSurvivor Korean language patch for Chrome.
 
 ## 번역과 표시
 
-설정, 도감, 강화, 미션, 업데이트 내역과 안내문을 번역합니다. 기술 설명, 레벨 상승 선택지, 전투 중 표시되는 문구에도 적용됩니다. 포켓몬 이름·별칭 1,041개와 기술명은 PokéAPI의 한국어 데이터를 기준으로 합니다.
+설정, 도감, 강화, 미션, 업데이트 내역과 안내문을 번역합니다. 기술 설명, 레벨 상승 선택지, 전투 중 표시되는 문구에도 적용됩니다. 포켓몬 이름과 기술명도 한국어로 표시합니다.
 
 한국어 글꼴과 줄 간격을 적용하고, 버튼과 카드의 정렬을 조정했습니다. 게임 안의 한국어 버튼이나 Chrome 툴바에서 번역을 켜고 끌 수 있습니다.
 
 ## 설치
 
-**Chrome 119 이상**이 필요합니다. 설치할 때 Node.js나 빌드는 필요하지 않습니다.
+**Chrome 119 이상**이 필요합니다.
 
 1. [한글패치 ZIP](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip)을 내려받아 압축을 풉니다.
 2. Chrome 주소창에 `chrome://extensions`를 입력합니다.
@@ -65,34 +64,15 @@ An unofficial PokeSurvivor Korean language patch for Chrome.
 
 ## 번역 범위와 제한
 
-게임의 기본 문구 1,188개와 추가 메뉴, 계정·연결 오류 안내, 업데이트 내역을 번역합니다. 플레이 중 새로 나타나는 메뉴와 카드에도 적용됩니다.
-
 게임 바깥의 사이트 안내문, 외부 로그인 페이지, 채팅·닉네임 등 사용자가 입력한 내용은 번역하지 않습니다. 게임이 번역하지 않도록 지정한 내용과 Arceus 등장 연출처럼 글자를 한 글자씩 그리는 일부 제목도 원래 표기를 유지합니다.
 
 게임 업데이트로 문구가 바뀌면 일부 번역이 적용되지 않을 수 있습니다. 알 수 없는 문장은 원문을 유지합니다. 제품명·제작자명·단축키도 원래 표기를 사용합니다. 문제가 있다면 [번역 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml)에 화면과 원문을 남겨 주세요.
 
-## 권한과 데이터
-
-| 항목 | 용도 |
-| --- | --- |
-| `storage` | 한국어 모드의 켜짐·꺼짐 설정 저장 |
-| `pokesurvivor.pro`, `www.pokesurvivor.pro` | 해당 사이트와 그 안의 게임 iframe에 번역 적용 |
-
-번역은 기기 안에서 처리합니다. 확장 프로그램은 번역 서비스로 데이터를 전송하지 않으며, 게임 계정·저장 데이터·점수를 수정하지 않습니다.
+게임 계정·저장 데이터·점수는 바꾸지 않습니다.
 
 ## 개발 및 기여
 
-Node.js 24 이상과 npm이 필요합니다. 런타임 의존성은 없으며, `extension/`의 JavaScript와 CSS를 그대로 사용합니다.
-
-```sh
-npm ci
-npx playwright install chromium
-npm test
-npm run test:browser
-npm run package
-```
-
-테스트 구성, 실제 사이트 검사와 명칭 대조는 [개발 안내](docs/development.md)를 참고하세요. 번역 수정과 Pull Request 안내는 [CONTRIBUTING.md](CONTRIBUTING.md)에 있습니다.
+번역 수정이나 개발에 참여하려면 [개발 안내](docs/development.md)와 [기여 안내](CONTRIBUTING.md)를 참고하세요.
 
 ## 라이선스와 출처
 
