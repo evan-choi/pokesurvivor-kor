@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { cp, copyFile, mkdtemp, mkdir, readFile, readdir, rename } from 'node:fs/promises';
+import { cp, copyFile, mkdtemp, mkdir, readFile, readdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,5 +19,6 @@ for (const file of ['LICENSE', 'THIRD_PARTY_NOTICES.md']) {
 // Package only installable files and instructions, never dev dependencies or test profiles.
 // Chrome must find manifest.json directly in the folder created by extracting this ZIP.
 execFileSync('zip', ['-q', '-r', temporary, ...(await readdir(staging)).sort()], { cwd: staging, stdio: 'inherit' });
-await rename(temporary, output);
+// The system temp directory and CI workspace may be on different filesystems.
+await copyFile(temporary, output);
 console.log(output);
