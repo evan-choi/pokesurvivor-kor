@@ -32,43 +32,41 @@
 <main id="main">
   <section class="hero" aria-labelledby="title">
     <div>
-      <p class="eyebrow">POKESURVIVOR · CHROME EXTENSION</p>
       <h1 id="title">PokeSurvivor<br>Korean patch</h1>
-      <p class="lead">This Chrome extension translates menus and move descriptions into Korean. Installing it adds a Korean language button to the game settings.</p>
+      <p class="lead">A Chrome extension that translates menus, Pokémon names, and move descriptions into Korean.</p>
       <div class="actions"><a class="button primary" href="../downloads/pokesurvivor-korean-{{VERSION}}.zip" download>Download Korean patch</a><a class="button" href="#install">How to install</a></div>
       <p class="requirements">v{{VERSION}} · Chrome 119 or later · Free · Unofficial fan translation</p>
     </div>
-    <figure class="preview"><img src="../assets/settings-korean.png" width="1282" height="1328" alt="Korean selected in the PokeSurvivor graphics settings" fetchpriority="high"><figcaption>The game settings with the extension enabled</figcaption></figure>
+    <figure class="preview"><img src="../assets/settings-korean.png" width="1282" height="1328" alt="Korean selected in the PokeSurvivor graphics settings" fetchpriority="high"><figcaption>Game settings in Korean</figcaption></figure>
   </section>
   <section class="features" aria-label="Translation coverage">
-    <div><h2>Menus and battle text</h2><p>Settings, the Pokédex, upgrades, and missions are translated. The patch also covers move descriptions and text shown during battles.</p></div>
-    <div><h2>Pokémon and move names</h2><p>Pokémon and move names are displayed in Korean.</p></div>
-    <div><h2>Fonts and layout</h2><p>Fonts, line spacing, and button sizes are adjusted for Korean text. You can switch back to the original language at any time.</p></div>
+    <div><h2>Menus and battles</h2><p>Translates settings, the Pokédex, upgrades, missions, and text shown during battles.</p></div>
+    <div><h2>Language switching</h2><p>Turn Korean on or off in the game settings or from the extension icon in Chrome.</p></div>
+    <div><h2>Fonts and layout</h2><p>Adjusts fonts, line spacing, and button sizes for Korean text.</p></div>
   </section>
   <section class="section" id="install" aria-labelledby="install-title">
     <h2 id="install-title">How to install</h2>
-    <p class="section-intro">The extension is not listed in the Chrome Web Store. Install it from the ZIP file.</p>
+    <p class="section-intro">Download the ZIP and load it in Chrome.</p>
     <ol class="steps">
       <li><h3>Extract the ZIP</h3><p><a href="../downloads/pokesurvivor-korean-{{VERSION}}.zip" download>Download the patch ZIP</a> and extract it. Keep the folder after installation.</p></li>
       <li><h3>Turn on Developer mode</h3><p>Enter <code>chrome://extensions</code> in the Chrome address bar, then turn on <strong>Developer mode</strong> in the top right.</p></li>
       <li><h3>Load the extension</h3><p>Click <strong>Load unpacked</strong>. Select the extracted folder that contains <code>manifest.json</code> directly inside it.</p></li>
       <li><h3>Reload the game</h3><p>Open or reload <a href="https://pokesurvivor.pro/play">PokeSurvivor</a>. Korean is enabled by default. Change the language under <strong>설정 → 그래픽 → 언어</strong> (Settings → Graphics → Language).</p></li>
     </ol>
-    <p class="note">If you used Code → Download ZIP on GitHub to get the source code, select the <code>extension/</code> folder inside it. Its folder structure differs from the installation ZIP.</p>
+    <p class="note">If you used Code → Download ZIP on GitHub to get the source code, select the <code>extension/</code> folder inside it.</p>
   </section>
   <section class="section faq" aria-labelledby="faq-title">
-    <h2 id="faq-title">Before you install</h2>
-    <details><summary>Is this an official Korean version?</summary><p>This is an unofficial fan translation made by an individual. The extension is not provided by the original game creator or Pokémon rights holders.</p></details>
-    <details><summary>Does it change my save data?</summary><p>The extension changes text and fonts on screen. It does not modify accounts, save data, or scores.</p></details>
-    <details><summary>Why is some text still in the original language?</summary><p>The patch does not translate the surrounding website, chat messages, player names, or some animated text. Game updates may also introduce untranslated text. Reporting the screen and the text helps us correct it.</p></details>
+    <h2 id="faq-title">Using the patch</h2>
+    <details><summary>Does it change my save data?</summary><p>The extension does not change game accounts, save data, or scores.</p></details>
+    <details><summary>Why is some text still in the original language?</summary><p>The surrounding website, chat messages, player names, and some boss introductions remain untranslated. Game updates can also add new text. Use the link below to report missing translations with the screen and text.</p></details>
     <details><summary>How do I update?</summary><p>Download the new ZIP and replace the files in the installed folder. Click the extension's reload button at <code>chrome://extensions</code>, then reload the game.</p></details>
     <p class="help"><a href="https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml">Report a translation</a> · <a href="https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=bug_report.yml">Report a bug</a></p>
   </section>
   <section class="about" aria-label="Credits and license">
-    <p>The original game was created by JPTER78. Pokémon and move names use data from PokéAPI. Pokémon and related names belong to their respective rights holders.</p>
-    <p>This extension is distributed under <a href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/LICENSE">PolyForm Noncommercial 1.0.0</a>. See the <a href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/THIRD_PARTY_NOTICES.md">third-party notices</a> for the terms that apply to third-party materials.</p>
+    <p>Original game: JPTER78. Pokémon and move names: PokéAPI. Pokémon and related names belong to their respective rights holders.</p>
+    <p><a href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/LICENSE">PolyForm Noncommercial 1.0.0</a> · No commercial use · <a href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/THIRD_PARTY_NOTICES.md">Credits and licenses</a></p>
   </section>
 </main>
-<footer><span>PokeSurvivor Korean Patch · Evan Choi</span><div><a href="https://github.com/evan-choi/pokesurvivor-kor">Source code</a><a href="../sitemap.xml">Sitemap</a></div></footer>
+<footer><span>PokeSurvivor Korean Patch · Evan Choi</span><div><a href="https://github.com/evan-choi/pokesurvivor-kor">GitHub</a></div></footer>
 </body>
 </html>
