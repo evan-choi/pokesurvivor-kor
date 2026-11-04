@@ -12,7 +12,10 @@ const staging = path.join(temporaryDirectory, 'contents');
 const temporary = path.join(temporaryDirectory, 'extension.zip');
 await mkdir(path.dirname(output), { recursive: true });
 await cp(path.join(root, 'extension'), staging, { recursive: true });
-await copyFile(path.join(root, 'README.md'), path.join(staging, 'README.md'));
+await copyFile(path.join(root, 'docs/install.md'), path.join(staging, 'README.md'));
+for (const file of ['LICENSE', 'THIRD_PARTY_NOTICES.md']) {
+  await copyFile(path.join(root, file), path.join(staging, file));
+}
 // Package only installable files and instructions, never dev dependencies or test profiles.
 // Chrome must find manifest.json directly in the folder created by extracting this ZIP.
 execFileSync('zip', ['-q', '-r', temporary, ...(await readdir(staging)).sort()], { cwd: staging, stdio: 'inherit' });

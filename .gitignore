@@ -1,5 +1,33 @@
+# Dependencies and generated packages
 node_modules/
-dist/
-test-results/
-playwright-report/
+/dist/
+.npm/
+
+# Test output, browser profiles, and coverage
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/coverage/
+/.nyc_output/
+
+# Local configuration and secrets (keep documented examples)
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.local
+
+# Logs and temporary files
+*.log
+*.tsbuildinfo
+*.swp
+*.swo
+*~
+
+# Editor and operating-system files
+/.idea/
+/.vscode/
 .DS_Store
+._*
+Thumbs.db
+Desktop.ini

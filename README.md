@@ -1,51 +1,88 @@
+<div align="center">
+
+<img src="extension/icons/128.png" width="80" height="80" alt="PokeSurvivor 한국어 모드 아이콘">
+
 # PokeSurvivor 한국어 모드
 
-[PokeSurvivor](https://pokesurvivor.pro/)의 게임 메뉴, 포켓몬 이름, 기술 설명과 전투 표시를 한국어로 바꾸는 비공식 Chrome extension입니다. 게임 설정에 `한국어` 버튼을 추가하며, 번역은 기기 안에서 처리합니다.
+메뉴부터 포켓몬 이름, 기술 설명까지. 익숙한 한국어로 플레이하세요.
+
+[![CI](https://github.com/evan-choi/pokesurvivor-kor/actions/workflows/ci.yml/badge.svg)](https://github.com/evan-choi/pokesurvivor-kor/actions/workflows/ci.yml)
+![Chrome 119+](https://img.shields.io/badge/Chrome-119%2B-4285F4?logo=googlechrome&logoColor=white)
+![Manifest V3](https://img.shields.io/badge/Manifest-V3-2EA44F)
+[![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm_Noncommercial-6F42C1)](LICENSE)
+
+[**다운로드**](https://github.com/evan-choi/pokesurvivor-kor/archive/refs/heads/main.zip) · [설치 방법](#설치) · [번역 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [개발 안내](docs/development.md)
+
+</div>
+
+[PokeSurvivor](https://pokesurvivor.pro/play)에 **한국어** 선택지를 추가하는 비공식 Chrome extension입니다. 번역 데이터가 확장 프로그램에 들어 있어 API key나 외부 번역 서버가 필요하지 않습니다.
+
+<p align="center">
+  <img src="docs/assets/settings-korean.png" width="640" alt="게임 설정의 그래픽 탭에 추가된 한국어 버튼과 한국어로 표시되는 설정 항목">
+</p>
+
+## 주요 기능
+
+| 기능 | 내용 |
+| --- | --- |
+| 한국어 메뉴 | 설정, 도감, 강화, 미션, 업데이트 내역과 각종 안내 |
+| 익숙한 명칭 | PokéAPI 한국어 데이터를 바탕으로 한 포켓몬 이름·별칭 1,041개와 기술명 |
+| 전투 번역 | 기술 설명, 레벨 상승 선택지, 전투 중 표시되는 문구 |
+| 읽기 편한 화면 | 한국어 글꼴, 줄 간격, 버튼과 카드 정렬 조정 |
+| 간편한 전환 | 게임 안의 한국어 버튼 또는 Chrome 툴바에서 켜고 끄기 |
 
 ## 설치
 
-Chrome 119 이상이 필요합니다. 설치를 위한 빌드나 Node.js는 필요하지 않습니다.
+**Chrome 119 이상**이 필요합니다. 설치할 때 Node.js나 빌드는 필요하지 않습니다.
 
-1. 배포 파일 `pokesurvivor-korean-0.1.0.zip`을 내려받아 압축을 풉니다.
+1. [저장소 ZIP](https://github.com/evan-choi/pokesurvivor-kor/archive/refs/heads/main.zip)을 내려받아 압축을 풉니다.
 2. Chrome 주소창에 `chrome://extensions`를 입력합니다.
 3. 오른쪽 위의 **개발자 모드**를 켭니다.
-4. **압축해제된 확장 프로그램을 로드합니다**를 누르고, 압축을 풀어 생긴 `pokesurvivor-korean-0.1.0/` 폴더를 선택합니다. 해당 폴더를 열었을 때 `manifest.json`이 바로 보여야 합니다.
-5. [게임 페이지](https://pokesurvivor.pro/play)를 열거나, 이미 열려 있다면 새로고침합니다.
+4. **압축해제된 확장 프로그램을 로드합니다**를 누릅니다.
+5. 압축을 푼 `pokesurvivor-kor-main` 폴더 **안의 `extension` 폴더**를 선택합니다.
+6. [게임 페이지](https://pokesurvivor.pro/play)를 열거나 새로고침합니다.
 
-저장소의 소스 코드를 내려받았다면 프로젝트 안의 `extension/` 폴더를 선택하세요. 배포 ZIP과 소스 코드 모두 `manifest.json`이 바로 들어 있는 폴더를 불러오면 됩니다.
+> 선택한 폴더를 열었을 때 `manifest.json`이 바로 보여야 합니다. 설치 후에는 해당 폴더를 이동하거나 삭제하지 마세요.
 
-처음 설치하면 한국어 모드가 켜져 있습니다. 프로젝트 파일을 갱신한 뒤에는 `chrome://extensions`에서 이 확장 프로그램의 새로고침 버튼을 누르고 게임 페이지도 새로고침하세요.
+처음 설치하면 한국어 모드가 켜집니다. 업데이트할 때는 같은 위치의 확장 프로그램 파일을 최신 파일로 바꾼 뒤, `chrome://extensions`에서 확장 프로그램의 새로고침 버튼을 누르고 게임도 새로고침하세요.
 
-## 언어 바꾸기
+폴더 선택 오류나 적용 문제가 있다면 [설치 도움말](docs/install.md)을 참고하세요.
 
-- 게임 안의 **Settings → Graphics → Language**에서 **한국어**를 선택합니다. 한국어 모드에서는 **설정 → 그래픽 → 언어**로 표시됩니다.
-- 같은 곳에서 **English** 또는 **Español**을 선택하면 한국어 모드를 끄고 게임의 원래 언어로 돌아갑니다. 원래 언어를 바꾸면 게임이 새로고침될 수 있습니다.
-- Chrome 툴바에서 확장 프로그램 아이콘을 눌러 **한국어로 플레이**를 켜거나 끌 수도 있습니다. 자주 사용한다면 Chrome의 확장 프로그램 메뉴에서 아이콘을 고정하세요.
+<details>
+<summary>설치용 ZIP을 따로 만든 경우</summary>
 
-선택한 한국어 모드 설정은 저장되며, 다음에 게임을 열 때도 적용됩니다.
+`npm run package` 또는 GitHub Actions에서 받은 `pokesurvivor-korean-0.1.0.zip`은 압축을 풀어 생긴 폴더 자체를 선택합니다. 이 ZIP은 최상위에 `manifest.json`을 포함합니다. 저장소 ZIP의 `extension/` 폴더와 내용이 같습니다.
 
-## 번역 범위
+</details>
 
-게임의 기본 문구 1,188개와 포켓몬 이름·별칭 1,041개를 포함합니다. 메뉴, 캐릭터 선택, 기술과 강화 설명, 퀘스트, 설정, 전투 중 표시되는 텍스트가 대상입니다. 계정·연결 오류 안내와 업데이트 내역도 번역하며, 게임에서 새로 나타나는 메뉴와 카드에도 적용합니다.
+## 언어 전환
 
-다음은 번역 대상에서 제외됩니다.
+- 게임의 **Settings → Graphics → Language → 한국어**를 선택합니다. 한국어 모드에서는 **설정 → 그래픽 → 언어**로 표시됩니다.
+- **English** 또는 **Español**을 선택하면 한국어 모드가 꺼지고 게임의 원래 언어로 돌아갑니다.
+- Chrome 툴바의 확장 프로그램 아이콘에서도 **한국어로 플레이**를 켜거나 끌 수 있습니다.
 
-- 게임 바깥의 사이트 안내문과 외부 로그인 페이지
-- 채팅·닉네임 등 사용자가 입력하는 내용
-- 원래 게임이 번역하지 않도록 지정한 내용
-- 일부 Arceus 등장 연출처럼 글자를 한 글자씩 그리는 애니메이션 제목
+선택한 설정은 다음에 접속할 때도 유지됩니다. 원래 게임 언어를 바꾸면 게임이 새로고침될 수 있습니다.
 
-게임이 업데이트되어 문구나 화면 구조가 바뀌면 일부 텍스트가 원문으로 남을 수 있습니다. 모르는 문장은 원문을 유지해 단어 몇 개만 한국어로 섞이는 일을 방지합니다. 제품명·제작자명·단축키·사용자 이름은 원래 표기를 유지합니다.
+## 번역 범위와 제한
+
+기본 게임 문구 1,188개에 추가 메뉴, 계정·연결 오류 안내, 업데이트 내역 번역을 더했습니다. 동적으로 나타나는 메뉴와 카드에도 적용됩니다.
+
+게임 바깥의 사이트 안내문, 외부 로그인 페이지, 채팅·닉네임 등 사용자가 입력한 내용은 번역하지 않습니다. 게임이 번역하지 않도록 지정한 내용과 Arceus 등장 연출처럼 글자를 한 글자씩 그리는 일부 제목도 원래 표기를 유지합니다.
+
+게임 업데이트로 문구가 바뀌면 일부 번역이 적용되지 않을 수 있습니다. 알 수 없는 문장은 원문을 유지합니다. 제품명·제작자명·단축키도 원래 표기를 사용합니다. 문제가 있다면 [번역 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml)에 화면과 원문을 남겨 주세요.
 
 ## 권한과 데이터
 
-확장 프로그램은 `storage` 권한으로 한국어 모드의 켜짐·꺼짐 설정을 저장합니다. 페이지 접근 범위는 `https://pokesurvivor.pro/*`와 `https://www.pokesurvivor.pro/*`, 그리고 해당 페이지에서 여는 게임 iframe입니다.
+| 항목 | 용도 |
+| --- | --- |
+| `storage` | 한국어 모드의 켜짐·꺼짐 설정 저장 |
+| `pokesurvivor.pro`, `www.pokesurvivor.pro` | 해당 사이트와 그 안의 게임 iframe에 번역 적용 |
 
-번역 데이터는 확장 프로그램에 포함되어 있습니다. 외부 번역 서비스, API key, 별도 번역 서버를 사용하지 않습니다. 게임 계정, 저장 데이터, 점수는 수정하지 않습니다.
+번역은 기기 안에서 처리합니다. 확장 프로그램은 번역 서비스로 데이터를 전송하지 않으며, 게임 계정·저장 데이터·점수를 수정하지 않습니다.
 
-## 개발
+## 개발 및 기여
 
-Chrome extension은 `extension/` 안의 JavaScript와 CSS를 그대로 사용합니다. 테스트에는 Node.js와 npm이, 압축 파일 생성에는 `zip` 명령이 필요합니다.
+Node.js 24 이상과 npm이 필요합니다. 런타임 의존성은 없으며, `extension/`의 JavaScript와 CSS를 그대로 사용합니다.
 
 ```sh
 npm ci
@@ -55,38 +92,12 @@ npm run test:browser
 npm run package
 ```
 
-`npm test`는 번역 처리와 데이터 검증을 실행합니다. `npm run test:browser`는 Playwright로 extension의 브라우저 동작을 확인합니다. `npm run package`는 `dist/pokesurvivor-korean-0.1.0.zip`을 만듭니다. ZIP 최상위에 `manifest.json`과 확장 프로그램 파일들이 들어 있으므로, 압축을 풀어 생긴 `pokesurvivor-korean-0.1.0/` 폴더 자체를 Chrome에 불러오면 됩니다.
+테스트 구성, 실제 사이트 검사와 명칭 대조는 [개발 안내](docs/development.md)를 참고하세요. 번역 수정과 Pull Request 안내는 [CONTRIBUTING.md](CONTRIBUTING.md)에 있습니다.
 
-실제 사이트에서 확인하려면 `npm run test:live`를 실행합니다. 임시 브라우저에서 게스트로 접속해 설정과 플레이 화면을 확인하고 `test-results/live/`에 스크린샷을 남깁니다. 플레이 시작 전부터 서버에 저장하는 요청을 차단해 테스트 점수가 등록되지 않게 합니다.
+## 라이선스와 출처
 
-명칭을 다시 대조하려면 `npm run check:names`를 실행합니다. 이 개발 명령은 최신 PokéAPI CSV를 내려받아 포켓몬 이름·별칭, 게임에 표시되는 기술 123개, 타입, 지방명, 도구명을 확인합니다. 게임 내부 기술 ID가 표시 이름과 다른 경우가 있어 표시 이름을 기준으로 비교합니다. `Psychic`은 타입에서 `에스퍼`, 기술에서 `사이코키네시스`로 구분합니다.
+이 프로젝트는 [PolyForm Noncommercial 1.0.0](LICENSE)으로 배포합니다. 상업적 이용은 허용하지 않으며, 제3자 자료에는 각각의 원래 라이선스가 적용됩니다.
 
-전체 UI의 잔여 원문 검사는 다음 명령으로 실행합니다.
+게임 문구는 공개 배포본 `c31715d-game-auth-popup-overlay-20261017`을 기준으로 작성했습니다. 배포본은 원저작자를 **JPTER78**, 코드 라이선스를 **PolyForm Noncommercial 1.0.0**으로 표시합니다. 원본 게임의 실행 코드, 개별 이미지·음악 파일은 배포하지 않습니다. 위 화면은 번역 결과를 보여 주는 게임 설정 화면입니다.
 
-```sh
-npm run audit:translations -- en
-npm run audit:translations -- es
-```
-
-임시 Chrome에서 실제 게임의 화면 생성 함수를 이용해 언어별 45개 화면·상태를 확인합니다. 성격 진단, 설정 전체 탭, 도감, 강화, 뽑기, 미션, 업데이트 내역, 모든 기본·진화 기술과 도구 카드, 연계, 결과 화면이 포함됩니다. 테스트 중 내려받은 코드에만 검사 진입점을 붙이며, 사용자 Chrome 프로필과 게임 계정은 사용하지 않습니다. 게스트 초기화 후 서버에 저장하는 요청을 차단합니다. 결과는 `test-results/translation-audit-en.json`, `test-results/translation-audit-es.json`에 기록되며, 허용된 고유명사·단축키 이외의 원문이나 실행 오류가 발견되면 명령이 실패합니다. 로그인·연결 실패처럼 화면에서 임의로 발생시키지 않는 안내는 정적 문구와 회귀 테스트로 확인합니다.
-
-주요 파일은 다음과 같습니다.
-
-| 경로 | 역할 |
-| --- | --- |
-| `extension/manifest.json` | Manifest V3 설정과 적용할 사이트 |
-| `extension/translations/` | 게임 문구와 포켓몬 이름 번역 |
-| `extension/translation-core.js` | 문구와 변수가 포함된 문장의 번역 처리 |
-| `extension/content.js` | 메뉴 번역과 게임 안의 한국어 버튼 |
-| `extension/canvas.js` | Canvas에 그리는 전투 텍스트 번역 |
-| `extension/storage.js` | 언어 설정 저장과 전달 |
-| `extension/popup.html`, `extension/popup.js` | 확장 프로그램 팝업 |
-| `tests/` | 번역 처리 및 브라우저 검증 |
-
-번역을 수정할 때는 스페인어·영어 원문을 유지하고 한국어 문구를 바꿉니다. `{x}`는 이름이나 숫자가 들어갈 자리이므로 개수와 순서를 보존하세요.
-
-## 출처
-
-게임 문구는 PokeSurvivor의 공개 배포본 `c31715d-game-auth-popup-overlay-20261017`을 기준으로 작성했습니다. 원본 게임 제작자는 [JPTER78](https://github.com/JPTER78/pokesurvivor)이며, 해당 게임 코드의 라이선스는 [PolyForm Noncommercial 1.0.0](https://github.com/JPTER78/pokesurvivor/blob/main/LICENSE-NONCOMMERCIAL.md)입니다. 이 프로젝트에는 원본 게임의 실행 코드, 이미지, 음악을 포함하지 않습니다.
-
-포켓몬 이름은 [PokéAPI 포켓몬 명칭](https://github.com/PokeAPI/pokeapi/blob/master/data/v2/csv/pokemon_species_names.csv), 기술명은 [PokéAPI 기술 명칭](https://github.com/PokeAPI/pokeapi/blob/master/data/v2/csv/move_names.csv)의 한국어 데이터를 기준으로 합니다. PokéAPI는 커뮤니티가 관리하는 공개 데이터입니다. 게임 고유 기술 `Swarm`은 같은 이름의 특성인 `벌레의알림`으로 표기합니다. 해당 데이터의 BSD-3-Clause 라이선스 전문을 [pokemon.js](extension/translations/pokemon.js) 주석에 보존합니다. Pokémon 및 관련 명칭의 권리는 각 권리자에게 있습니다. 이 확장 프로그램은 원본 게임 제작사나 권리자가 제공하는 공식 한국어판이 아닙니다.
+포켓몬·기술 명칭은 [PokéAPI](https://github.com/PokeAPI/pokeapi)의 한국어 데이터를 사용합니다. 출처와 BSD-3-Clause 고지 전문은 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)에 있습니다. Pokémon 및 관련 명칭의 권리는 각 권리자에게 있으며, 이 확장 프로그램은 원본 게임 제작자나 권리자가 제공하는 공식 한국어판이 아닙니다.

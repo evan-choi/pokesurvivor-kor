@@ -3,6 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "description": "PokeSurvivor 한국어 모드 Chrome extension",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "author": "Evan Choi (https://github.com/evan-choi)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evan-choi/pokesurvivor-kor.git"
+  },
+  "homepage": "https://github.com/evan-choi/pokesurvivor-kor#readme",
+  "bugs": "https://github.com/evan-choi/pokesurvivor-kor/issues",
+  "engines": { "node": ">=24" },
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "test:browser": "playwright test",

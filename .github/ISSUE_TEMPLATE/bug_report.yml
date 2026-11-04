@@ -1,0 +1,34 @@
+name: 버그 제보
+description: 확장 프로그램이 작동하지 않거나 화면이 어긋나는 문제를 알려주세요.
+title: "[버그] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 어떤 문제가 있나요?
+      description: 예상한 동작과 실제 동작을 함께 적어주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 재현 순서
+      description: 어떤 화면에서 어떤 순서로 조작했는지 적어주세요.
+      placeholder: |
+        1. 게임에 접속합니다.
+        2. …
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: 사용 환경
+      description: Chrome 버전, 확장 프로그램 버전, 운영체제를 적어주세요.
+      placeholder: "Chrome … / 확장 프로그램 0.1.0 / macOS …"
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: 스크린샷 또는 추가 정보
+      description: 닉네임, 이메일, 방 코드 등 개인 정보를 가린 뒤 첨부해주세요.

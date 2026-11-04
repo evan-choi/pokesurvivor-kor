@@ -1,0 +1,48 @@
+# 개발 안내
+
+[README로 돌아가기](../README.md) · [기여 안내](../CONTRIBUTING.md)
+
+Chrome extension은 `extension/` 안의 JavaScript와 CSS를 그대로 사용합니다. 테스트에는 Node.js 24 이상과 npm이, 압축 파일 생성에는 `zip` 명령이 필요합니다.
+
+```sh
+npm ci
+npx playwright install chromium
+npm test
+npm run test:browser
+npm run package
+```
+
+`npm test`는 번역 처리와 데이터 검증을 실행합니다. `npm run test:browser`는 Playwright로 extension의 브라우저 동작을 확인합니다. `npm run package`는 `dist/pokesurvivor-korean-0.1.0.zip`을 만듭니다. ZIP 최상위에 `manifest.json`과 확장 프로그램 파일들이 들어 있으므로, 압축을 풀어 생긴 `pokesurvivor-korean-0.1.0/` 폴더 자체를 Chrome에 불러오면 됩니다.
+
+실제 사이트에서 확인하려면 `npm run test:live`를 실행합니다. 임시 브라우저에서 게스트로 접속해 설정과 플레이 화면을 확인하고 `test-results/live/`에 스크린샷을 남깁니다. 플레이 시작 전부터 서버에 저장하는 요청을 차단해 테스트 점수가 등록되지 않게 합니다.
+
+명칭을 다시 대조하려면 `npm run check:names`를 실행합니다. 이 개발 명령은 최신 PokéAPI CSV를 내려받아 포켓몬 이름·별칭, 게임에 표시되는 기술 123개, 타입, 지방명, 도구명을 확인합니다. 게임 내부 기술 ID가 표시 이름과 다른 경우가 있어 표시 이름을 기준으로 비교합니다. `Psychic`은 타입에서 `에스퍼`, 기술에서 `사이코키네시스`로 구분합니다.
+
+전체 UI의 잔여 원문 검사는 다음 명령으로 실행합니다.
+
+```sh
+npm run audit:translations -- en
+npm run audit:translations -- es
+```
+
+임시 Chrome에서 실제 게임의 화면 생성 함수를 이용해 언어별 45개 화면·상태를 확인합니다. 성격 진단, 설정 전체 탭, 도감, 강화, 뽑기, 미션, 업데이트 내역, 모든 기본·진화 기술과 도구 카드, 연계, 결과 화면이 포함됩니다. 테스트 중 내려받은 코드에만 검사 진입점을 붙이며, 사용자 Chrome 프로필과 게임 계정은 사용하지 않습니다. 게스트 초기화 후 서버에 저장하는 요청을 차단합니다. 결과는 `test-results/translation-audit-en.json`, `test-results/translation-audit-es.json`에 기록되며, 허용된 고유명사·단축키 이외의 원문이나 실행 오류가 발견되면 명령이 실패합니다. 로그인·연결 실패처럼 화면에서 임의로 발생시키지 않는 안내는 정적 문구와 회귀 테스트로 확인합니다.
+
+주요 파일은 다음과 같습니다.
+
+| 경로 | 역할 |
+| --- | --- |
+| `extension/manifest.json` | Manifest V3 설정과 적용할 사이트 |
+| `extension/translations/` | 게임 문구와 포켓몬 이름 번역 |
+| `extension/translation-core.js` | 문구와 변수가 포함된 문장의 번역 처리 |
+| `extension/content.js` | 메뉴 번역과 게임 안의 한국어 버튼 |
+| `extension/canvas.js` | Canvas에 그리는 전투 텍스트 번역 |
+| `extension/storage.js` | 언어 설정 저장과 전달 |
+| `extension/popup.html`, `extension/popup.js` | 확장 프로그램 팝업 |
+| `tests/` | 번역 처리 및 브라우저 검증 |
+
+번역을 수정할 때는 스페인어·영어 원문을 유지하고 한국어 문구를 바꿉니다. `{x}`는 이름이나 숫자가 들어갈 자리이므로 개수와 순서를 보존하세요.
+
+
+## 자동 검사
+
+GitHub Actions는 `main` 변경, Pull Request, 수동 실행에서 의존성 취약점 검사, 단위 테스트, 브라우저 테스트와 패키징을 실행합니다. 성공한 실행의 Artifacts에서 설치용 ZIP을 내려받을 수 있습니다. 실제 사이트 검사와 PokéAPI 대조는 네트워크와 외부 서비스에 의존하므로 필요할 때 위 명령으로 실행합니다.
