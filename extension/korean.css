@@ -1,9 +1,70 @@
-html.psko-enabled body,
+html.psko-enabled {
+  --font: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --muted: #d3def3;
+}
+
+html.psko-enabled body {
+  font-family: var(--font);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
 html.psko-enabled button,
 html.psko-enabled input,
 html.psko-enabled select,
 html.psko-enabled textarea {
-  font-family: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  font-family: var(--font);
+}
+
+/* The game's hard pixel shadows merge the closely spaced strokes in Hangul. */
+html.psko-enabled :where(body, body *) {
+  text-shadow: none !important;
+}
+
+html.psko-enabled .logo .t1 {
+  font-family: "Pixelify", system-ui, sans-serif;
+  text-shadow: 3px 3px 0 #a55f00, 6px 6px 0 var(--shadow) !important;
+}
+
+html.psko-enabled .box :is(h1, h2, h3),
+html.psko-enabled .menu-item,
+html.psko-enabled .logo .t2 {
+  letter-spacing: normal;
+}
+
+html.psko-enabled .set-row small,
+html.psko-enabled .menu-item small,
+html.psko-enabled .card .ds,
+html.psko-enabled .note {
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+html.psko-enabled .sub {
+  line-height: 1.6;
+}
+
+html.psko-enabled .menu-item {
+  line-height: 1.3;
+  word-break: keep-all;
+}
+
+html.psko-enabled .menu-item small {
+  line-height: 1.45;
+}
+
+@media (min-height: 781px) {
+  html.psko-enabled .menu-item {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+}
+
+html.psko-enabled .chip,
+html.psko-enabled .gen-tab {
+  font-size: 14px;
+  line-height: 1.45;
 }
 
 html.psko-enabled .btn,
