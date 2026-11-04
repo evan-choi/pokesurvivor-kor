@@ -1,0 +1,17 @@
+html.psko-enabled body,
+html.psko-enabled button,
+html.psko-enabled input,
+html.psko-enabled select,
+html.psko-enabled textarea {
+  font-family: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+
+html.psko-enabled .btn,
+html.psko-enabled .chip,
+html.psko-enabled .tab {
+  word-break: keep-all;
+}
+
+[data-psko-language] {
+  font-family: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}

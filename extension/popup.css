@@ -1,0 +1,20 @@
+:root { color-scheme: dark; font-family: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; background: #101a33; color: #f3f6ff; }
+* { box-sizing: border-box; }
+body { width: 330px; margin: 0; padding: 24px; }
+header { display: flex; gap: 12px; align-items: center; margin-bottom: 24px; }
+header span { font-size: 10px; letter-spacing: 2px; color: #b4c6ee; font-weight: 700; }
+h1 { margin: 3px 0 0; font-size: 22px; }
+.setting { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px; border: 1px solid #3c5079; border-radius: 12px; background: #1b2c50; cursor: pointer; }
+strong { font-size: 14px; }
+small { display: block; margin-top: 5px; color: #c4d0e8; font-size: 11px; }
+input { appearance: none; width: 40px; height: 24px; margin: 0; border-radius: 14px; background: #66738d; flex-shrink: 0; cursor: pointer; transition: background .15s; }
+input::before { content: ""; display: block; width: 18px; height: 18px; border-radius: 50%; margin: 3px; background: white; transition: transform .15s; }
+input:checked { background: #e4b941; }
+input:checked::before { transform: translateX(16px); }
+input:focus-visible, a:focus-visible { outline: 3px solid #8db7ff; outline-offset: 4px; }
+input:disabled { opacity: .5; cursor: wait; }
+#status { min-height: 18px; margin: 10px 0 20px; color: #ecd485; font-size: 12px; }
+.play { display: flex; justify-content: space-between; text-decoration: none; background: #edc656; color: #14223e; border-radius: 8px; padding: 12px 16px; font-size: 14px; font-weight: 800; }
+.play:hover { background: #f9d976; }
+.hint { color: #becbe3; line-height: 1.65; font-size: 12px; margin: 16px 0 20px; word-break: keep-all; }
+footer { padding-top: 14px; border-top: 1px solid #2e3e5f; font-size: 10px; line-height: 1.7; color: #97a9cc; word-break: keep-all; }
