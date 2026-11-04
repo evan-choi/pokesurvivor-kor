@@ -18,7 +18,7 @@ An unofficial PokeSurvivor Korean language patch for Chrome.
 
 **한국어** · [English](README.en.md)
 
-[포케서바이버(PokeSurvivor)](https://pokesurvivor.pro/play)의 비공식 한글패치입니다. 설치하면 게임 설정에서 한국어를 선택할 수 있습니다.
+[PokeSurvivor](https://pokesurvivor.pro/play)의 비공식 한글패치입니다. 설치하면 게임 설정에서 한국어를 선택할 수 있습니다.
 
 <p align="center">
   <img src="docs/assets/settings-korean.png" width="640" alt="게임 설정의 그래픽 탭에 추가된 한국어 버튼과 한국어로 표시되는 설정 항목">
