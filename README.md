@@ -7,7 +7,6 @@
 [PokeSurvivor](https://pokesurvivor.pro/play)의 메뉴, 포켓몬 이름, 기술 설명을 한국어로 바꾸는 비공식 Chrome 확장 프로그램입니다.
 
 [![CI](https://github.com/evan-choi/pokesurvivor-kor/actions/workflows/ci.yml/badge.svg)](https://github.com/evan-choi/pokesurvivor-kor/actions/workflows/ci.yml)
-![Chrome 119+](https://img.shields.io/badge/Chrome-119%2B-4285F4?logo=googlechrome&logoColor=white)
 [![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm_Noncommercial-6F42C1)](LICENSE)
 
 [**다운로드**](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip) · [프로젝트 소개](https://evan-choi.github.io/pokesurvivor-kor/) · [설치 방법](#설치) · [번역 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [개발 안내](docs/development.md)
@@ -27,8 +26,6 @@
 글꼴과 줄 간격, 버튼·카드 정렬을 한글에 맞게 조정했습니다.
 
 ## 설치
-
-**Chrome 119 이상**이 필요합니다.
 
 1. [한글패치 ZIP](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip)을 내려받아 압축을 풉니다.
 2. Chrome 주소창에 `chrome://extensions`를 입력합니다.
