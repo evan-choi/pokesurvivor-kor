@@ -46,3 +46,16 @@ npm run audit:translations -- es
 ## 자동 검사
 
 GitHub Actions는 `main` 변경, Pull Request, 수동 실행에서 의존성 취약점 검사, 단위 테스트, 브라우저 테스트와 패키징을 실행합니다. 성공한 실행의 Artifacts에서 설치용 ZIP을 내려받을 수 있습니다. 실제 사이트 검사와 PokéAPI 대조는 네트워크와 외부 서비스에 의존하므로 필요할 때 위 명령으로 실행합니다.
+
+## 프로젝트 소개 페이지
+
+`site/`에는 한국어·영어 소개 페이지가 있습니다. 문구와 스타일을 수정한 뒤 다음 명령으로 빌드합니다.
+
+```sh
+npm run package
+npm run build:site
+```
+
+`dist/site/`에 HTML, 이미지, 설치 ZIP과 사이트맵을 모읍니다. 페이지에 표시하는 버전과 다운로드 파일명은 `extension/manifest.json`을 따릅니다. README의 다운로드 주소는 버전이 바뀌어도 유지되는 `downloads/pokesurvivor-korean.zip`입니다. `main`의 CI가 통과하면 검사한 commit으로 GitHub Pages에 게시합니다.
+
+각 언어의 제목·설명·대표 주소와 언어별 주소 연결은 `site/index.html`, `site/en/index.html`에 있습니다. 검색용 문구도 해당 언어의 본문과 맞춰 작성합니다. 사이트맵 주소는 `https://evan-choi.github.io/pokesurvivor-kor/sitemap.xml`입니다. 검색엔진의 수집·검색 노출 여부는 별도로 확인해야 합니다.

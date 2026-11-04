@@ -13,7 +13,7 @@ An unofficial PokeSurvivor Korean language patch for Chrome.
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-2EA44F)
 [![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm_Noncommercial-6F42C1)](LICENSE)
 
-[**다운로드**](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean-0.1.0.zip) · [프로젝트 소개](https://evan-choi.github.io/pokesurvivor-kor/) · [설치 방법](#설치) · [번역 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [개발 안내](docs/development.md)
+[**다운로드**](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip) · [프로젝트 소개](https://evan-choi.github.io/pokesurvivor-kor/) · [설치 방법](#설치) · [번역 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [개발 안내](docs/development.md)
 
 </div>
 
@@ -35,11 +35,11 @@ An unofficial PokeSurvivor Korean language patch for Chrome.
 
 **Chrome 119 이상**이 필요합니다. 설치할 때 Node.js나 빌드는 필요하지 않습니다.
 
-1. [한글패치 ZIP](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean-0.1.0.zip)을 내려받아 압축을 풉니다.
+1. [한글패치 ZIP](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip)을 내려받아 압축을 풉니다.
 2. Chrome 주소창에 `chrome://extensions`를 입력합니다.
 3. 오른쪽 위의 **개발자 모드**를 켭니다.
 4. **압축해제된 확장 프로그램을 로드합니다** 버튼을 누릅니다.
-5. 압축을 풀어 생긴 `pokesurvivor-korean-0.1.0` 폴더를 선택합니다. **`manifest.json`이 바로 들어 있는 폴더**입니다.
+5. 압축을 풀어 생긴 `pokesurvivor-korean` 폴더를 선택합니다. **`manifest.json`이 바로 들어 있는 폴더**입니다.
 6. [게임 페이지](https://pokesurvivor.pro/play)를 열거나 새로고침합니다.
 
 > 선택한 폴더를 열었을 때 `manifest.json`이 바로 보여야 합니다. 설치 후에는 해당 폴더를 이동하거나 삭제하지 마세요.

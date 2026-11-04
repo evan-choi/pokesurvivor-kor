@@ -9,7 +9,7 @@
     "type": "git",
     "url": "https://github.com/evan-choi/pokesurvivor-kor.git"
   },
-  "homepage": "https://github.com/evan-choi/pokesurvivor-kor#readme",
+  "homepage": "https://evan-choi.github.io/pokesurvivor-kor/",
   "bugs": "https://github.com/evan-choi/pokesurvivor-kor/issues",
   "engines": { "node": ">=24" },
   "scripts": {
@@ -18,7 +18,8 @@
     "test:live": "node scripts/verify-live.mjs",
     "check:names": "node scripts/check-pokemon-names.mjs --online",
     "audit:translations": "node scripts/audit-live-translations.mjs",
-    "package": "node scripts/package.mjs"
+    "package": "node scripts/package.mjs",
+    "build:site": "node scripts/build-site.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.64.1"

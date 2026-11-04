@@ -11,7 +11,7 @@ A Chrome extension that translates PokeSurvivor menus, Pokémon names, and move 
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-2EA44F)
 [![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm_Noncommercial-6F42C1)](LICENSE)
 
-[**Download**](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean-0.1.0.zip) · [Project website](https://evan-choi.github.io/pokesurvivor-kor/en/) · [Install](#install) · [Report a translation](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml)
+[**Download**](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip) · [Project website](https://evan-choi.github.io/pokesurvivor-kor/en/) · [Install](#install) · [Report a translation](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml)
 
 </div>
 
@@ -34,11 +34,11 @@ This unofficial language patch adds a **한국어** (Korean) option to the setti
 
 Requires **Chrome 119 or later**. No Node.js installation or build step is needed to use the extension.
 
-1. [Download the extension ZIP](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean-0.1.0.zip) and extract it.
+1. [Download the extension ZIP](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip) and extract it.
 2. Open `chrome://extensions` in Chrome.
 3. Turn on **Developer mode**.
 4. Click **Load unpacked**.
-5. Select the extracted `pokesurvivor-korean-0.1.0` folder. It must contain **`manifest.json` directly inside it**.
+5. Select the extracted `pokesurvivor-korean` folder. It must contain **`manifest.json` directly inside it**.
 6. Open or reload [PokeSurvivor](https://pokesurvivor.pro/play).
 
 Keep the installed folder in place. To update, replace its extension files with the new version, reload the extension at `chrome://extensions`, and reload the game.
