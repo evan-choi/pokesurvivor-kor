@@ -1,0 +1,59 @@
+import assert from 'node:assert/strict';
+import { mkdir } from 'node:fs/promises';
+import path from 'node:path';
+import { chromium } from 'playwright';
+
+const extension = path.resolve('extension');
+const output = path.resolve('test-results/live');
+await mkdir(output, { recursive: true });
+const context = await chromium.launchPersistentContext('', {
+  channel: 'chromium', headless: true,
+  args: [`--disable-extensions-except=${extension}`, `--load-extension=${extension}`],
+  viewport: { width: 1365, height: 960 },
+});
+const page = await context.newPage();
+page.setDefaultTimeout(20_000);
+const errors = [];
+page.on('pageerror', (error) => errors.push(error.message));
+
+try {
+  await page.goto('https://pokesurvivor.pro/play', { waitUntil: 'domcontentloaded' });
+  const frame = page.frameLocator('iframe.original-game-frame');
+  await frame.locator('#tap-start:not(.hidden), #scr-login:not(.hidden) #btn-guest').first().waitFor();
+  if (await frame.locator('#tap-start').isVisible()) await frame.locator('#tap-start').click();
+  console.log('Live game loaded; entering guest setup.');
+  await frame.locator('#btn-guest').click();
+  for (let i = 0; i < 8; i++) await frame.locator('#test-a button').first().click();
+  await frame.locator('#res-ok').click();
+  await frame.locator('[data-go="settings"]').click();
+  await frame.locator('#set-tabs [data-t="gfx"]').click();
+  await frame.locator('[data-psko-language].on').waitFor();
+  assert.match(await frame.locator('#scr-settings').innerText(), /한국어/);
+  await page.screenshot({ path: path.join(output, 'settings-korean.png') });
+  console.log('Korean settings:', await frame.locator('#scr-settings').innerText());
+  await frame.locator('[data-lang="en"]').click();
+  await frame.locator('#scr-settings h2').filter({ hasText: /^Settings$/ }).waitFor();
+  await frame.locator('[data-psko-language]').click();
+  await frame.locator('#scr-settings h2').filter({ hasText: /^설정$/ }).waitFor();
+  await frame.locator('#set-close').click();
+  await page.screenshot({ path: path.join(output, 'menu-korean.png') });
+  console.log('Korean menu:', await frame.locator('#scr-menu').innerText());
+
+  // After setup, prevent gameplay from submitting any score or save to a server.
+  await context.route('**/*', (route) => {
+    return ['POST', 'PUT', 'PATCH', 'DELETE'].includes(route.request().method()) ? route.abort() : route.continue();
+  });
+  await frame.locator('[data-go="play"]').click();
+  console.log('Play screen:', await frame.locator('body').innerText());
+  await page.screenshot({ path: path.join(output, 'play-korean.png') });
+  assert.deepEqual(errors, []);
+  console.log(`Live verification passed. Screenshots: ${output}`);
+} catch (error) {
+  await page.screenshot({ path: path.join(output, 'failure.png') });
+  for (const frame of page.frames()) {
+    console.error(frame.url(), (await frame.locator('body').innerText().catch(() => '')).slice(0,4000));
+  }
+  throw error;
+} finally {
+  await context.close();
+}
