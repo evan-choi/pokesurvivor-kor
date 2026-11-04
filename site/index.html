@@ -26,47 +26,43 @@
 <body>
 <a class="skip" href="#main">본문으로 이동</a>
 <header>
-  <a class="brand" href="./"><img src="assets/icon.png" width="40" height="40" alt="">PokeSurvivor<br>한국어 모드</a>
-  <nav aria-label="주 메뉴"><a href="https://github.com/evan-choi/pokesurvivor-kor">GitHub</a><a href="en/" lang="en" hreflang="en">English</a></nav>
+  <a class="brand" href="./"><img src="assets/icon.png" width="36" height="36" alt="">PokeSurvivor 한국어 모드</a>
+  <a href="en/" lang="en" hreflang="en">English</a>
 </header>
 <main id="main">
   <section class="hero" aria-labelledby="title">
-    <div>
-      <h1 id="title">PokeSurvivor<br>한글패치</h1>
-      <p class="lead">메뉴, 포켓몬 이름, 기술 설명을 한국어로 바꾸는 Chrome 확장 프로그램입니다.</p>
-      <div class="actions"><a class="button primary" href="downloads/pokesurvivor-korean-{{VERSION}}.zip" download>한글패치 다운로드</a><a class="button" href="#install">설치 방법</a></div>
-      <p class="requirements">v{{VERSION}} · 무료 · 비공식 팬 번역</p>
-    </div>
-    <figure class="preview"><img src="assets/settings-korean.png" width="1282" height="1328" alt="PokeSurvivor 그래픽 설정에서 한국어를 선택한 화면" fetchpriority="high"><figcaption>한국어를 적용한 게임 설정</figcaption></figure>
+    <h1 id="title">PokeSurvivor 한글패치</h1>
+    <p class="lead">메뉴, 포켓몬 이름, 기술 설명을 한국어로 바꾸는 비공식 Chrome 확장 프로그램입니다.</p>
+    <div class="actions"><a class="button primary" href="downloads/pokesurvivor-korean-{{VERSION}}.zip" download>다운로드</a><a class="button" href="https://pokesurvivor.pro/play">게임 열기</a></div>
   </section>
-  <section class="features" aria-label="번역 내용">
-    <div><h2>메뉴와 전투</h2><p>설정, 도감, 강화, 미션과 전투 중 표시되는 문구를 번역합니다.</p></div>
-    <div><h2>언어 전환</h2><p>게임 설정이나 Chrome의 확장 프로그램 아이콘에서 한국어를 켜고 끕니다.</p></div>
-    <div><h2>폰트와 배치</h2><p>한글에 맞춰 폰트, 줄 간격과 버튼 크기를 조정했습니다.</p></div>
-  </section>
-  <section class="section" id="install" aria-labelledby="install-title">
-    <h2 id="install-title">설치 방법</h2>
-    <p class="section-intro">ZIP 파일을 내려받아 Chrome에 직접 설치합니다.</p>
+
+  <section class="install" id="install" aria-labelledby="install-title">
+    <h2 id="install-title">설치</h2>
     <ol class="steps">
-      <li><h3>ZIP 압축 풀기</h3><p><a href="downloads/pokesurvivor-korean-{{VERSION}}.zip" download>한글패치 ZIP</a>을 내려받아 압축을 풉니다. 설치한 뒤에도 이 폴더를 보관하세요.</p></li>
-      <li><h3>개발자 모드 켜기</h3><p>Chrome 주소창에 <code>chrome://extensions</code>를 입력하고 오른쪽 위의 <strong>개발자 모드</strong>를 켭니다.</p></li>
-      <li><h3>확장 프로그램 불러오기</h3><p><strong>압축해제된 확장 프로그램을 로드합니다</strong> 버튼을 누릅니다. 압축을 푼 폴더 중 <code>manifest.json</code>이 바로 들어 있는 폴더를 선택하세요.</p></li>
-      <li><h3>게임 새로고침하기</h3><p><a href="https://pokesurvivor.pro/play">PokeSurvivor</a>를 열거나 새로고침합니다. 설치하면 한국어가 켜집니다. 언어는 <strong>설정 → 그래픽 → 언어</strong>에서 바꿉니다.</p></li>
+      <li>다운로드한 ZIP 파일의 압축을 풉니다.</li>
+      <li>Chrome 주소창에 <code>chrome://extensions</code>를 입력하고 <strong>개발자 모드</strong>를 켭니다.</li>
+      <li><strong>압축해제된 확장 프로그램을 로드합니다</strong> 버튼을 누르고, 압축을 푼 폴더를 선택합니다. <code>manifest.json</code>이 바로 들어 있는 폴더입니다.</li>
+      <li><a href="https://pokesurvivor.pro/play">PokeSurvivor</a>를 열거나 새로고침하면 한국어가 적용됩니다.</li>
     </ol>
-    <p class="note">GitHub의 Code → Download ZIP으로 소스 코드를 받았다면 그 안의 <code>extension/</code> 폴더를 선택하세요.</p>
+    <p class="note">설치 후에도 이 폴더는 그대로 보관하세요.</p>
   </section>
-  <section class="section faq" aria-labelledby="faq-title">
-    <h2 id="faq-title">사용 안내</h2>
-    <details><summary>게임 저장 데이터가 바뀌나요?</summary><p>게임 계정, 저장 데이터, 점수는 바꾸지 않습니다.</p></details>
-    <details><summary>일부 문구가 원문으로 보여요.</summary><p>게임 바깥의 사이트, 채팅, 닉네임과 일부 보스 등장 연출은 번역하지 않습니다. 게임 업데이트로 새 문구가 추가되면 원문으로 남을 수 있습니다. 번역이 빠졌다면 아래 링크로 화면과 문구를 알려주세요.</p></details>
-    <details><summary>업데이트는 어떻게 하나요?</summary><p>새 ZIP을 받아 설치한 폴더의 파일을 교체합니다. <code>chrome://extensions</code>에서 확장 프로그램의 새로고침 버튼을 누른 뒤 게임도 새로고침하세요.</p></details>
-    <p class="help"><a href="https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml">번역 제보</a> · <a href="https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=bug_report.yml">버그 제보</a></p>
-  </section>
-  <section class="about" aria-label="출처와 라이선스">
-    <p>원본 게임: JPTER78 · 포켓몬·기술 명칭: PokéAPI. Pokémon 및 관련 명칭의 권리는 각 권리자에게 있습니다.</p>
-    <p><a href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/LICENSE">PolyForm Noncommercial 1.0.0</a> · 상업적 이용 불가 · <a href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/THIRD_PARTY_NOTICES.md">출처와 라이선스</a></p>
-  </section>
+
+  <div class="details-list">
+    <details>
+      <summary>언어 바꾸기</summary>
+      <p>게임의 <strong>설정 → 그래픽 → 언어</strong>에서 English 또는 Español을 선택하면 원래 언어로 돌아갑니다. Chrome의 확장 프로그램 아이콘에서도 한국어를 켜고 끌 수 있습니다.</p>
+    </details>
+    <details>
+      <summary>업데이트</summary>
+      <p>새 ZIP을 받아 기존 폴더의 파일을 교체합니다. <code>chrome://extensions</code>에서 확장 프로그램을 새로고침한 뒤 게임도 새로고침하세요.</p>
+    </details>
+    <details class="preview">
+      <summary>한국어 적용 화면 보기</summary>
+      <img src="assets/settings-korean.png" width="1282" height="1328" loading="lazy" alt="한국어로 표시된 PokeSurvivor 설정 화면">
+    </details>
+  </div>
+  <p class="help"><a href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/docs/install.md">설치가 안 되나요?</a> · <a href="https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml">번역 오류 제보</a></p>
 </main>
-<footer><span>PokeSurvivor 한국어 모드 · Evan Choi</span><div><a href="https://github.com/evan-choi/pokesurvivor-kor">GitHub</a></div></footer>
+<footer><a href="https://github.com/evan-choi/pokesurvivor-kor">GitHub</a><a href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/LICENSE">라이선스</a><a href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/THIRD_PARTY_NOTICES.md">출처</a></footer>
 </body>
 </html>

@@ -17,6 +17,8 @@
 
 `Manifest file is missing or unreadable` 오류가 나오면 선택한 폴더 안에 `manifest.json`이 바로 있는지 확인하세요. 한국어가 적용되지 않으면 설정에서 한국어가 켜져 있는지 확인하고 게임을 새로고침하세요.
 
-Chrome 버전이 낮아 설치할 수 없다는 안내가 나오면 Chrome을 업데이트하세요. 설치에 필요한 최소 버전은 Chrome 119입니다.
+Chrome 버전이 낮아 설치할 수 없다는 안내가 나오면 Chrome을 업데이트하세요.
+
+게임 바깥의 사이트, 닉네임과 일부 보스 등장 연출은 원문으로 남습니다. 그 외에 번역이 빠졌거나 어색하다면 [번역 오류를 제보해 주세요](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml).
 
 자세한 설명, 소스 코드와 문제 제보는 [GitHub 저장소](https://github.com/evan-choi/pokesurvivor-kor)에서 확인할 수 있습니다. 라이선스와 제3자 고지는 함께 제공된 `LICENSE`와 `THIRD_PARTY_NOTICES.md`를 참고하세요.

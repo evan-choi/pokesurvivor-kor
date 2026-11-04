@@ -26,47 +26,43 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header>
-  <a class="brand" href="./"><img src="../assets/icon.png" width="40" height="40" alt="">PokeSurvivor<br>Korean patch</a>
-  <nav aria-label="Main navigation"><a href="https://github.com/evan-choi/pokesurvivor-kor">GitHub</a><a href="../" lang="ko" hreflang="ko">한국어</a></nav>
+  <a class="brand" href="./"><img src="../assets/icon.png" width="36" height="36" alt="">PokeSurvivor Korean Patch</a>
+  <a href="../" lang="ko" hreflang="ko">한국어</a>
 </header>
 <main id="main">
   <section class="hero" aria-labelledby="title">
-    <div>
-      <h1 id="title">PokeSurvivor<br>Korean patch</h1>
-      <p class="lead">A Chrome extension that translates menus, Pokémon names, and move descriptions into Korean.</p>
-      <div class="actions"><a class="button primary" href="../downloads/pokesurvivor-korean-{{VERSION}}.zip" download>Download Korean patch</a><a class="button" href="#install">How to install</a></div>
-      <p class="requirements">v{{VERSION}} · Free · Unofficial fan translation</p>
-    </div>
-    <figure class="preview"><img src="../assets/settings-korean.png" width="1282" height="1328" alt="Korean selected in the PokeSurvivor graphics settings" fetchpriority="high"><figcaption>Game settings in Korean</figcaption></figure>
+    <h1 id="title">PokeSurvivor Korean Patch</h1>
+    <p class="lead">An unofficial Chrome extension that translates menus, Pokémon names, and move descriptions into Korean.</p>
+    <div class="actions"><a class="button primary" href="../downloads/pokesurvivor-korean-{{VERSION}}.zip" download>Download</a><a class="button" href="https://pokesurvivor.pro/play">Open game</a></div>
   </section>
-  <section class="features" aria-label="Translation coverage">
-    <div><h2>Menus and battles</h2><p>Translates settings, the Pokédex, upgrades, missions, and text shown during battles.</p></div>
-    <div><h2>Language switching</h2><p>Turn Korean on or off in the game settings or from the extension icon in Chrome.</p></div>
-    <div><h2>Fonts and layout</h2><p>Adjusts fonts, line spacing, and button sizes for Korean text.</p></div>
-  </section>
-  <section class="section" id="install" aria-labelledby="install-title">
-    <h2 id="install-title">How to install</h2>
-    <p class="section-intro">Download the ZIP and load it in Chrome.</p>
+
+  <section class="install" id="install" aria-labelledby="install-title">
+    <h2 id="install-title">Install</h2>
     <ol class="steps">
-      <li><h3>Extract the ZIP</h3><p><a href="../downloads/pokesurvivor-korean-{{VERSION}}.zip" download>Download the patch ZIP</a> and extract it. Keep the folder after installation.</p></li>
-      <li><h3>Turn on Developer mode</h3><p>Enter <code>chrome://extensions</code> in the Chrome address bar, then turn on <strong>Developer mode</strong> in the top right.</p></li>
-      <li><h3>Load the extension</h3><p>Click <strong>Load unpacked</strong>. Select the extracted folder that contains <code>manifest.json</code> directly inside it.</p></li>
-      <li><h3>Reload the game</h3><p>Open or reload <a href="https://pokesurvivor.pro/play">PokeSurvivor</a>. Korean is enabled by default. Change the language under <strong>설정 → 그래픽 → 언어</strong> (Settings → Graphics → Language).</p></li>
+      <li>Extract the downloaded ZIP file.</li>
+      <li>Open <code>chrome://extensions</code> in Chrome and turn on <strong>Developer mode</strong>.</li>
+      <li>Click <strong>Load unpacked</strong> and select the extracted folder that contains <code>manifest.json</code> directly inside it.</li>
+      <li>Open or reload <a href="https://pokesurvivor.pro/play">PokeSurvivor</a>. Korean is enabled automatically.</li>
     </ol>
-    <p class="note">If you used Code → Download ZIP on GitHub to get the source code, select the <code>extension/</code> folder inside it.</p>
+    <p class="note">Keep the installed folder in place.</p>
   </section>
-  <section class="section faq" aria-labelledby="faq-title">
-    <h2 id="faq-title">Using the patch</h2>
-    <details><summary>Does it change my save data?</summary><p>The extension does not change game accounts, save data, or scores.</p></details>
-    <details><summary>Why is some text still in the original language?</summary><p>The surrounding website, chat messages, player names, and some boss introductions remain untranslated. Game updates can also add new text. Use the link below to report missing translations with the screen and text.</p></details>
-    <details><summary>How do I update?</summary><p>Download the new ZIP and replace the files in the installed folder. Click the extension's reload button at <code>chrome://extensions</code>, then reload the game.</p></details>
-    <p class="help"><a href="https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml">Report a translation</a> · <a href="https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=bug_report.yml">Report a bug</a></p>
-  </section>
-  <section class="about" aria-label="Credits and license">
-    <p>Original game: JPTER78. Pokémon and move names: PokéAPI. Pokémon and related names belong to their respective rights holders.</p>
-    <p><a href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/LICENSE">PolyForm Noncommercial 1.0.0</a> · No commercial use · <a href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/THIRD_PARTY_NOTICES.md">Credits and licenses</a></p>
-  </section>
+
+  <div class="details-list">
+    <details>
+      <summary>Change language</summary>
+      <p>Choose English or Español under <strong>설정 → 그래픽 → 언어</strong> (Settings → Graphics → Language) to restore the original language. You can also turn Korean on or off from the extension icon in Chrome.</p>
+    </details>
+    <details>
+      <summary>Update</summary>
+      <p>Download the new ZIP and replace the files in the installed folder. Reload the extension at <code>chrome://extensions</code>, then reload the game.</p>
+    </details>
+    <details class="preview">
+      <summary>Preview the Korean interface</summary>
+      <img src="../assets/settings-korean.png" width="1282" height="1328" loading="lazy" alt="PokeSurvivor settings in Korean">
+    </details>
+  </div>
+  <p class="help"><a href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/docs/install.md">Installation help (Korean)</a> · <a href="https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml">Report a translation</a></p>
 </main>
-<footer><span>PokeSurvivor Korean Patch · Evan Choi</span><div><a href="https://github.com/evan-choi/pokesurvivor-kor">GitHub</a></div></footer>
+<footer><a href="https://github.com/evan-choi/pokesurvivor-kor">GitHub</a><a href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/LICENSE">License</a><a href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/THIRD_PARTY_NOTICES.md">Credits</a></footer>
 </body>
 </html>
