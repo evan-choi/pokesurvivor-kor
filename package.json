@@ -8,6 +8,7 @@
     "test:browser": "playwright test",
     "test:live": "node scripts/verify-live.mjs",
     "check:names": "node scripts/check-pokemon-names.mjs --online",
+    "audit:translations": "node scripts/audit-live-translations.mjs",
     "package": "node scripts/package.mjs"
   },
   "devDependencies": {
