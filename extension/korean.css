@@ -5,7 +5,7 @@ html.psko-enabled {
 
 html.psko-enabled body {
   font-family: var(--font);
-  line-height: 1.5;
+  line-height: 1.35;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -51,7 +51,16 @@ html.psko-enabled .menu-item {
 }
 
 html.psko-enabled .menu-item small {
+  min-width: 0;
   line-height: 1.45;
+}
+
+/* Pin the icon to the title row even when its Korean description wraps. */
+html.psko-enabled .menu-item .mi-ico {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  justify-content: center;
 }
 
 @media (min-height: 781px) {
@@ -61,10 +70,74 @@ html.psko-enabled .menu-item small {
   }
 }
 
-html.psko-enabled .chip,
 html.psko-enabled .gen-tab {
   font-size: 14px;
-  line-height: 1.45;
+  line-height: 1.25;
+  justify-content: center;
+  row-gap: 3px;
+}
+
+html.psko-enabled .btn,
+html.psko-enabled .chip,
+html.psko-enabled .type,
+html.psko-enabled .tag-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  gap: 0.3em;
+  line-height: 1.25;
+}
+
+html.psko-enabled .chip {
+  font-size: 14px;
+  min-height: 32px;
+}
+
+html.psko-enabled .type,
+html.psko-enabled .tag-chip {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+html.psko-enabled :is(.btn, .chip) > img {
+  flex-shrink: 0;
+}
+
+html.psko-enabled .set-row > .btn {
+  flex: 0 0 72px;
+  min-height: 36px;
+  padding-inline: 8px;
+}
+
+html.psko-enabled .set-row .grow,
+html.psko-enabled .card .txt {
+  min-width: 0;
+}
+
+html.psko-enabled .card .nm {
+  line-height: 1.35;
+}
+
+html.psko-enabled .card .key {
+  flex-shrink: 0;
+  min-width: 2em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+html.psko-enabled .upg-item > div:nth-child(2) {
+  min-width: 0;
+}
+
+html.psko-enabled .upg-item > div:nth-child(2) > b,
+html.psko-enabled .upg-item > div:nth-child(2) > span {
+  display: block;
+}
+
+html.psko-enabled .upg-item > div:nth-child(2) > span {
+  margin-top: 2px;
+  line-height: 1.4;
 }
 
 html.psko-enabled .btn,

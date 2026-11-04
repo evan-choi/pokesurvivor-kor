@@ -29,15 +29,40 @@ try {
   await frame.locator('#set-tabs [data-t="gfx"]').click();
   await frame.locator('[data-psko-language].on').waitFor();
   assert.match(await frame.locator('#scr-settings').innerText(), /한국어/);
-  await page.screenshot({ path: path.join(output, 'settings-korean.png') });
+  await page.screenshot({ path: path.join(output, 'settings-korean.png'), animations: 'disabled' });
+  const buttonSizes = await frame.locator('.set-row > .btn').evaluateAll((buttons) => buttons.map((button) => {
+    const { width, height } = button.getBoundingClientRect();
+    return { width, height };
+  }));
+  assert.ok(buttonSizes.length > 1);
+  assert.ok(buttonSizes.every(({ width, height }) => width === buttonSizes[0].width && height === buttonSizes[0].height));
   console.log('Korean settings:', await frame.locator('#scr-settings').innerText());
   await frame.locator('[data-lang="en"]').click();
   await frame.locator('#scr-settings h2').filter({ hasText: /^Settings$/ }).waitFor();
   await frame.locator('[data-psko-language]').click();
   await frame.locator('#scr-settings h2').filter({ hasText: /^설정$/ }).waitFor();
   await frame.locator('#set-close').click();
-  await page.screenshot({ path: path.join(output, 'menu-korean.png') });
+  await page.screenshot({ path: path.join(output, 'menu-korean.png'), animations: 'disabled' });
   console.log('Korean menu:', await frame.locator('#scr-menu').innerText());
+
+  await frame.locator('[data-go="dex"]').click();
+  await frame.locator('#dex-grid .cell:not(.locked)').first().click();
+  await page.screenshot({ path: path.join(output, 'pokedex-korean.png'), animations: 'disabled' });
+  await frame.locator('#scr-dex [data-back]').click();
+  await frame.locator('[data-go="upgrades"]').click();
+  await page.screenshot({ path: path.join(output, 'upgrades-korean.png'), animations: 'disabled' });
+  await frame.locator('#scr-upgrades [data-back]').click();
+  await page.setViewportSize({ width: 960, height: 600 });
+  await frame.locator('[data-go="settings"]').click();
+  await page.screenshot({ path: path.join(output, 'settings-compact.png'), animations: 'disabled' });
+  const settingsFit = await frame.locator('#scr-settings .box').evaluate((box) => {
+    const rect = box.getBoundingClientRect();
+    const close = document.querySelector('#set-close').getBoundingClientRect();
+    return rect.left >= 0 && rect.right <= innerWidth && close.top >= 0 && close.bottom <= innerHeight && box.scrollWidth <= box.clientWidth;
+  });
+  assert.ok(settingsFit, 'Settings and its close button must fit the compact viewport.');
+  await frame.locator('#set-close').click();
+  await page.setViewportSize({ width: 1365, height: 960 });
 
   // After setup, prevent gameplay from submitting any score or save to a server.
   await context.route('**/*', (route) => {
@@ -45,7 +70,7 @@ try {
   });
   await frame.locator('[data-go="play"]').click();
   console.log('Play screen:', await frame.locator('body').innerText());
-  await page.screenshot({ path: path.join(output, 'play-korean.png') });
+  await page.screenshot({ path: path.join(output, 'play-korean.png'), animations: 'disabled' });
   assert.deepEqual(errors, []);
   console.log(`Live verification passed. Screenshots: ${output}`);
 } catch (error) {
