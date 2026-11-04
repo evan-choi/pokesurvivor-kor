@@ -9,6 +9,8 @@ const game = `<!doctype html><html lang="en"><body>
   </div></section>
   <p id="pokemon">Bulbasaur</p><p id="dynamic">Fire</p>
   <p id="untouched" translate="no">Fire</p><input value="Bulbasaur" placeholder="Password">
+  <div id="cards"><div class="card"><div class="nm">Psychic <span class="tag-chip">Psychic</span></div></div></div>
+  <div id="dex-detail"><p>Starts with <b class="gold">Psíquico</b></p><p class="move-icons"><span title="Psychic">icon</span></p></div>
   <div contenteditable="true">Fire</div><canvas id="canvas"></canvas>
   <script>
     window.englishClicks = 0;
@@ -28,7 +30,7 @@ test.beforeAll(async () => {
     args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`],
   });
   await context.route('https://pokesurvivor.pro/**', (route) => route.fulfill({
-    contentType: 'text/html',
+    contentType: 'text/html; charset=utf-8',
     body: `<html><body><h1>Host page</h1><iframe srcdoc="${game.replaceAll('&', '&amp;').replaceAll('"', '&quot;')}"></iframe></body></html>`,
   }));
   page = await context.newPage();
@@ -102,6 +104,21 @@ test('canvas uses Korean measurements and preserves drawing state', async () => 
   expect(original.english).not.toBe(original.korean);
   expect(original.font).toBe(original.originalFont);
   expect(errors).toEqual([]);
+});
+
+test('move titles and tooltips use move names while type badges retain type names', async () => {
+  await expect(frame.locator('#cards .nm')).toHaveText('사이코키네시스 에스퍼');
+  await expect(frame.locator('#dex-detail b')).toHaveText('사이코키네시스');
+  await expect(frame.locator('.move-icons span')).toHaveAttribute('title', '사이코키네시스');
+  const widths = await frame.locator('canvas').evaluate((canvas) => {
+    const ctx = canvas.getContext('2d');
+    ctx.font = 'bold 20px monospace';
+    return [ctx.measureText('Psychic').width, ctx.measureText('사이코키네시스').width];
+  });
+  expect(widths[0]).toBe(widths[1]);
+  await popup.locator('#enabled').uncheck();
+  await expect(frame.locator('#cards .nm')).toHaveText('Psychic Psychic');
+  await expect(frame.locator('.move-icons span')).toHaveAttribute('title', 'Psychic');
 });
 
 test('leaves canvas text outside the game and letter-animated boss headings unchanged', async () => {

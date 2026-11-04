@@ -782,7 +782,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Ataque Óseo",
     "Bone Rush",
-    "본러쉬"
+    "본러시"
   ],
   [
     "Psicocolmillo",

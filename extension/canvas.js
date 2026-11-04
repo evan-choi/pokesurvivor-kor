@@ -9,7 +9,13 @@
   // The game animates these two headings one letter at a time. Keep their
   // measurements in the original language so letter placement remains correct.
   const animatedHeadings = new Set(['THE JUDGMENT', 'OF ARCEUS', 'LA SENTENCIA', 'DE ARCEUS']);
-  const translate = (text) => enabled && gameDocument && !animatedHeadings.has(text) ? globalThis.PSKO.translate(text) : text;
+  const translate = (text) => {
+    if (!enabled || !gameDocument || animatedHeadings.has(text)) return text;
+    // The canvas uses standalone names for moves; type alerts include their full sentence.
+    return typeof text === 'string' && /^(?:Psychic|Psíquico)$/iu.test(text.trim())
+      ? globalThis.PSKO.translateMove(text)
+      : globalThis.PSKO.translate(text);
+  };
   document.addEventListener('psko:settings', (event) => {
     if (typeof event.detail === 'boolean') enabled = event.detail;
   });

@@ -59,6 +59,8 @@ npm run package
 
 실제 사이트에서 확인하려면 `npm run test:live`를 실행합니다. 임시 브라우저에서 게스트로 접속해 설정과 플레이 화면을 확인하고 `test-results/live/`에 스크린샷을 남깁니다. 플레이 시작 전부터 서버에 저장하는 요청을 차단해 테스트 점수가 등록되지 않게 합니다.
 
+명칭을 다시 대조하려면 `npm run check:names`를 실행합니다. 이 개발 명령은 최신 PokéAPI CSV를 내려받아 포켓몬 이름·별칭, 게임에 표시되는 기술 123개, 타입, 지방명, 도구명을 확인합니다. 게임 내부 기술 ID가 표시 이름과 다른 경우가 있어 표시 이름을 기준으로 비교합니다. `Psychic`은 타입에서 `에스퍼`, 기술에서 `사이코키네시스`로 구분합니다.
+
 주요 파일은 다음과 같습니다.
 
 | 경로 | 역할 |
@@ -78,4 +80,4 @@ npm run package
 
 게임 문구는 PokeSurvivor의 공개 배포본 `c31715d-game-auth-popup-overlay-20261017`을 기준으로 작성했습니다. 원본 게임 제작자는 [JPTER78](https://github.com/JPTER78/pokesurvivor)이며, 해당 게임 코드의 라이선스는 [PolyForm Noncommercial 1.0.0](https://github.com/JPTER78/pokesurvivor/blob/main/LICENSE-NONCOMMERCIAL.md)입니다. 이 프로젝트에는 원본 게임의 실행 코드, 이미지, 음악을 포함하지 않습니다.
 
-포켓몬 이름은 [PokeAPI 데이터](https://github.com/PokeAPI/pokeapi/tree/master/data/v2/csv)를 사용하며, 해당 데이터의 BSD-3-Clause 라이선스 전문을 [pokemon.js](extension/translations/pokemon.js) 주석에 보존합니다. Pokémon 및 관련 명칭의 권리는 각 권리자에게 있습니다. 이 확장 프로그램은 원본 게임 제작사나 권리자가 제공하는 공식 한국어판이 아닙니다.
+포켓몬 이름은 [PokéAPI 포켓몬 명칭](https://github.com/PokeAPI/pokeapi/blob/master/data/v2/csv/pokemon_species_names.csv), 기술명은 [PokéAPI 기술 명칭](https://github.com/PokeAPI/pokeapi/blob/master/data/v2/csv/move_names.csv)의 한국어 데이터를 기준으로 합니다. PokéAPI는 커뮤니티가 관리하는 공개 데이터입니다. 게임 고유 기술 `Swarm`은 같은 이름의 특성인 `벌레의알림`으로 표기합니다. 해당 데이터의 BSD-3-Clause 라이선스 전문을 [pokemon.js](extension/translations/pokemon.js) 주석에 보존합니다. Pokémon 및 관련 명칭의 권리는 각 권리자에게 있습니다. 이 확장 프로그램은 원본 게임 제작사나 권리자가 제공하는 공식 한국어판이 아닙니다.

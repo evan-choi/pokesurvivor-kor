@@ -31,6 +31,17 @@ for (const name of [...gameDictionaries.map(([name]) => name), 'extra', 'pokemon
 evaluate(context, 'translation-core.js');
 const translate = context.PSKO.translate;
 
+test('Psychic is distinguished as a type or a move', () => {
+  assert.equal(translate('Psychic'), '에스퍼');
+  assert.equal(translate('Psíquico'), '에스퍼');
+  assert.equal(context.PSKO.translateMove('Psychic'), '사이코키네시스');
+  assert.equal(context.PSKO.translateMove('  PSÍQUICO  '), '  사이코키네시스  ');
+  assert.equal(context.PSKO.translateMove('Bone Rush'), '본러시');
+  assert.equal(context.PSKO.translateMove('Psychic Fangs'), '사이코팽');
+  assert.equal(context.PSKO.translateMove('Psychic Fangs Lv.3'), '사이코팽 Lv.3');
+  assert.equal(context.PSKO.translateMove(null), null);
+});
+
 test('all 1,188 game messages have complete translations and matching placeholders', () => {
   let total = 0;
   for (const [name, count] of gameDictionaries) {

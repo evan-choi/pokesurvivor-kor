@@ -15,7 +15,17 @@
     const previous = entries?.get(key);
     // Game rerenders always become the new original, even for reused nodes.
     const source = previous && value === previous.translated ? previous.source : value;
-    let translated = enabled ? globalThis.PSKO.translate(source) : source;
+    const element = key === 'text' ? node.parentElement : node;
+    const moveName = key === 'title'
+      ? element.matches('.move-icons > span')
+      : key === 'text' && (
+        element.matches('#dex-detail > p > b.gold') ||
+        element.matches('.bind-slot option, .ban-moves .chip') ||
+        (element.closest('#cards .nm, #bond-cards .nm') && !element.closest('.type, .tag-chip')) ||
+        element.matches('#over-stats > div > b[style*="font-size:15px"]')
+      );
+    const translate = moveName ? globalThis.PSKO.translateMove : globalThis.PSKO.translate;
+    let translated = enabled ? translate(source) : source;
     if (enabled && key === 'text' && source.trim().toLowerCase() === 'normal') {
       if (node.parentElement.closest('#set-body [data-k="stick"]')) translated = source.replace(/normal/i, '보통');
       if (node.parentElement.closest('#dex-detail .seg [data-v="0"]')) translated = source.replace(/normal/i, '일반');

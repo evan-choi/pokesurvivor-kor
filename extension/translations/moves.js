@@ -88,7 +88,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Teselia",
     "Unova",
-    "하나지방"
+    "하나"
   ],
   [
     "Ascuas",

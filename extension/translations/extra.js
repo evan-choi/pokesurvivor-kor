@@ -1,5 +1,15 @@
 // Hosted build additions that are not part of the game's Spanish/English dictionary.
 globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
+  // Region names from PokéAPI region_names.csv (Korean language ID 3).
+  ['Kanto', 'Kanto', '관동'],
+  ['Johto', 'Johto', '성도'],
+  ['Hoenn', 'Hoenn', '호연'],
+  ['Sinnoh', 'Sinnoh', '신오'],
+  ['Kalos', 'Kalos', '칼로스'],
+  ['Alola', 'Alola', '알로라'],
+  ['Galar', 'Galar', '가라르'],
+  ['Paldea', 'Paldea', '팔데아'],
+  ['Shiny', 'Shiny', '색이 다른'],
   ['Sign in', 'Sign in', '로그인'],
   ['si alguien te pide pagar, no somos nosotros', 'if someone asks you to pay, it is not us', '이 게임은 무료입니다'],
   ['Sign in / Register', 'Sign in / Register', '로그인 / 회원가입'],
