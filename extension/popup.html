@@ -5,14 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PokeSurvivor 한국어 모드</title>
     <link rel="stylesheet" href="popup.css">
-    <script src="popup.js" defer></script>
+    <script src="translations/pokemon.js" defer></script>
+    <script src="popup.js" type="module"></script>
   </head>
   <body>
     <header><img src="icons/48.png" width="40" height="40" alt=""><div><span>POKESURVIVOR</span><h1>한국어 모드</h1></div></header>
     <label class="setting" for="enabled"><div><strong>한국어로 플레이</strong><small>메뉴 · 포켓몬 · 기술 · 전투 표시</small></div><input type="checkbox" id="enabled" role="switch" disabled></label>
     <p id="status" role="status">설정 불러오는 중…</p>
+    <section class="collection" aria-labelledby="collection-title">
+      <div class="collection-heading">
+        <h2 id="collection-title">보유 포켓몬 <span id="collection-count"></span></h2>
+        <button id="refresh-collection" type="button">새로고침</button>
+      </div>
+      <p id="collection-status" role="status">보유 목록 불러오는 중…</p>
+      <ol id="pokemon-list" aria-label="보유 포켓몬 전체 순위"></ol>
+      <p class="tier-source"><a href="https://pokesurvivor.net/tier-list/" target="_blank" rel="noreferrer">PokéSurvivor Guide ↗</a> · 능력치 기준<br><span id="tier-updated"></span></p>
+    </section>
     <a class="play" href="https://pokesurvivor.pro/play" target="_blank" rel="noreferrer">게임 열기 <span aria-hidden="true">↗</span></a>
-    <p class="hint">처음 설치했다면 게임 페이지를 새로고침하세요. 게임 설정의 Graphics → Language에서도 한국어를 선택할 수 있습니다.</p>
+    <details class="help"><summary>처음 설치하셨나요?</summary><p class="hint">게임 페이지를 새로고침하세요. 게임 설정의 Graphics → Language에서도 한국어를 선택할 수 있습니다.</p></details>
     <footer>비공식 팬 번역</footer>
   </body>
 </html>

@@ -23,7 +23,13 @@ PokéAPI에서 제공하는 한국어 포켓몬·기술·타입·지방·도구 
 
 스페인어 별칭과 문장 부호가 다른 이름을 추가했습니다. 게임 고유 기술 `Swarm`은 같은 이름의 특성인 `벌레의알림`으로 표기합니다.
 
-### BSD-3-Clause 고지 전문
+보유 목록의 이미지는 [PokéAPI sprites](https://github.com/PokeAPI/sprites)의 Showdown GIF와 PNG를 실행 중에 불러옵니다. 이미지 파일은 확장 프로그램에 포함하지 않습니다.
+
+## PokéSurvivor Guide
+
+보유 목록의 티어와 전체 순위는 [PokéSurvivor Guide의 티어표](https://pokesurvivor.net/tier-list/)를, 도감 번호 연결은 [도감](https://pokesurvivor.net/pokedex/)을 실행 중에 읽어 사용합니다. 사이트의 HTML·스크립트는 확장 프로그램에 포함하지 않습니다. 사이트 자체의 능력치 기준 평가이며, 원본 게임의 공식 순위가 아닙니다.
+
+## PokéAPI BSD-3-Clause 고지 전문
 
 Copyright (c) © 2013–2023 Paul Hallett and PokéAPI contributors (https://github.com/PokeAPI/pokeapi#contributing). Pokémon and Pokémon character names are trademarks of Nintendo.
 

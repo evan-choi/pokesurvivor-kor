@@ -1,20 +1,50 @@
 :root { color-scheme: dark; font-family: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; background: #101a33; color: #f3f6ff; }
 * { box-sizing: border-box; }
-body { width: 330px; margin: 0; padding: 24px; }
-header { display: flex; gap: 12px; align-items: center; margin-bottom: 24px; }
+body { width: 380px; margin: 0; padding: 16px; }
+header { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
 header span { font-size: 10px; letter-spacing: 2px; color: #b4c6ee; font-weight: 700; }
 h1 { margin: 3px 0 0; font-size: 22px; }
-.setting { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px; border: 1px solid #3c5079; border-radius: 12px; background: #1b2c50; cursor: pointer; }
+.setting { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px; border: 1px solid #3c5079; border-radius: 12px; background: #1b2c50; cursor: pointer; }
 strong { font-size: 14px; }
 small { display: block; margin-top: 5px; color: #c4d0e8; font-size: 11px; }
 input { appearance: none; width: 40px; height: 24px; margin: 0; border-radius: 14px; background: #66738d; flex-shrink: 0; cursor: pointer; transition: background .15s; }
 input::before { content: ""; display: block; width: 18px; height: 18px; border-radius: 50%; margin: 3px; background: white; transition: transform .15s; }
 input:checked { background: #e4b941; }
 input:checked::before { transform: translateX(16px); }
-input:focus-visible, a:focus-visible { outline: 3px solid #8db7ff; outline-offset: 4px; }
+input:focus-visible, a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid #8db7ff; outline-offset: 3px; }
 input:disabled { opacity: .5; cursor: wait; }
-#status { min-height: 18px; margin: 10px 0 20px; color: #ecd485; font-size: 12px; }
+#status { min-height: 18px; margin: 8px 0 14px; color: #ecd485; font-size: 12px; }
+.collection { margin-bottom: 14px; }
+.collection-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+h2 { margin: 0; font-size: 15px; }
+#collection-count { color: #b4c6ee; font-size: 12px; font-weight: 400; }
+button { border: 1px solid #3c5079; border-radius: 6px; padding: 6px 9px; background: #1b2c50; color: #f3f6ff; font: inherit; font-size: 11px; cursor: pointer; }
+button:hover { background: #2b4069; }
+button:disabled { opacity: .5; cursor: wait; }
+#collection-status { margin: 10px 0; color: #becbe3; font-size: 12px; line-height: 1.5; }
+#pokemon-list { list-style: none; margin: 0; padding: 2px 4px; max-height: 170px; overflow-y: auto; scrollbar-width: thin; }
+.pokemon-row { display: flex; align-items: center; gap: 10px; min-height: 62px; padding: 6px 4px; border-top: 1px solid #2e3e5f; }
+.pokemon-row:first-child { border-top: 0; }
+.pokemon-image { display: grid; place-items: center; width: 52px; height: 48px; flex-shrink: 0; border-radius: 8px; background: #1b2c50; }
+.pokemon-image img { max-width: 48px; max-height: 44px; object-fit: contain; image-rendering: pixelated; }
+.pokemon-image span { font-size: 10px; color: #becbe3; }
+.pokemon-name { min-width: 0; flex: 1; }
+.pokemon-name a, .pokemon-name strong { color: #f3f6ff; font-size: 13px; text-decoration: none; overflow-wrap: anywhere; }
+.pokemon-name a:hover { text-decoration: underline; }
+.pokemon-name small { margin-top: 3px; font-size: 10px; }
+.pokemon-rank { color: #c4d0e8; font-size: 12px; white-space: nowrap; }
+.tier { padding: 4px 7px; min-width: 29px; border-radius: 5px; text-align: center; font-size: 12px; font-weight: 800; background: #384761; color: #e0e8f7; }
+.tier-s { background: #ffe0a0; color: #654000; }
+.tier-a { background: #e4caff; color: #4a246e; }
+.tier-b { background: #b9d8ff; color: #214575; }
+.tier-c { background: #b7e6d2; color: #205642; }
+.tier-d { background: #c9d1df; color: #34445b; }
+.tier-source { margin: 10px 0 0; font-size: 10px; line-height: 1.6; color: #97a9cc; }
+.tier-source a { color: #b4c6ee; }
 .play { display: flex; justify-content: space-between; text-decoration: none; background: #edc656; color: #14223e; border-radius: 8px; padding: 12px 16px; font-size: 14px; font-weight: 800; }
 .play:hover { background: #f9d976; }
 .hint { color: #becbe3; line-height: 1.65; font-size: 12px; margin: 16px 0 20px; word-break: keep-all; }
-footer { padding-top: 14px; border-top: 1px solid #2e3e5f; font-size: 10px; line-height: 1.7; color: #97a9cc; word-break: keep-all; }
+.help { margin: 12px 0; color: #becbe3; font-size: 11px; }
+.help summary { cursor: pointer; }
+.help .hint { margin: 10px 0; }
+footer { padding-top: 10px; border-top: 1px solid #2e3e5f; font-size: 10px; line-height: 1.7; color: #97a9cc; word-break: keep-all; }

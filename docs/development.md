@@ -8,7 +8,9 @@ Chrome extension은 `extension/` 안의 JavaScript와 CSS를 그대로 사용합
 
 Manifest V3 확장 프로그램이며 런타임 의존성은 없습니다. 번역 데이터를 확장 프로그램에 포함해 기기 안에서 처리합니다. 외부 번역 서비스나 API key는 사용하지 않습니다.
 
-`storage` 권한은 한국어 모드 설정을 저장하는 데 씁니다. 페이지 접근 범위는 `https://pokesurvivor.pro/*`, `https://www.pokesurvivor.pro/*`와 그 안의 게임 iframe입니다. 게임 계정·저장 데이터·점수는 수정하지 않습니다.
+`storage` 권한은 한국어 모드 설정과 티어 데이터를 저장하는 데 씁니다. `scripting` 권한으로 팝업을 열거나 새로고침할 때 현재 게임 iframe의 로그인 계정에 해당하는 저장 데이터에서 보유 도감 번호만 읽습니다. 다른 계정의 저장 데이터와 인증 정보는 읽지 않으며, 게임 계정·저장 데이터·점수는 수정하지 않습니다. 게임 페이지 접근 범위는 `https://pokesurvivor.pro/*`, `https://www.pokesurvivor.pro/*`와 그 안의 iframe입니다.
+
+티어·순위와 도감 번호를 연결하기 위해 `https://pokesurvivor.net/tier-list/`, `https://pokesurvivor.net/pokedex/`를 내려받습니다. 받은 HTML에서 표만 읽고 코드를 실행하지 않으며, 결과를 하루 동안 저장합니다. 갱신 실패 시 마지막으로 저장한 목록임을 표시합니다. 티어 사이트에는 보유 목록을 전송하지 않습니다. 이미지는 PokéAPI sprites의 공개 GIF·PNG 주소에서 필요할 때 불러오므로 이미지 요청 URL에 해당 도감 번호가 포함되지만, 계정 정보나 게임 저장 데이터는 전송하지 않습니다. 동작 줄이기 설정이 켜져 있으면 PNG를 사용합니다. 게스트는 저장된 보유 목록이 없으므로 로그인 안내를 표시합니다.
 
 기본 게임 문구 1,188개와 추가 메뉴·안내문을 번역합니다. 포켓몬 이름·별칭 1,041개와 기술명은 PokéAPI의 한국어 데이터를 기준으로 합니다.
 
@@ -48,6 +50,7 @@ npm run audit:translations -- es
 | `extension/canvas.js` | Canvas에 그리는 전투 텍스트 번역 |
 | `extension/storage.js` | 언어 설정 저장과 전달 |
 | `extension/popup.html`, `extension/popup.js` | 확장 프로그램 팝업 |
+| `extension/owned-pokemon.mjs` | 현재 계정의 보유 목록 읽기, 티어 표 검증과 순위 연결 |
 | `tests/` | 번역 처리 및 브라우저 검증 |
 
 번역을 수정할 때는 스페인어·영어 원문을 유지하고 한국어 문구를 바꿉니다. `{x}`는 이름이나 숫자가 들어갈 자리이므로 개수와 순서를 보존하세요.
