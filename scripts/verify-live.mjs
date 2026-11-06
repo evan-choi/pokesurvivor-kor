@@ -56,6 +56,17 @@ try {
   await frame.locator('#dex-grid .cell:not(.locked)').first().click();
   await page.screenshot({ path: path.join(output, 'pokedex-korean.png'), animations: 'disabled' });
   await frame.locator('#scr-dex [data-back]').click();
+  await frame.locator('[data-go="shop"]').click();
+  const shop = frame.locator('#scr-shop');
+  await shop.getByRole('heading', { name: '오늘의 기술머신' }).waitFor();
+  assert.match(await shop.innerText(), /특성캡슐/);
+  assert.doesNotMatch(await shop.innerText(), /[\p{Script=Latin}\p{Script=Han}]/u);
+  await page.screenshot({ path: path.join(output, 'shop-korean.png'), animations: 'disabled' });
+  await shop.locator('[data-back]').click();
+  await frame.locator('[data-go="bag"]').click();
+  assert.match(await frame.locator('#scr-bag').innerText(), /가방이 비어 있습니다/);
+  assert.doesNotMatch(await frame.locator('#scr-bag').innerText(), /[\p{Script=Latin}\p{Script=Han}]/u);
+  await frame.locator('#scr-bag [data-back]').click();
   await frame.locator('[data-go="upgrades"]').click();
   await page.screenshot({ path: path.join(output, 'upgrades-korean.png'), animations: 'disabled' });
   await frame.locator('#scr-upgrades [data-back]').click();

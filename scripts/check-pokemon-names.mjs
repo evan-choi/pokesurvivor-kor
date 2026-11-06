@@ -10,14 +10,14 @@ if (!process.argv.includes('--online')) {
 }
 
 const context = vm.createContext({});
-for (const file of ['moves', 'menus', 'progress', 'settings', 'extra', 'interface', 'changelog', 'pokemon']) {
+for (const file of ['moves', 'menus', 'progress', 'settings', 'extra', 'shop', 'interface', 'changelog', 'pokemon']) {
   vm.runInContext(await readFile(new URL(`../extension/translations/${file}.js`, import.meta.url), 'utf8'), context);
 }
 vm.runInContext(await readFile(new URL('../extension/translation-core.js', import.meta.url), 'utf8'), context);
 
 // Existing translation baseline from c31715d-game-auth-popup-overlay-20261017:
 // 64 base moves and 59 evolved moves. Some internal IDs differ from displayed names.
-const gameMoveNames = [
+const previousMoveNames = [
   "Tackle", "Quick Attack", "Swords Dance", "Agility", "Harden", "Ember",
   "Flamethrower", "Fire Spin", "Heat Wave", "Water Gun", "Bubble", "Hydro Pump",
   "Aqua Ring", "Vine Whip", "Razor Leaf", "Petal Blizzard", "Grass Knot", "Thunder Shock",
@@ -40,6 +40,8 @@ const gameMoveNames = [
   "Gunk Shot", "Avalanche", "Magnet Bomb", "Inferno", "Double Team", "Acrobatics",
   "Flare Blitz", "Aqua Tail", "Poltergeist",
 ];
+const { moves: currentMoves } = JSON.parse(await readFile(new URL('../tests/fixtures/official-game-moves.json', import.meta.url), 'utf8'));
+const gameMoveNames = [...new Set([...previousMoveNames, ...currentMoves.map((move) => move.name[1])])];
 
 const base = 'https://raw.githubusercontent.com/PokeAPI/pokeapi/master/data/v2/csv/';
 async function names(filename) {

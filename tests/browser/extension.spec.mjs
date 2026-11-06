@@ -1,7 +1,9 @@
 import { test, expect, chromium } from '@playwright/test';
 import path from 'node:path';
+import { readFileSync } from 'node:fs';
 
 const extensionPath = path.resolve(process.env.PSKO_EXTENSION_PATH || 'extension');
+const { moves: shopMoves } = JSON.parse(readFileSync(new URL('../fixtures/official-game-moves.json', import.meta.url), 'utf8'));
 const game = `<!doctype html><html lang="en"><body>
   <div id="tap-start">Press to start</div>
   <section id="scr-settings"><h1>Settings</h1><div id="set-body">
@@ -173,6 +175,49 @@ test('starter info translates move and personality changes while preserving the 
   await expect(info).toHaveText('에스퍼 염동력 · 예측 불가, 수줍음');
   await popup.locator('#enabled').uncheck();
   await expect(info).toHaveText('Psychic Confusion · Chaotic, Shy');
+  expect(errors).toEqual([]);
+});
+
+test('shop translates every rotating TM while keeping type badges and prices intact', async () => {
+  for (const language of [0, 1]) {
+    await frame.locator('body').evaluate((body, { moves, language }) => {
+      document.querySelector('#scr-shop')?.remove();
+      const shop = document.createElement('section');
+      shop.id = 'scr-shop';
+      shop.innerHTML = '<h2>Today’s TMs</h2><div id="shop-body"></div>';
+      for (const move of moves) {
+        const card = document.createElement('div');
+        card.className = 'upg-item';
+        const title = document.createElement('b');
+        title.textContent = `${language ? 'TM' : 'MT'} ${move.name[language]}`;
+        const type = document.createElement('span');
+        type.className = 'tag-chip';
+        type.textContent = language ? 'Psychic' : 'Psíquico';
+        title.append(type);
+        const category = document.createElement('span');
+        category.className = 'tag-chip cat';
+        category.textContent = language ? 'Special' : 'Especial';
+        const description = document.createElement('div');
+        description.className = 'sub';
+        description.textContent = move.desc[language];
+        const price = document.createElement('button');
+        price.textContent = '1,500';
+        card.append(title, category, description, price);
+        shop.querySelector('#shop-body').append(card);
+      }
+      body.append(shop);
+    }, { moves: shopMoves, language });
+    const titles = frame.locator('#shop-body .upg-item b');
+    await expect.poll(() => titles.evaluateAll((nodes) => nodes.map((node) => node.firstChild.nodeValue)))
+      .toEqual(shopMoves.map((move) => `기술머신 ${move.name[2]}`));
+    await expect(frame.locator('#shop-body b .tag-chip')).toHaveText(shopMoves.map(() => '에스퍼'));
+    await expect(frame.locator('#shop-body .cat')).toHaveText(shopMoves.map(() => '특수'));
+    expect(await frame.locator('#shop-body .sub').allTextContents()).toEqual(expect.arrayContaining([expect.stringContaining('마비')]));
+    expect((await frame.locator('#shop-body .sub').allTextContents()).some((text) => /[A-Za-z]/.test(text))).toBe(false);
+    await expect(frame.locator('#shop-body button')).toHaveText(shopMoves.map(() => '1,500'));
+  }
+  await popup.locator('#enabled').uncheck();
+  expect(await frame.locator('#shop-body .upg-item b').first().evaluate((node) => node.firstChild.nodeValue)).toBe('TM Tackle');
   expect(errors).toEqual([]);
 });
 

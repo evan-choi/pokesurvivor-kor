@@ -25,7 +25,7 @@ function readMessages(name) {
 }
 
 const context = vm.createContext({});
-for (const name of [...gameDictionaries.map(([name]) => name), 'extra', 'interface', 'changelog', 'pokemon']) {
+for (const name of [...gameDictionaries.map(([name]) => name), 'extra', 'shop', 'interface', 'changelog', 'pokemon']) {
   evaluate(context, `translations/${name}.js`);
 }
 evaluate(context, 'translation-core.js');
@@ -79,8 +79,8 @@ test('all 1,188 game messages have complete translations and matching placeholde
   assert.equal(total, 1188);
 });
 
-test('audited interface and changelog text resolves as a complete phrase in both input forms', () => {
-  for (const file of ['interface', 'changelog']) {
+test('audited interface, shop and changelog text resolves as a complete phrase in both input forms', () => {
+  for (const file of ['interface', 'shop', 'changelog']) {
     for (const [source, intermediate, korean] of readMessages(file)) {
       const count = (text) => (text.match(/\{x\}/g) || []).length;
       assert.equal(count(source), count(korean), source);
@@ -90,6 +90,22 @@ test('audited interface and changelog text resolves as a complete phrase in both
       assert.equal(translate(intermediate), korean, intermediate);
     }
   }
+});
+
+test('every current TM uses its Korean move name and a complete translated description', () => {
+  const { moves } = JSON.parse(readFileSync(new URL('./fixtures/official-game-moves.json', import.meta.url), 'utf8'));
+  assert.equal(moves.length, 103);
+  for (const { id, name: [spanish, english, korean], desc } of moves) {
+    assert.equal(context.PSKO.translateMove(spanish), korean, id);
+    assert.equal(context.PSKO.translateMove(english), korean, id);
+    assert.equal(context.PSKO.translateMove(`TM ${english}`), `기술머신 ${korean}`, id);
+    assert.equal(context.PSKO.translateMove(`MT ${spanish}`), `기술머신 ${korean}`, id);
+    for (const text of desc) {
+      assert.doesNotMatch(translate(text).replace(/\b(?:HP|XP|DPS)\b/g, ''), /[\p{Script=Latin}\p{Script=Han}]/u, id);
+    }
+  }
+  assert.equal(translate('Turtwig can learn it'), '학습 가능: 모부기');
+  assert.equal(translate('Scorbunny la puede aprender'), '학습 가능: 염버니');
 });
 
 test('handles native partial translations, Chinese notices, and localized durations', () => {

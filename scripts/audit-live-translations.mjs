@@ -153,6 +153,7 @@ try {
       U: '_18c81e9', DB: '_fa16ae6', MenuUI: '_3568e77', SettingsUI: '_aa22d55',
       NewsUI: '_8ae4145', SupportUI: '_091716d', NickUI: '_f7271e2', GoalsUI: '_fdfa3bd',
       GachaUI: '_8efd3b3', Moves: '_c96d2a4', RunUI: '_7a7fb51',
+      ShopUI: '_5373696',
     };
     const components = Object.fromEntries(Object.entries(names).map(([name, key]) => {
       if (!game?.[key]) throw new Error(`UI audit module changed: ${name}`);
@@ -209,6 +210,11 @@ try {
   await capture('upgrades');
   await openPanel('GachaUI');
   await capture('gacha');
+  await openPanel('ShopUI');
+  await capture('shop');
+  await resetScreens(true);
+  await run(() => window.__PSKO_TEST_GAME__.ShopUI.openBag());
+  await capture('bag');
 
   await resetScreens();
   await run(() => {

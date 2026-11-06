@@ -29,6 +29,7 @@
       ? element.matches('.move-icons > span')
       : key === 'text' && (
         element.matches('#dex-detail > p > b.gold') ||
+        element.matches('#shop-body .upg-item b, #bag-body .upg-item b') ||
         element.matches('.bind-slot option, .ban-moves .chip') ||
         (element.closest('#cards .nm, #bond-cards .nm') && !element.closest('.type, .tag-chip')) ||
         element.matches('#over-stats > div > b[style*="font-size:15px"]')

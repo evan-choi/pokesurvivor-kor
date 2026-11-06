@@ -19,7 +19,7 @@
       "match_origin_as_fallback": true,
       "run_at": "document_start",
       "world": "MAIN",
-      "js": ["translations/moves.js", "translations/menus.js", "translations/progress.js", "translations/settings.js", "translations/extra.js", "translations/interface.js", "translations/changelog.js", "translations/pokemon.js", "translation-core.js", "canvas.js", "content.js"]
+      "js": ["translations/moves.js", "translations/menus.js", "translations/progress.js", "translations/settings.js", "translations/extra.js", "translations/shop.js", "translations/interface.js", "translations/changelog.js", "translations/pokemon.js", "translation-core.js", "canvas.js", "content.js"]
     },
     {
       "matches": ["https://pokesurvivor.com/*", "https://www.pokesurvivor.com/*"],
