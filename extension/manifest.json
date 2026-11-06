@@ -8,7 +8,7 @@
   "host_permissions": ["https://pokesurvivor.com/*", "https://www.pokesurvivor.com/*", "https://pokesurvivor.net/*"],
   "icons": {"16": "icons/16.png", "48": "icons/48.png", "128": "icons/128.png"},
   "web_accessible_resources": [{
-    "resources": ["fonts/pokemon-dppt/pokemon-dppt.otf.woff2"],
+    "resources": ["fonts/neodgm/neodgm.woff2"],
     "matches": ["https://pokesurvivor.com/*", "https://www.pokesurvivor.com/*"]
   }],
   "action": {

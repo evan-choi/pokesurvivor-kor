@@ -28,7 +28,7 @@ PokéAPI에서 제공하는 한국어 포켓몬·기술·타입·지방·도구 
 
 ## Pokemon DPPt
 
-게임과 팝업에 사용하는 **Pokemon DPPt** 폰트는 [aztecwarrior28의 FontStruction](https://fontstruct.com/fontstructions/show/1951915)이며, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)으로 제공됩니다.
+이전 버전에서 사용한 **Pokemon DPPt** 폰트는 [aztecwarrior28의 FontStruction](https://fontstruct.com/fontstructions/show/1951915)이며, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)으로 제공됩니다.
 
 사용자가 제공한 WOFF2 파일을 변경 없이 포함했습니다. 원본의 `license.txt`와 `readme.txt`는 `extension/fonts/pokemon-dppt/`에 함께 보존합니다.
 
@@ -55,3 +55,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 ## 명칭과 상표
 
 Pokémon 및 관련 명칭·캐릭터의 권리는 Nintendo, Creatures Inc., GAME FREAK inc. 등 각 권리자에게 있습니다. 이 프로젝트는 해당 권리자 또는 원본 게임 제작자가 제공하거나 보증하는 제품이 아닙니다.
+
+## Neo둥근모
+
+게임과 팝업에 사용하는 Neo둥근모는 Eunbin Jeong (Dalgona.)의 폰트이며 [SIL Open Font License 1.1](https://github.com/neodgm/neodgm/blob/main/LICENSE.txt)로 제공됩니다. 사용자가 제공한 `neodgm.woff2`를 변경 없이 포함했으며, 라이선스 전문은 `extension/fonts/neodgm/LICENSE.txt`에 보관합니다.

@@ -321,7 +321,7 @@ test('leaves host canvas unchanged and measures boss headings in the drawing fon
     return ctx.measureText('Bulbasaur').width;
   });
   const hostWidth = await measure(page);
-  const drawingFont = '20px "Pokemon DPPt", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
+  const drawingFont = '20px "NeoDunggeunmo", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
   const expectedBossWidth = await page.evaluate(async (font) => {
     await document.fonts.load(font, 'THE JUDGMENT');
     const ctx = document.createElement('canvas').getContext('2d');
@@ -346,15 +346,15 @@ test('leaves host canvas unchanged and measures boss headings in the drawing fon
 });
 
 test('loads the supplied Korean font and centers menu icons across title and description', async () => {
-  expect(await frame.locator('body').evaluate(async () => (await document.fonts.load('16px "Pokemon DPPt"', '한글 ABC')).length)).toBe(1);
-  await expect(frame.locator('body')).toHaveCSS('font-family', /"Pokemon DPPt"/);
+  expect(await frame.locator('body').evaluate(async () => (await document.fonts.load('16px "NeoDunggeunmo"', '한글 ABC')).length)).toBe(1);
+  await expect(frame.locator('body')).toHaveCSS('font-family', /^NeoDunggeunmo,/);
   const glyphHeight = await frame.locator('body').evaluate(() => {
     const context = document.createElement('canvas').getContext('2d');
-    context.font = '16px "Pokemon DPPt"';
+    context.font = '16px "NeoDunggeunmo"';
     const metrics = context.measureText('한글 모부기 ABC');
     return metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
   });
-  expect(glyphHeight).toBeCloseTo(12, 0);
+  expect(glyphHeight).toBeCloseTo(13, 0);
   await frame.locator('body').evaluate((body) => {
     body.insertAdjacentHTML('beforeend', `<style>
       .menu-item { display: grid; grid-template-columns: 30px 1fr; gap: 4px 8px; padding: 12px; width: 220px; text-shadow: 2px 2px 0 #0a1430; }

@@ -1,5 +1,5 @@
 html.psko-enabled {
-  --font: "Pokemon DPPt", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font: "NeoDunggeunmo", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --muted: #d3def3;
 }
 
@@ -18,7 +18,7 @@ html.psko-enabled textarea {
 }
 
 html.psko-enabled .logo .t1 {
-  font-family: "Pokemon DPPt", "Pixelify", system-ui, sans-serif;
+  font-family: "NeoDunggeunmo", "Pixelify", system-ui, sans-serif;
 }
 
 html.psko-enabled .box :is(h1, h2, h3),
@@ -88,17 +88,6 @@ html.psko-enabled .chip {
   min-height: 32px;
 }
 
-/* Raise DPPt's visible glyphs without moving the chip border or its icons. */
-html.psko-enabled #scr-dex .chip {
-  padding-block: 3px 5px;
-}
-
-html.psko-enabled #scr-dex .chip > :is(img, .rarity-ball) {
-  position: relative;
-  top: 1px;
-  flex-shrink: 0;
-}
-
 html.psko-enabled #scr-dex .chip > .rarity-ball {
   display: inline-flex;
   line-height: 0;
@@ -110,11 +99,10 @@ html.psko-enabled .tag-chip {
   flex-shrink: 0;
 }
 
-/* DPPt's Hangul ink sits about 1px left and below its centered text box. */
 html.psko-enabled .type {
   font-size: 16px;
   min-height: 24px;
-  padding: 1px 7px 3px 9px;
+  padding: 2px 8px;
 }
 
 html.psko-enabled :is(.btn, .chip) > img {
@@ -169,5 +157,5 @@ html.psko-enabled .tab {
 }
 
 [data-psko-language] {
-  font-family: "Pokemon DPPt", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  font-family: "NeoDunggeunmo", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
 }

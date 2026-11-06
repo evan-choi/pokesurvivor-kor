@@ -3,7 +3,7 @@
 
   let enabled = false;
   let gameDocument = false;
-  const fontFamily = '"Pokemon DPPt", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
+  const fontFamily = '"NeoDunggeunmo", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
   const detectGame = () => { gameDocument = !!document.querySelector('#tap-start, #scr-settings'); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', detectGame, { once: true });
   else detectGame();

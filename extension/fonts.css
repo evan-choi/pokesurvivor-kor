@@ -1,9 +1,7 @@
 @font-face {
-  font-family: "Pokemon DPPt";
-  src: url("chrome-extension://__MSG_@@extension_id__/fonts/pokemon-dppt/pokemon-dppt.otf.woff2") format("woff2");
+  font-family: "NeoDunggeunmo";
+  src: url("chrome-extension://__MSG_@@extension_id__/fonts/neodgm/neodgm.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
-  /* Match the visible glyph height of the game's Pixelify font. */
-  size-adjust: 120%;
   font-display: swap;
 }

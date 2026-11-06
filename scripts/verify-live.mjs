@@ -50,7 +50,7 @@ try {
   const menu = await frame.locator('#scr-menu').innerText();
   assert.match(menu, /켈리몬 상점/);
   assert.match(menu, /가방/);
-  assert.equal(await frame.evaluate(async () => (await document.fonts.load('16px "Pokemon DPPt"', '한글 ABC')).length), 1);
+  assert.equal(await frame.evaluate(async () => (await document.fonts.load('16px "NeoDunggeunmo"', '한글 ABC')).length), 1);
   const iconOffsets = await frame.locator('.menu-item').evaluateAll((buttons) => buttons.map((button) => {
     const bounds = button.getBoundingClientRect();
     const icon = button.querySelector('.mi-ico').getBoundingClientRect();
