@@ -137,7 +137,7 @@ async function loadCollection(refresh = false) {
   pokemonList.replaceChildren();
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab?.id || !/^https:\/\/(?:www\.)?pokesurvivor\.pro\//.test(tab.url || '')) {
+    if (!tab?.id || !/^https:\/\/(?:www\.)?pokesurvivor\.com\//.test(tab.url || '')) {
       throw new Error('게임 탭에서 이 메뉴를 열어 주세요.');
     }
     const frames = await chrome.scripting.executeScript({

@@ -2,14 +2,14 @@
 
 An unofficial Chrome extension that translates menus, Pokémon names, and move descriptions into Korean.
 
-[**Download**](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip) · [Open game](https://pokesurvivor.pro/play) · [한국어](README.md)
+[**Download**](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip) · [Open game](https://pokesurvivor.com/) · [한국어](README.md)
 
 ## Install
 
 1. Download the ZIP above and extract it.
 2. Open `chrome://extensions` in Chrome and turn on **Developer mode**.
 3. Click **Load unpacked** and select the extracted `pokesurvivor-korean` folder with `manifest.json` directly inside it.
-4. Open or reload [the game](https://pokesurvivor.pro/play). Korean is enabled on first installation.
+4. Open or reload [the game](https://pokesurvivor.com/). Korean is enabled on first installation.
 
 Keep the installed folder in place. Do not move or delete it.
 

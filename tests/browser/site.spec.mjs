@@ -57,6 +57,7 @@ for (const [language, pathname] of [['ko', '/'], ['en', '/en/']]) {
     expect(metadata.softwareVersion).toBe(version);
     expect(metadata.downloadUrl).toBe(`${publicUrl}downloads/pokesurvivor-korean-${version}.zip`);
     expect(await page.locator('body').innerText()).not.toContain('{{');
+    await expect(page.locator('a[href="https://pokesurvivor.com/"]')).toHaveCount(2);
 
     for (const width of [1280, 375]) {
       await page.setViewportSize({ width, height: 900 });
@@ -79,6 +80,8 @@ for (const [language, pathname] of [['ko', '/'], ['en', '/en/']]) {
     const manifest = JSON.parse(execFileSync('unzip', ['-p', await download.path(), 'manifest.json'], { encoding: 'utf8' }));
     expect(manifest.version).toBe(version);
     expect(manifest.manifest_version).toBe(3);
+    expect(manifest.host_permissions).toContain('https://pokesurvivor.com/*');
+    expect(manifest.host_permissions.some((host) => host.includes('pokesurvivor.pro'))).toBe(false);
     const stableDownload = await page.request.get(`${origin}/downloads/pokesurvivor-korean.zip`);
     expect(stableDownload.ok()).toBe(true);
     expect(await stableDownload.body()).toEqual(await readFile(await download.path()));

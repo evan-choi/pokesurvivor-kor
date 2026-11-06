@@ -5,7 +5,7 @@
   "description": "PokeSurvivor의 메뉴, 기술, 포켓몬 이름과 전투 표시를 한국어로 바꿉니다.",
   "minimum_chrome_version": "119",
   "permissions": ["storage", "scripting"],
-  "host_permissions": ["https://pokesurvivor.pro/*", "https://www.pokesurvivor.pro/*", "https://pokesurvivor.net/*"],
+  "host_permissions": ["https://pokesurvivor.com/*", "https://www.pokesurvivor.com/*", "https://pokesurvivor.net/*"],
   "icons": {"16": "icons/16.png", "48": "icons/48.png", "128": "icons/128.png"},
   "action": {
     "default_title": "PokeSurvivor 한국어 모드",
@@ -13,7 +13,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://pokesurvivor.pro/*", "https://www.pokesurvivor.pro/*"],
+      "matches": ["https://pokesurvivor.com/*", "https://www.pokesurvivor.com/*"],
       "exclude_globs": ["*://*/game-auth*"],
       "all_frames": true,
       "match_origin_as_fallback": true,
@@ -22,7 +22,7 @@
       "js": ["translations/moves.js", "translations/menus.js", "translations/progress.js", "translations/settings.js", "translations/extra.js", "translations/interface.js", "translations/changelog.js", "translations/pokemon.js", "translation-core.js", "canvas.js", "content.js"]
     },
     {
-      "matches": ["https://pokesurvivor.pro/*", "https://www.pokesurvivor.pro/*"],
+      "matches": ["https://pokesurvivor.com/*", "https://www.pokesurvivor.com/*"],
       "exclude_globs": ["*://*/game-auth*"],
       "all_frames": true,
       "match_origin_as_fallback": true,

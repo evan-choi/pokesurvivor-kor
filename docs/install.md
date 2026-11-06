@@ -5,7 +5,7 @@
 3. 오른쪽 위의 **개발자 모드**를 켭니다.
 4. **압축해제된 확장 프로그램을 로드합니다** 버튼을 누릅니다.
 5. `manifest.json`이 바로 들어 있는 폴더를 선택합니다.
-6. [게임 페이지](https://pokesurvivor.pro/play)를 열거나 새로고침합니다.
+6. [게임 페이지](https://pokesurvivor.com/)를 열거나 새로고침합니다.
 
 `pokesurvivor-korean-0.1.0.zip`은 압축을 풀어 생긴 폴더 자체를 선택합니다. GitHub의 **Code → Download ZIP**으로 저장소를 받았다면 그 안의 `extension/` 폴더를 선택합니다.
 

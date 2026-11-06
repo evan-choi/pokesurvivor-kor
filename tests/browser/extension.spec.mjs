@@ -29,7 +29,7 @@ test.beforeAll(async () => {
     channel: 'chromium', headless: true,
     args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`],
   });
-  await context.route('https://pokesurvivor.pro/**', (route) => route.fulfill({
+  await context.route('https://pokesurvivor.com/**', (route) => route.fulfill({
     contentType: 'text/html; charset=utf-8',
     body: `<html><body><h1>Host page</h1><iframe srcdoc="${game.replaceAll('&', '&amp;').replaceAll('"', '&quot;')}"></iframe></body></html>`,
   }));
@@ -50,7 +50,7 @@ test.afterAll(async () => { await context?.close(); });
 
 test.beforeEach(async () => {
   await popup.locator('#enabled').check();
-  await page.goto('https://pokesurvivor.pro/play');
+  await page.goto('https://pokesurvivor.com/');
   frame = page.frameLocator('iframe');
   await expect(frame.locator('#pokemon')).toHaveText('이상해씨');
 });
@@ -66,6 +66,23 @@ test('loads in srcdoc, translates dynamic text and attributes, preserves player 
   await expect(frame.locator('#dynamic')).toHaveText('물대포');
   await frame.locator('#dynamic').evaluate((node) => { node.innerHTML = '<strong>Charmander</strong>'; });
   await expect(frame.locator('#dynamic strong')).toHaveText('파이리');
+  expect(errors).toEqual([]);
+});
+
+test('translates the official game directly on root and localized pages', async () => {
+  for (const url of ['https://pokesurvivor.com/', 'https://pokesurvivor.com/en/', 'https://www.pokesurvivor.com/']) {
+    await page.route(url, (route) => route.fulfill({ contentType: 'text/html', body: game }));
+    try {
+      await page.goto(url);
+      await expect(page.locator('#pokemon')).toHaveText('이상해씨');
+      await expect(page.locator('[data-psko-language]')).toHaveAttribute('aria-pressed', 'true');
+      await popup.locator('#enabled').uncheck();
+      await expect(page.locator('#pokemon')).toHaveText('Bulbasaur');
+      await popup.locator('#enabled').check();
+    } finally {
+      await page.unroute(url);
+    }
+  }
   expect(errors).toEqual([]);
 });
 
@@ -267,9 +284,9 @@ test('leaves authentication pages untouched and preserves native registration fo
     </body></html>` }));
   try {
     for (const url of [
-      'https://pokesurvivor.pro/game-auth?mode=login&embed=1',
-      'https://pokesurvivor.pro/ko/game-auth?mode=login',
-      'https://www.pokesurvivor.pro/game-auth?mode=google',
+      'https://pokesurvivor.com/game-auth?mode=login&embed=1',
+      'https://pokesurvivor.com/ko/game-auth?mode=login',
+      'https://www.pokesurvivor.com/game-auth?mode=google',
     ]) {
       await auth.goto(url);
       expect(await auth.evaluate(() => typeof globalThis.PSKO)).toBe('undefined');

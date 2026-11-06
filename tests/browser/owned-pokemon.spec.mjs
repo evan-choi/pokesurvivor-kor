@@ -25,8 +25,8 @@ test.beforeAll(async () => {
     channel: 'chromium', headless: true,
     args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`],
   });
-  await context.route('https://pokesurvivor.pro/**', (route) => route.fulfill({
-    contentType: 'text/html', body: `<iframe srcdoc="${game.replaceAll('"', '&quot;')}"></iframe>`,
+  await context.route('https://pokesurvivor.com/**', (route) => route.fulfill({
+    contentType: 'text/html', body: game,
   }));
   await context.route('https://pokesurvivor.net/**', (route) => {
     guideRequests++;
@@ -64,21 +64,21 @@ test.beforeEach(async () => {
   guideRequests = 0;
   imageRequests = [];
   errors = [];
-  await page.goto('https://pokesurvivor.pro/play');
-  gameFrame = page.frames().find((frame) => frame.url() === 'about:srcdoc');
+  await page.goto('https://pokesurvivor.com/');
+  gameFrame = page.mainFrame();
   await gameFrame.locator('#dex-grid').waitFor({ state: 'attached' });
   await gameFrame.evaluate(() => {
     localStorage.clear();
-    window.PS_PLATFORM_MODE = true;
-    window.PS_HOST_USER = null;
-    localStorage.setItem('ps.save.platform.active', JSON.stringify({ owned: { 243: {}, 890: {}, 25: {} } }));
-    localStorage.setItem('ps.save.platform.another', JSON.stringify({ owned: { 150: {} } }));
+    window.testUser = null;
+    window.firebase = { apps: [{}], auth: () => ({ currentUser: window.testUser }) };
+    localStorage.setItem('ps.cloud.active', JSON.stringify({ owned: { 243: {}, 890: {}, 25: {} } }));
+    localStorage.setItem('ps.cloud.another', JSON.stringify({ owned: { 150: {} } }));
   });
   await page.bringToFront();
   await popup.goto(popupUrl);
   await expect(popup.locator('#collection-status')).toContainText('로그인하세요');
   await popup.evaluate(() => chrome.storage.local.clear());
-  await gameFrame.evaluate(() => { window.PS_HOST_USER = { id: 'active' }; });
+  await gameFrame.evaluate(() => { window.testUser = { uid: 'active' }; });
 });
 
 test('renders only owned Pokémon in tier order with Korean names and runtime images', async () => {
@@ -92,7 +92,7 @@ test('renders only owned Pokémon in tier order with Korean names and runtime im
   await expect(popup.locator('.pokemon-image img').nth(2)).toHaveAttribute('src', /\/25\.png$/);
   expect(imageRequests.some((url) => url.endsWith('/243.gif'))).toBe(true);
   expect(guideRequests).toBe(2);
-  expect(await gameFrame.evaluate(() => JSON.parse(localStorage.getItem('ps.save.platform.active')))).toEqual({ owned: { 243: {}, 890: {}, 25: {} } });
+  expect(await gameFrame.evaluate(() => JSON.parse(localStorage.getItem('ps.cloud.active')))).toEqual({ owned: { 243: {}, 890: {}, 25: {} } });
   expect(await popup.evaluate(() => chrome.storage.local.get(null))).not.toHaveProperty('owned');
   await popup.setViewportSize({ width: 380, height: 600 });
   expect(await popup.evaluate(() => document.documentElement.scrollWidth)).toBe(380);
@@ -109,7 +109,7 @@ test('refresh reads account changes, uses cached ranks on reopen and labels stal
   await openPopup();
   await expect(popup.locator('#collection-count')).toHaveText('3마리');
   expect(guideRequests).toBe(0);
-  await gameFrame.evaluate(() => { window.PS_HOST_USER = { id: 'another' }; });
+  await gameFrame.evaluate(() => { window.testUser = { uid: 'another' }; });
   failGuide = true;
   await popup.locator('#refresh-collection').click();
   await expect(popup.locator('.pokemon-name a')).toHaveText(['뮤츠']);
@@ -123,11 +123,11 @@ test('shows actionable errors without cached ranks and handles empty or logged-o
   await openPopup();
   await expect(popup.locator('#collection-status')).toContainText('티어를 불러오지 못했습니다');
   await expect(popup.locator('.pokemon-row')).toHaveCount(0);
-  await gameFrame.evaluate(() => localStorage.setItem('ps.save.platform.active', '{"owned":{}}'));
+  await gameFrame.evaluate(() => localStorage.setItem('ps.cloud.active', '{"owned":{}}'));
   await popup.locator('#refresh-collection').click();
   await expect(popup.locator('#collection-count')).toHaveText('0마리');
   await expect(popup.locator('#collection-status')).toContainText('아직 보유한 포켓몬이 없습니다');
-  await gameFrame.evaluate(() => { window.PS_HOST_USER = null; });
+  await gameFrame.evaluate(() => { window.testUser = null; });
   await popup.locator('#refresh-collection').click();
   await expect(popup.locator('#collection-status')).toContainText('로그인하세요');
   await page.goto('about:blank');
@@ -136,7 +136,7 @@ test('shows actionable errors without cached ranks and handles empty or logged-o
 });
 
 test('keeps species absent from the ranking and handles missing images', async () => {
-  await gameFrame.evaluate(() => localStorage.setItem('ps.save.platform.active', '{"owned":{"9999":true,"243":true}}'));
+  await gameFrame.evaluate(() => localStorage.setItem('ps.cloud.active', '{"owned":{"9999":true,"243":true}}'));
   await openPopup();
   await expect(popup.locator('#collection-count')).toHaveText('2마리');
   await expect(popup.locator('.pokemon-rank')).toHaveText(['3위', '순위 없음']);

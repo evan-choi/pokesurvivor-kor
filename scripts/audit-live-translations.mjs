@@ -17,11 +17,11 @@ await mkdir(path.dirname(output), { recursive: true });
 // Only these named products, rights holders and technical labels may remain in Latin script.
 // Unknown words, including short words such as "de", "as" and "o", are still reported.
 const allowedNames = [
-  'pokesurvivor.pro/play', 'pokesurvivor.pro', 'pokesurvivor.com',
-  'PokéSurvivor', 'PokeSurvivor', 'The Pokémon Company', 'Creatures Inc.',
+  'pokesurvivor.com',
+  'PokéSurvivor', 'PokeSurvivor', 'The Pokémon Company', 'Pokémon', 'Creatures Inc.',
   'Nintendo', 'Creatures', 'GAME FREAK', 'PolyForm Noncommercial 1.0.0',
   'CC BY-NC 4.0', 'Pixelify Sans', 'SpriteCollab', 'PokéAPI', 'PokeAPI',
-  'JPTER78', 'Copyright', 'Google', 'Gmail', 'GitHub', 'Ko-fi',
+  'JPTER78', 'Copyright', 'Google', 'Gmail', 'GitHub', 'YouTube', 'Ko-fi',
   'iPhone', 'Safari', 'Chrome', 'Android', 'iOS', 'Windows', 'macOS',
   'PMD', 'OFL', 'NFT', 'FPS', 'PC',
 ];
@@ -127,24 +127,39 @@ async function openPanel(component, argument) {
 }
 
 try {
+  await context.route('**/*', (route) => ['POST', 'PUT', 'PATCH', 'DELETE'].includes(route.request().method()) ? route.abort() : route.continue());
   // This hook is injected only into an intercepted response in this disposable test browser.
   // Never modify the installed extension, server bundle or the user's browser profile.
-  await page.route('**/platform-bundle.min.js*', async (route) => {
+  await page.route('**/js/app.min.js*', async (route) => {
     try {
       const response = await route.fetch();
       const source = await response.text();
-      const prefix = '(()=>{var a={LIFT:18};';
-      if (!source.startsWith(prefix)) throw new Error('UI audit hook no longer matches the game bundle prefix.');
-      await route.fulfill({ response, body: source.replace(prefix, `${prefix}window.__PSKO_TEST_GAME__=a;`) });
+      const prefix = source.match(/var (_0x[\da-f]+)=Object\[_0x[\da-f]+\(0x[\da-f]+\)\]\(null\);/);
+      if (!prefix) throw new Error('UI audit hook no longer matches the official game bundle.');
+      await route.fulfill({ response, body: source.replace(prefix[0], `${prefix[0]}window.__PSKO_TEST_GAME__=${prefix[1]};`) });
     } catch (error) {
       errors.push(error.stack || error.message);
       await route.abort();
     }
   });
-  await page.goto('https://pokesurvivor.pro/play', { waitUntil: 'domcontentloaded' });
-  frame = page.frameLocator('iframe.original-game-frame');
+  await page.goto('https://pokesurvivor.com/', { waitUntil: 'domcontentloaded' });
+  frame = page;
   await frame.locator('#tap-start:not(.hidden), #scr-login:not(.hidden) #btn-guest').first().waitFor();
   if (await frame.locator('#tap-start').isVisible()) await frame.locator('#tap-start').click();
+  await run(() => {
+    const game = window.__PSKO_TEST_GAME__;
+    // The official bundle hashes module names; fail explicitly when a release changes them.
+    const names = {
+      U: '_18c81e9', DB: '_fa16ae6', MenuUI: '_3568e77', SettingsUI: '_aa22d55',
+      NewsUI: '_8ae4145', SupportUI: '_091716d', NickUI: '_f7271e2', GoalsUI: '_fdfa3bd',
+      GachaUI: '_8efd3b3', Moves: '_c96d2a4', RunUI: '_7a7fb51',
+    };
+    const components = Object.fromEntries(Object.entries(names).map(([name, key]) => {
+      if (!game?.[key]) throw new Error(`UI audit module changed: ${name}`);
+      return [name, game[key]];
+    }));
+    window.__PSKO_TEST_GAME__ = { ...game, ...components };
+  });
   await capture('login');
   await frame.locator('#btn-guest').click();
   for (let index = 0; index < 8; index++) {
@@ -155,10 +170,7 @@ try {
   await frame.locator('#res-ok').click();
   await capture('menu');
 
-  // The remaining steps only render UI in memory. Prevent any persisted server changes.
-  await context.route('**/*', (route) => ['POST', 'PUT', 'PATCH', 'DELETE'].includes(route.request().method()) ? route.abort() : route.continue());
-
-  for (const tab of ['sound', 'gfx', 'ctl', 'acc', 'about']) {
+  for (const tab of ['sound', 'gfx', 'ctl', 'a11y', 'acc', 'about']) {
     await openPanel('SettingsUI', tab);
     await capture(`settings-${tab}`);
   }
@@ -211,11 +223,12 @@ try {
   await resetScreens();
   await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    const cards = Object.entries(game.Moves.EVO).map(([id, evolution]) => {
+    const cards = Object.keys(game.Moves.EVO).map((id) => {
       const move = game.Moves.instance(id);
       move.lvl = move.def.maxLvl;
       const info = game.Moves.evoInfo(move, {});
-      return { type: 'evo', title: evolution[0], tag: 'EVOLUCIÓN', desc: info?.text || '', color: '#ffd23f', icon: `move:${id}` };
+      if (!info) throw new Error(`Missing evolution info: ${id}`);
+      return { type: 'evo', title: info.name, tag: 'EVOLUCIÓN', desc: info.text, color: '#ffd23f', icon: `move:${id}` };
     });
     game.RunUI.showLevelUp(25, cards, () => {});
   });

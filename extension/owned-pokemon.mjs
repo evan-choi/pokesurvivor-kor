@@ -6,10 +6,10 @@ export function readOwnedPokemon() {
   if (!document.querySelector('#dex-grid')) return null;
   try {
     let key;
-    if (window.PS_PLATFORM_MODE) {
-      const id = window.PS_HOST_USER?.id;
-      if (!id) return { error: '보유 목록을 보려면 게임 계정에 로그인하세요.' };
-      key = 'ps.save.platform.' + encodeURIComponent(id);
+    if (window.firebase?.apps?.length) {
+      const uid = window.firebase.auth().currentUser?.uid;
+      if (typeof uid !== 'string' || !uid) return { error: '보유 목록을 보려면 게임 계정에 로그인하세요.' };
+      key = 'ps.cloud.' + uid;
     } else {
       const session = JSON.parse(localStorage.getItem('ps.session') || 'null');
       if (typeof session !== 'string' || !session) {

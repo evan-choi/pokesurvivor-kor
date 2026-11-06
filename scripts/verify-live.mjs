@@ -17,8 +17,12 @@ const errors = [];
 page.on('pageerror', (error) => errors.push(error.message));
 
 try {
-  await page.goto('https://pokesurvivor.pro/play', { waitUntil: 'domcontentloaded' });
-  const frame = page.frameLocator('iframe.original-game-frame');
+  // Run only in this disposable browser; never submit an account, score or save.
+  await context.route('**/*', (route) => {
+    return ['POST', 'PUT', 'PATCH', 'DELETE'].includes(route.request().method()) ? route.abort() : route.continue();
+  });
+  await page.goto('https://pokesurvivor.com/', { waitUntil: 'domcontentloaded' });
+  const frame = page;
   await frame.locator('#tap-start:not(.hidden), #scr-login:not(.hidden) #btn-guest').first().waitFor();
   if (await frame.locator('#tap-start').isVisible()) await frame.locator('#tap-start').click();
   console.log('Live game loaded; entering guest setup.');
@@ -43,7 +47,10 @@ try {
   await frame.locator('#scr-settings h2').filter({ hasText: /^설정$/ }).waitFor();
   await frame.locator('#set-close').click();
   await page.screenshot({ path: path.join(output, 'menu-korean.png'), animations: 'disabled' });
-  console.log('Korean menu:', await frame.locator('#scr-menu').innerText());
+  const menu = await frame.locator('#scr-menu').innerText();
+  assert.match(menu, /켈리몬 상점/);
+  assert.match(menu, /가방/);
+  console.log('Korean menu:', menu);
 
   await frame.locator('[data-go="dex"]').click();
   await frame.locator('#dex-grid .cell:not(.locked)').first().click();
@@ -64,10 +71,6 @@ try {
   await frame.locator('#set-close').click();
   await page.setViewportSize({ width: 1365, height: 960 });
 
-  // After setup, prevent gameplay from submitting any score or save to a server.
-  await context.route('**/*', (route) => {
-    return ['POST', 'PUT', 'PATCH', 'DELETE'].includes(route.request().method()) ? route.abort() : route.continue();
-  });
   await frame.locator('[data-go="play"]').click();
   console.log('Play screen:', await frame.locator('body').innerText());
   await page.screenshot({ path: path.join(output, 'play-korean.png'), animations: 'disabled' });

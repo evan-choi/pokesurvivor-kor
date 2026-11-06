@@ -15,7 +15,7 @@ for (const file of ['moves', 'menus', 'progress', 'settings', 'extra', 'interfac
 }
 vm.runInContext(await readFile(new URL('../extension/translation-core.js', import.meta.url), 'utf8'), context);
 
-// Display names in release c31715d-game-auth-popup-overlay-20261017:
+// Existing translation baseline from c31715d-game-auth-popup-overlay-20261017:
 // 64 base moves and 59 evolved moves. Some internal IDs differ from displayed names.
 const gameMoveNames = [
   "Tackle", "Quick Attack", "Swords Dance", "Agility", "Harden", "Ember",

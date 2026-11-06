@@ -497,16 +497,6 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
     "이 사이트"
   ],
   [
-    "La página de juego de este proyecto es pokesurvivor.pro/play.",
-    "La página de juego de este proyecto es pokesurvivor.pro/play.",
-    "이 프로젝트의 게임 페이지는 pokesurvivor.pro/play입니다."
-  ],
-  [
-    "The game page for this project is pokesurvivor.pro/play.",
-    "The game page for this project is pokesurvivor.pro/play.",
-    "이 프로젝트의 게임 페이지는 pokesurvivor.pro/play입니다."
-  ],
-  [
     "créditos completos de los artistas",
     "Credits completos de los artistas",
     "전체 아티스트 출처"
@@ -547,24 +537,9 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
     "라이선스 전문"
   ],
   [
-    "你在 pokesurvivor.pro 的登录状态用于进入游戏。角色、金币、收藏和升级保存在当前浏览器；提交的每局成绩（游戏时间、等级、击败数和登录名）会保存到共享排行榜，登录名和成绩可被其他玩家查看。",
-    "你在 pokesurvivor.pro 的登录状态用于进入游戏。角色、金币、收藏和升级保存在当前浏览器；提交的每局成绩（游戏时间、等级、击败数和登录名）会保存到共享排行榜，登录名和成绩可被其他玩家查看。",
-    "pokesurvivor.pro의 로그인 상태로 게임에 접속합니다. 캐릭터, 코인, 수집 내역과 강화는 현재 브라우저에 저장됩니다. 제출한 플레이 기록(플레이 시간, 레벨, 처치 수, 로그인 이름)은 공용 순위표에 저장되며, 다른 플레이어가 로그인 이름과 기록을 볼 수 있습니다."
-  ],
-  [
     "游客可以创建房间或输入房间码加入，最多 4 人一起游玩。登录后还可以添加好友并邀请他们加入房间。同房玩家可以看到你的游戏昵称和所选伙伴。",
     "游客可以创建房间或输入房间码加入，最多 4 人一起游玩。登录后还可以添加好友并邀请他们加入房间。同房玩家可以看到你的游戏昵称和所选伙伴。",
     "게스트도 방을 만들거나 방 코드로 참가해 최대 4명이 함께 플레이할 수 있습니다. 로그인하면 친구를 추가하고 방에 초대할 수도 있습니다. 같은 방의 플레이어는 게임 닉네임과 선택한 파트너를 볼 수 있습니다."
-  ],
-  [
-    "Inicia sesión en pokesurvivor.pro y abre el juego desde /play.",
-    "Inicia sesión en pokesurvivor.pro y abre el juego desde /play.",
-    "pokesurvivor.pro에 로그인하고 /play에서 게임을 여세요."
-  ],
-  [
-    "Sign in to pokesurvivor.pro and open the game from /play.",
-    "Sign in to pokesurvivor.pro and open the game from /play.",
-    "pokesurvivor.pro에 로그인하고 /play에서 게임을 여세요."
   ],
   [
     "Moderación",

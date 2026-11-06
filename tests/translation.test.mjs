@@ -90,7 +90,7 @@ test('handles native partial translations, Chinese notices, and localized durati
   assert.equal(translate('You have su shiny'), '색이 다른 모습을 보유 중입니다');
   assert.equal(translate('Buscar por Name'), '이름으로 검색');
   assert.equal(translate('Impulsivo'), '즉흥적');
-  assert.equal(translate('Web oficial: pokesurvivor.pro · si alguien te pide pagar, no somos nosotros'), '공식 웹사이트: pokesurvivor.pro · 이 게임은 무료입니다');
+  assert.equal(translate('Web oficial: pokesurvivor.com · si alguien te pide pagar, no somos nosotros'), '공식 웹사이트: pokesurvivor.com · 이 게임은 무료입니다');
   assert.equal(translate('Se renuevan en 2 h 15 min'), '2시간 15분 후 갱신');
   assert.equal(translate('Psychic Nv.5'), '에스퍼 레벨 5');
   assert.equal(translate('登录窗口被浏览器拦截，请允许弹出窗口后重试。'), '로그인 팝업이 차단됐습니다. 팝업을 허용한 뒤 다시 시도하세요.');
