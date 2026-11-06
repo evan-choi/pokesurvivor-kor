@@ -17,6 +17,8 @@
     if (owner.matches('#news-body > .news-day, #rk-me > span, #scr-savenote > .box, #savenote-body')) return false;
     if (owner.matches('#over-sum > p.sub')) return false;
     if (owner.matches('#dex-detail .mon-extra > .mx-row:nth-child(-n+2) > b')) return false;
+    if (owner.matches('#pull-results .pcard > .pmon, #mx-picker .chip > b')) return false;
+    if (owner.matches('.mb-txt > b')) return false;
     if (owner.matches('#user-pill > span') && owner.parentElement.querySelector('.sync.guest')) return false;
     return true;
   }
@@ -42,6 +44,12 @@
     if (enabled && key === 'text' && element.matches('#dex-detail .mon-extra > .mx-row:nth-child(-n+2) > b')) {
       const names = element.parentElement.matches(':first-child') ? globalThis.PSKO_NATURES : globalThis.PSKO_ABILITIES;
       translated = source.replace(/\S(?:[\s\S]*\S)?/, (name) => names?.[name] || name);
+    }
+    if (enabled && key === 'text' && element.closest('#pull-results .pcard > .pmon, #mx-picker .chip > b')) {
+      // The card puts the nature before the separator and the ability in a child span.
+      // Keep its whitespace, separator and hidden-ability styling intact.
+      translated = source.replace(/[^·]+/g, part => part.replace(/\S(?:[\s\S]*\S)?/, name =>
+        globalThis.PSKO_NATURES?.[name] ?? globalThis.PSKO_ABILITIES?.[name] ?? name));
     }
     if (enabled && key === 'text' && element.id === 'starter-info') {
       translated = source.split(/(\s*[·,]\s*)/).map((part, index) => (
@@ -115,6 +123,7 @@
   }
 
   function addLanguageChoice() {
+    if (globalThis.PSKO_NATIVE_LOCALE?.registered) return;
     // The game's language controls opt out of translation. Keep its own buttons usable.
     for (const english of document.querySelectorAll('#set-body [data-lang="en"], #settings-body [data-lang="en"], #scr-settings [data-lang="en"]')) {
       const container = english.parentElement;

@@ -42,6 +42,8 @@ function unexplainedText(entry) {
 const errors = [];
 const screens = [];
 const findings = [];
+let localeEntriesChecked = 0;
+let traitNamesChecked = 0;
 const context = await chromium.launchPersistentContext('', {
   channel: 'chromium',
   headless: true,
@@ -72,7 +74,9 @@ async function capture(label) {
     function add(element, value, attribute) {
       const text = value.trim();
       if (!text || !/[\p{Script=Latin}\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(text)) return;
-      if (element.closest('script, style, noscript') || !element.checkVisibility({ checkVisibilityCSS: true })) return;
+      // Native selects can hide the option nodes even though their labels appear in the dropdown.
+      const visibleControl = element.closest('select') || element;
+      if (element.closest('script, style, noscript') || !visibleControl.checkVisibility({ checkVisibilityCSS: true })) return;
       if (element.closest('[data-lang], [data-psko-language]')) {
         skippedLanguagePicker++;
         return;
@@ -137,7 +141,11 @@ try {
       const prefix = source.match(/var (_0x[\da-f]+)=Object\[_0x[\da-f]+\(0x[\da-f]+\)\]\(null\);/);
       if (!prefix) throw new Error('UI audit hook no longer matches the official game bundle.');
       if (!source.includes('_0x40206e=[')) throw new Error('Account notice fixture no longer matches the game bundle.');
-      const fixtureSource = source.replace('_0x40206e=[', '_0x40206e=window.__PSKO_TEST_NOTICES__=[');
+      const register = /function _0x558057\([^)]*\)\{/;
+      if (!register.test(source)) throw new Error('Locale registry audit hook no longer matches the game bundle.');
+      const fixtureSource = source
+        .replace('_0x40206e=[', '_0x40206e=window.__PSKO_TEST_NOTICES__=[')
+        .replace(register, match => match + "if(_0x47d983==='en'&&!_0x32c404)Object.assign(window.__PSKO_TEST_LOCALES__??={},_0x1db72b);");
       await route.fulfill({ response, body: fixtureSource.replace(prefix[0], `${prefix[0]}window.__PSKO_TEST_GAME__=${prefix[1]};`) });
     } catch (error) {
       errors.push(error.stack || error.message);
@@ -164,6 +172,68 @@ try {
     window.__PSKO_TEST_GAME__ = { ...game, ...components };
   });
   await capture('login');
+  const nativeLocale = await run(() => {
+    const game = window.__PSKO_TEST_GAME__;
+    return {
+      language: window.PS_LOCALES.lang,
+      dropdown: game.T('Shaymin (compañero) · 17 niveles'),
+      orb: game.T('Ves más campo (la cámara se aleja) durante 15 s, tú y los compañeros cercanos.'),
+      psychicType: game.T('Psíquico'),
+      psychicMove: game.T('Psíquico', 'move'),
+    };
+  });
+  if (nativeLocale.language !== 'ko' ||
+      nativeLocale.dropdown !== '쉐이미 (파트너) · 강화 17레벨' ||
+      nativeLocale.orb !== '15초 동안 자신과 주변 팀원의 카메라가 멀어져 더 넓은 범위를 볼 수 있습니다.' ||
+      nativeLocale.psychicType !== '에스퍼' || nativeLocale.psychicMove !== '사이코키네시스') {
+    throw new Error(`The native Korean locale was not registered: ${JSON.stringify(nativeLocale)}`);
+  }
+  const locale = await run(() => {
+    const entries = Object.entries(window.__PSKO_TEST_LOCALES__ || {});
+    const untranslated = entries.filter(([spanish, english]) =>
+      [spanish, english].some(text => text !== 'Google' && !/[가-힣]/u.test(window.PSKO.translate(text))));
+    return { count: entries.length, untranslated };
+  });
+  localeEntriesChecked = locale.count;
+  if (!locale.count) throw new Error('The locale registry was empty.');
+  for (const [spanish, english] of locale.untranslated) findings.push({ screen: 'locale-registry', spanish, english });
+  const nativeChecks = await run(() => {
+    const game = window.__PSKO_TEST_GAME__;
+    return {
+      aliases: ['Mando conectado', 'Mando conectado:', 'atrás / cerrar', 'TIRADA ×100'].map(text => game.T(text)),
+      products: ['Switch', 'The Pokémon Company', 'CREDITS.md', 'Authentication > Settings > Authorized domains']
+        .map(text => game.T(game.T(text))),
+      rewritten: Object.values(window.PSKO_MESSAGES).filter(row => /[가-힣]/u.test(row[2]) && !/\{(?:x|name)\}/u.test(row[2]))
+        .map(row => row[2]).filter(text => game.T(text) !== text),
+      untranslated: Object.entries(window.__PSKO_TEST_LOCALES__).filter(([source]) => source !== 'Google' &&
+        !/[가-힣]/u.test(game.T(source.replace(/\{(?:x|name)\}/g, '17')))),
+    };
+  });
+  if (JSON.stringify(nativeChecks.aliases) !== JSON.stringify(['컨트롤러 연결됨', '컨트롤러 연결됨:', '뒤로 / 닫기', '뽑기 ×100']) ||
+      JSON.stringify(nativeChecks.products) !== JSON.stringify(['Switch', 'The Pokémon Company', 'CREDITS.md', 'Authentication > Settings > Authorized domains']) ||
+      nativeChecks.rewritten.length) {
+    throw new Error(`Native translation mismatch: ${JSON.stringify(nativeChecks)}`);
+  }
+  for (const [source, english] of nativeChecks.untranslated) findings.push({ screen: 'native-locale-registry', source, english });
+  const traitCatalog = await run(() => {
+    const game = window.__PSKO_TEST_GAME__;
+    return [
+      ...game._4a05b3f.map(nature => {
+        const source = game._9ab1d5d.name(nature.n);
+        return { kind: 'nature', source, translated: window.PSKO_NATURES[source] || source };
+      }),
+      ...Object.keys(game._9876366).map(id => {
+        const source = game._9ab1d5d.abilityName(id);
+        return { kind: 'ability', source, translated: window.PSKO_ABILITIES[source] || source };
+      }),
+    ];
+  });
+  traitNamesChecked = traitCatalog.length;
+  for (const trait of traitCatalog) {
+    if (!/[가-힣]/u.test(trait.translated) || /[A-Za-z]/u.test(trait.translated.replace(/^AR시스템$/, ''))) {
+      findings.push({ screen: 'trait-name-registry', ...trait });
+    }
+  }
   await frame.locator('#btn-guest').click();
   for (let index = 0; index < 8; index++) {
     await capture(`quiz-${index + 1}`);
@@ -189,6 +259,20 @@ try {
     await openPanel('SettingsUI', tab);
     await capture(`settings-${tab}`);
   }
+  await run(() => {
+    Object.defineProperty(navigator, 'getGamepads', { configurable: true, value: () => [{
+      id: 'Local test controller', index: 0, connected: true, mapping: 'standard',
+      buttons: Array.from({ length: 17 }, () => ({ pressed: false, value: 0 })), axes: [0, 0, 0, 0],
+    }] });
+    window.__PSKO_TEST_GAME__._fb26fef.poll(performance.now());
+  });
+  await openPanel('SettingsUI', 'ctl');
+  await capture('settings-connected-controller');
+  await run(() => { delete navigator.getGamepads; });
+  await resetScreens();
+  await run(() => window.__PSKO_TEST_GAME__._b09ca2a.open());
+  await capture('touch-layout');
+  await run(() => window.__PSKO_TEST_GAME__._b09ca2a.close());
   await openPanel('NewsUI');
   await capture('news');
   await openPanel('SupportUI');
@@ -251,10 +335,107 @@ try {
     await favorite.click();
   }
   await resetScreens(true);
+  await run(() => {
+    const { save } = window.__PSKO_TEST_GAME__.DB;
+    save.owned = { ...save.owned, 492: 1, 387: 1, 390: 1 };
+    save.partner = 492;
+    save.pupg = { ...save.pupg, 492: { hp: 17 }, 387: { hp: 9 }, 390: {} };
+  });
   await frame.locator('[data-go="upgrades"]').click();
   await capture('upgrades');
+  for (const [id, expected] of [[492, '쉐이미 (파트너) · 강화 17레벨'], [387, '모부기 · 강화 9레벨'], [390, '불꽃숭이']]) {
+    const label = await frame.locator(`#upg-mon option[value="${id}"]`).textContent();
+    if (label !== expected) throw new Error(`Incorrect upgrade option: ${label}`);
+  }
+  // Exercise the purchased starting-move controls that can squeeze the description.
+  await run(() => {
+    const game = window.__PSKO_TEST_GAME__, save = game.DB.save;
+    save.pupg[492].start = 1;
+    game.MenuUI.open();
+    document.querySelector('[data-go="upgrades"]').click();
+  });
+  await capture('upgrades-with-starting-move');
+  for (const width of [1400, 1024, 768, 390]) {
+    await page.setViewportSize({ width, height: 1000 });
+    const ordinaryCards = await run(() => Array.from(document.querySelectorAll('#upg-list > .upg-item')).slice(0, 12).map(card => {
+      const text = card.children[1].getBoundingClientRect();
+      const buttons = card.querySelector('.upg-btns').getBoundingClientRect();
+      return {
+        alongside: buttons.left >= text.right - 1 && buttons.top < text.bottom && buttons.bottom > text.top,
+        overflow: card.scrollWidth > card.clientWidth + 1,
+        singleLinePrice: card.querySelector('[data-buy]').getBoundingClientRect().height <= 44,
+      };
+    }));
+    if (ordinaryCards.some(card => !card.alongside || card.overflow || !card.singleLinePrice)) {
+      throw new Error(`Ordinary purchase buttons moved or wrapped at ${width}px: ${JSON.stringify(ordinaryCards)}`);
+    }
+    const layout = await run(() => {
+      const card = document.querySelector('#upg-list [data-start]').closest('.upg-item');
+      const text = card.children[1], buttons = card.querySelector('.upg-btns');
+      const bounds = card.getBoundingClientRect(), description = text.getBoundingClientRect(), actions = buttons.getBoundingClientRect();
+      return { width: description.width, overlap: description.bottom > actions.top + 1,
+        overflow: card.scrollWidth > card.clientWidth + 1 || actions.right > bounds.right + 1 };
+    });
+    if (layout.width < 120 || layout.overlap || layout.overflow) {
+      throw new Error(`Cramped starting-move card at ${width}px: ${JSON.stringify(layout)}`);
+    }
+  }
+  await page.setViewportSize({ width: 1400, height: 1000 });
+  await run(() => {
+    const save = window.__PSKO_TEST_GAME__.DB.save;
+    save.bag = { mint: 5, cap: 5, caph: 5, candy: 70 };
+    save.tms = Object.fromEntries(Object.keys(window.__PSKO_TEST_GAME__._db51ce7).map(id => [id, 1]));
+  });
+  await resetScreens(true);
+  await frame.locator('[data-go="dex"]').click();
+  await frame.locator('#dex-q').fill('121');
+  await frame.locator('#dex-grid .cell:not(.locked)').first().click();
+  await capture('dex-with-inventory');
+  for (const mode of ['nat', 'cap', 'caph']) {
+    const button = frame.locator(`#dex-detail [data-extra="${mode}"]`);
+    if (!await button.count()) throw new Error(`Missing nature/ability picker fixture: ${mode}`);
+    await button.click();
+    await capture(`dex-picker-${mode}`);
+    if (/[A-Za-zÀ-ž]/u.test(await frame.locator('#mx-picker').innerText())) throw new Error(`Untranslated picker: ${mode}`);
+  }
   await openPanel('GachaUI');
   await capture('gacha');
+  // Render a repeatable ten-card result in the guest fixture without spending tickets.
+  await run(async () => {
+    const { Gacha, DB } = window.__PSKO_TEST_GAME__;
+    if (DB.online) throw new Error('The gacha fixture requires a guest session.');
+    const { costOf, pull } = Gacha;
+    try {
+      Gacha.costOf = () => true;
+      Gacha.pull = () => [417, 391, 413, 401, 402, 412, 412, 447, 420, 481].map((dex, i) =>
+        ({ dex, rarity: 2, isNew: i !== 6, refund: 15, shiny: false }));
+      await document.querySelector('#pull-10').onclick();
+    } finally {
+      Object.assign(Gacha, { costOf, pull });
+    }
+  });
+  await capture('gacha-results');
+  const traits = await frame.locator('#pull-results .pcard > .pmon').allTextContents();
+  if (traits.length !== 9 || traits.some(text => !/^[가-힣][가-힣\s·]+$/u.test(text.trim()))) {
+    throw new Error(`Untranslated gacha traits: ${JSON.stringify(traits)}`);
+  }
+  await frame.locator('#pull-close').click();
+  await run(async () => {
+    const game = window.__PSKO_TEST_GAME__;
+    const { costOf, pull } = game.Gacha;
+    try {
+      game.Gacha.costOf = () => true;
+      game.Gacha.pull = () => Array.from({ length: 100 }, (_, i) =>
+        ({ dex: 1, rarity: 2, isNew: i < 2, refund: 15, shiny: i === 1 }));
+      const finished = document.querySelector('#pull-100').onclick();
+      document.querySelector('#pull-skip').click();
+      await finished;
+    } finally {
+      Object.assign(game.Gacha, { costOf, pull });
+    }
+  });
+  await capture('gacha-100-results');
+  await frame.locator('#pull-close').click();
   await openPanel('ShopUI');
   await capture('shop');
   await resetScreens(true);
@@ -271,6 +452,19 @@ try {
     game.RunUI.showLevelUp(20, cards, () => {});
   });
   await capture('all-base-move-cards');
+  await resetScreens();
+  await run(() => {
+    const game = window.__PSKO_TEST_GAME__;
+    const cards = ['especiales', 'físicos'].map((side, index) => ({
+      type: 'new', title: 'Bomba Germen', tag: 'Planta', cat: 'Físico', icon: 'move:seed-bomb',
+      desc: `<span class="fit-low">Con Shaymin rinde un ${91 - index} %: pega mejor con ataques ${side}.</span>`,
+    }));
+    game.RunUI.showLevelUp(20, cards, () => {});
+  });
+  await capture('level-up-move-fit');
+  const fit = await frame.locator('#cards .fit-low').allTextContents();
+  const expectedFit = ['쉐이미 사용 시 위력 91%. 특수 기술로 더 큰 피해를 줍니다.', '쉐이미 사용 시 위력 90%. 물리 기술로 더 큰 피해를 줍니다.'];
+  if (JSON.stringify(fit) !== JSON.stringify(expectedFit)) throw new Error(`Untranslated move fit: ${JSON.stringify(fit)}`);
   await resetScreens();
   await run(() => {
     const game = window.__PSKO_TEST_GAME__;
@@ -316,11 +510,32 @@ try {
   await capture('run-result');
   const resultText = (await frame.locator('#scr-over').innerText()).replace(/\d[\d,.]*\/s\b/g, '');
   if (/[a-z]/i.test(resultText)) throw new Error('The populated run summary still contains untranslated text.');
+  await resetScreens();
+  await run(() => {
+    const game = window.__PSKO_TEST_GAME__;
+    game._81f8e29.showData({ name: 'Local player', title: 'Brillante', favs: [{ dex: 1, shiny: true }],
+      best: { solo: 200, group: 300, level: 40, bosses: 8, legends: 2, kills: 700, medals: 0 } });
+    game.UI.show('scr-profile');
+  });
+  await capture('public-profile');
+  await resetScreens(true);
+  await run(() => window.__PSKO_TEST_GAME__._10e3d69.play());
+  await frame.waitForFunction(() => !!window.__PSKO_TEST_GAME__._526b783.player);
+  await frame.keyboard.press('Escape');
+  await run(() => {
+    const game = window.__PSKO_TEST_GAME__, player = game._526b783.player;
+    player.orbs = ['slumber', 'slow', 'blowback', 'focus'].map(id => ({ id, n: 3 }));
+    player.orbBuff = { focus: 12, luminous: 13, quick: 8 };
+    player.statsTaken = { hp: 3, magnet: 2 };
+    player.item = game.Items.LIST[0].id;
+    game.RunUI.showPause();
+  });
+  await capture('pause-with-item-and-orbs');
 } catch (error) {
   errors.push(error.stack || error.message);
   console.error(error);
 } finally {
-  await writeFile(output, JSON.stringify({ language, errors, findings, screens }, null, 2));
+  await writeFile(output, JSON.stringify({ language, localeEntriesChecked, traitNamesChecked, errors, findings, screens }, null, 2));
   await context.close();
   console.log(`${screens.length} screens checked; ${findings.length} unexplained entries; ${errors.length} errors.`);
   console.log(output);

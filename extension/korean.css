@@ -159,3 +159,36 @@ html.psko-enabled .tab {
 [data-psko-language] {
   font-family: "NeoDunggeunmo", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
 }
+
+/* Keep ordinary purchases beside their descriptions. */
+html.psko-enabled #upg-list > .upg-item {
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+}
+
+html.psko-enabled #upg-list > .upg-item > div:nth-child(2) {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+html.psko-enabled #upg-list .upg-btns > [data-buy] {
+  white-space: nowrap;
+}
+
+/* Move long choices and locked prerequisites below the description. */
+html.psko-enabled #upg-list > .upg-item:has([data-start], [data-start2], [data-ban], [data-buy][title]) {
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-content: start;
+  align-items: start;
+}
+
+html.psko-enabled #upg-list > .upg-item:has([data-start], [data-start2], [data-ban], [data-buy][title]) > .upg-btns {
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin-left: 0;
+}
+
+html.psko-enabled #upg-list .upg-btns > :is([data-start], [data-start2], [data-ban]) {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

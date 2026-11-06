@@ -25,11 +25,80 @@ function readMessages(name) {
 }
 
 const context = vm.createContext({});
-for (const name of [...gameDictionaries.map(([name]) => name), 'extra', 'shop', 'pokedex', 'interface', 'changelog', 'pokemon']) {
+for (const name of [...gameDictionaries.map(([name]) => name), 'extra', 'gameplay', 'shop', 'pokedex', 'interface', 'changelog', 'pokemon']) {
   evaluate(context, `translations/${name}.js`);
 }
 evaluate(context, 'translation-core.js');
 const translate = context.PSKO.translate;
+
+test('orb pickup messages translate the name, current control and effect together', () => {
+  const effect = '15초 동안 자신과 주변 팀원의 급소 확률이 25% 증가합니다.';
+  const en = '+25% critical chance for 15 s, for you and nearby teammates.';
+  const es = '+25 % de crítico durante 15 s, para ti y los compañeros cercanos.';
+  for (const [hint, translated] of [
+    ['key 5', '5번 키'], ['key 8', '8번 키'], ['X to use it', 'X 버튼으로 사용'],
+    ['tap it above your moves', '기술 위의 구슬을 터치'],
+  ]) {
+    assert.equal(translate(`Focus Orb (${hint}): ${en}`), `집중의 구슬 (${translated}): ${effect}`);
+  }
+  assert.equal(translate(`Focosfera (tecla 6): ${es}`), `집중의 구슬 (6번 키): ${effect}`);
+});
+
+test('all orb tooltips measure and draw the complete translation after word wrapping', () => {
+  const document = Object.assign(new EventTarget(), { readyState: 'complete', querySelector: () => true });
+  class Canvas {
+    font = '600 11px sans-serif';
+    fillText(text) { return text; }
+    measureText(text) { return text; }
+  }
+  const sandbox = vm.createContext({
+    PSKO: context.PSKO, PSKO_ORBS: context.PSKO_ORBS, CanvasRenderingContext2D: Canvas,
+    document, window: {}, Event,
+  });
+  evaluate(sandbox, 'canvas.js');
+  const setEnabled = (detail) => document.dispatchEvent(Object.assign(new Event('psko:settings'), { detail }));
+  setEnabled(true);
+  const ctx = new Canvas();
+  assert.equal(context.PSKO_ORBS.length, 6);
+  for (const [names, effects] of context.PSKO_ORBS) {
+    for (const lang of [0, 1]) {
+      const words = effects[lang].split(' ');
+      for (let split = 1; split < words.length; split++) {
+        const lines = [words.slice(0, split).join(' '), words.slice(split).join(' ')];
+        for (const method of ['measureText', 'fillText']) {
+          assert.equal(ctx[method](names[lang]), names[2]);
+          assert.equal(lines.map(line => ctx[method](line)).join(' '), effects[2]);
+        }
+      }
+    }
+  }
+  setEnabled(false);
+  assert.equal(ctx.fillText('Luminous Orb'), 'Luminous Orb');
+  assert.equal(ctx.fillText('out) for 15 s, you and nearby teammates.'), 'out) for 15 s, you and nearby teammates.');
+});
+
+test('level-up hints preserve the partner, percentage and preferred attack category', () => {
+  const expected = '쉐이미 사용 시 위력 91%. 특수 기술로 더 큰 피해를 줍니다.';
+  for (const hint of [
+    'Con Shaymin rinde un 91 %: pega mejor con ataques especiales.',
+    'With Shaymin it deals 91 %: it hits harder with special moves.',
+    'With Shaymin rinde un 91 %: hits harder with special moves.',
+    'Shaymin rinde un 91 %: hits harder with special moves. 사용',
+  ]) assert.equal(translate(hint), expected);
+  assert.equal(translate('Shaymin rinde un 87 %: hits harder with physical moves. 사용'),
+    '쉐이미 사용 시 위력 87%. 물리 기술로 더 큰 피해를 줍니다.');
+});
+
+test('upgrade options translate the whole label with and without invested levels', () => {
+  for (const marker of ['compañero', 'partner']) {
+    for (const unit of ['niveles', 'levels']) {
+      assert.equal(translate(`Shaymin (${marker}) · 17 ${unit}`), '쉐이미 (파트너) · 강화 17레벨');
+      assert.equal(translate(`Turtwig · 9 ${unit}`), '모부기 · 강화 9레벨');
+    }
+    assert.equal(translate(`Shaymin (${marker})`), '쉐이미 (파트너)');
+  }
+  assert.equal(translate('Chimchar'), '불꽃숭이');
+});
 
 test('partner selection translates the complete button with or without a shiny suffix', () => {
   for (const text of ['Elegir de compañero', 'Choose as partner', 'Choose de partner']) {
@@ -80,7 +149,7 @@ test('all 1,188 game messages have complete translations and matching placeholde
 });
 
 test('audited interface, shop and changelog text resolves as a complete phrase in both input forms', () => {
-  for (const file of ['extra', 'interface', 'shop', 'pokedex', 'changelog']) {
+  for (const file of ['extra', 'gameplay', 'interface', 'shop', 'pokedex', 'changelog']) {
     for (const [source, intermediate, korean] of readMessages(file)) {
       const count = (text) => (text.match(/\{x\}/g) || []).length;
       assert.equal(count(source), count(korean), source);

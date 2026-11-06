@@ -18,15 +18,52 @@
       : globalThis.PSKO.translate(text);
   };
   document.addEventListener('psko:settings', (event) => {
-    if (typeof event.detail === 'boolean') enabled = event.detail;
+    if (typeof event.detail === 'boolean') {
+      enabled = event.detail;
+      tooltipLines = new WeakMap();
+    }
   });
+
+  const orbTitles = new Map();
+  for (const [names, effects] of globalThis.PSKO_ORBS || []) {
+    for (const language of [0, 1]) {
+      orbTitles.set(names[language], { source: effects[language], words: effects[2].split(' ') });
+    }
+  }
+  let tooltipLines = new WeakMap();
+  function translateCanvasText(ctx, text) {
+    if (!enabled || !gameDocument || typeof text !== 'string') return text;
+    // The game wraps the source first, then measures the title and each line,
+    // and repeats that sequence to draw. Translate the same spans in both passes.
+    const orb = orbTitles.get(text);
+    if (orb) {
+      tooltipLines.set(ctx, { orb, offset: 0, word: 0 });
+    } else {
+      const line = tooltipLines.get(ctx);
+      if (line) {
+        const { source, words } = line.orb;
+        const end = line.offset + text.length;
+        if (text && source.startsWith(text, line.offset) && (end === source.length || source[end] === ' ')) {
+          const last = end === source.length;
+          const nextWord = last ? words.length : Math.min(words.length - 1,
+            Math.max(line.word + 1, Math.round(words.length * end / source.length)));
+          const translated = words.slice(line.word, nextWord).join(' ');
+          if (last) tooltipLines.delete(ctx);
+          else Object.assign(line, { offset: end + 1, word: nextWord });
+          return translated;
+        }
+        tooltipLines.delete(ctx);
+      }
+    }
+    return translate(text);
+  }
 
   const prototype = globalThis.CanvasRenderingContext2D?.prototype;
   if (prototype) {
     for (const method of ['fillText', 'strokeText', 'measureText']) {
       const original = prototype[method];
       prototype[method] = function (text, ...args) {
-        const result = translate(text);
+        const result = translateCanvasText(this, text);
         if (!enabled || !gameDocument || typeof result !== 'string') {
           return original.call(this, result, ...args);
         }

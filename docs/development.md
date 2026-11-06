@@ -2,11 +2,15 @@
 
 [README로 돌아가기](../README.md) · [기여 안내](../CONTRIBUTING.md)
 
-Chrome extension은 `extension/` 안의 JavaScript와 CSS를 그대로 사용합니다. 테스트에는 Node.js 24 이상과 npm이, 압축 파일 생성에는 `zip` 명령이 필요합니다.
+Chrome extension은 `extension/` 안의 JavaScript와 CSS를 그대로 사용합니다. 테스트에는 Node.js 24 이상과 npm이 필요합니다. 압축 파일은 Windows에서는 기본 `tar.exe`, 다른 환경에서는 `zip`으로 생성합니다.
 
 ## 번역 처리와 권한
 
 Manifest V3 확장 프로그램이며 런타임 의존성은 없습니다. 번역 데이터를 확장 프로그램에 포함해 기기 안에서 처리합니다. 외부 번역 서비스나 API key는 사용하지 않습니다.
+
+`native-locale.js`는 게임 시작 전에 `PS_LOCALES`에 `ko`와 `ko-KR`을 추가하고 `PS_LANG_Q`에 한국어 사전을 등록합니다. 게임의 번역 함수가 문장을 조합하거나 Canvas 설명을 줄바꿈하기 전에 한국어를 반환합니다. 기술명과 타입이 겹치는 `Psychic`은 게임의 `move` 번역 범위로 구분합니다. 원본의 번역 제외 영역이나 직접 그리는 문구는 기존 DOM·Canvas 보완 처리를 함께 사용합니다.
+
+게임의 언어는 시작할 때 결정되므로 언어 전환 시 새로고침합니다. 확장 프로그램의 설정을 읽기 전에는 초기 설정 이벤트를 보내지 않으며, 기기에 저장한 시작 설정과 다른 경우 한 번 새로고침해 맞춥니다. 게임의 언어 목록에서 선택한 언어와 팝업 설정을 함께 반영합니다.
 
 `storage` 권한은 한국어 모드 설정과 티어 데이터를 저장하는 데 씁니다. `scripting` 권한으로 팝업을 열거나 새로고침할 때 공식 게임의 Firebase 로그인 계정 ID에 해당하는 `ps.cloud.*` 저장 데이터에서 보유 도감 번호만 읽습니다. 기존 로컬 계정은 `ps.session`을 따릅니다. 다른 계정의 저장 데이터와 인증 토큰은 읽지 않으며, 게임 계정·저장 데이터·점수는 수정하지 않습니다. 게임 페이지 접근 범위는 `https://pokesurvivor.com/*`, `https://www.pokesurvivor.com/*`와 그 안의 iframe입니다.
 
@@ -30,7 +34,7 @@ npm run test:browser
 npm run package
 ```
 
-`npm test`는 번역 처리와 데이터 검증을 실행합니다. `npm run test:browser`는 Playwright로 extension의 브라우저 동작을 확인합니다. `npm run package`는 `dist/pokesurvivor-korean-0.1.0.zip`을 만듭니다. ZIP 최상위에 `manifest.json`과 확장 프로그램 파일들이 들어 있으므로, 압축을 풀어 생긴 `pokesurvivor-korean-0.1.0/` 폴더 자체를 Chrome에 불러오면 됩니다.
+`npm test`는 번역 처리와 데이터 검증을 실행합니다. `npm run test:browser`는 Playwright로 extension의 브라우저 동작을 확인합니다. `npm run package`는 `dist/pokesurvivor-korean-0.2.3.zip`을 만듭니다. ZIP 최상위에 `manifest.json`과 확장 프로그램 파일들이 들어 있으므로, 압축을 풀어 생긴 `pokesurvivor-korean-0.2.3/` 폴더 자체를 Chrome에 불러오면 됩니다.
 
 실제 사이트에서 확인하려면 `npm run test:live`를 실행합니다. 임시 브라우저에서 공식 `.com`에 게스트로 접속해 설정과 플레이 화면을 확인하고 `test-results/live/`에 스크린샷을 남깁니다. 접속 전부터 서버에 저장하는 요청을 차단해 테스트 점수가 등록되지 않게 합니다.
 
@@ -51,6 +55,7 @@ npm run audit:translations -- es
 | --- | --- |
 | `extension/manifest.json` | Manifest V3 설정과 적용할 사이트 |
 | `extension/translations/` | 게임 문구와 포켓몬 이름 번역 |
+| `extension/native-locale.js` | 게임 번역 등록 경로에 한국어 추가와 언어 전환 |
 | `extension/translation-core.js` | 문구와 변수가 포함된 문장의 번역 처리 |
 | `extension/content.js` | 메뉴 번역과 게임 안의 한국어 버튼 |
 | `extension/canvas.js` | Canvas에 그리는 전투 텍스트 번역 |

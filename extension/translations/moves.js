@@ -1313,7 +1313,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Repertorio",
     "Repertoire",
-    "기술 폭"
+    "시작 기술 확장"
   ],
   [
     "+8 vida",
@@ -1413,7 +1413,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "atraes todo desde lejos",
     "you pull everything from afar",
-    "먼 곳의 아이템까지 끌어당깁니다"
+    "먼 곳의 도구까지 끌어당깁니다"
   ],
   [
     "¡Pegajoso!",

@@ -96,9 +96,9 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ["Movimiento inicial","Starting move","시작 기술"],
   ["Eliges con qué ataque empiezas la partida","Choose which move you start the run with","게임을 시작할 때 사용할 기술을 선택합니다"],
   ["Segundo movimiento inicial","Second starting move","두 번째 시작 기술"],
-  ["Eliges el segundo ataque con el que empiezas (necesita Repertorio)","Choose the second move you start with (needs Repertoire)","두 번째 시작 기술을 선택합니다 (기술 폭 필요)"],
-  ["Necesita Repertorio","Needs Repertoire","기술 폭 필요"],
-  ["Primero compra Repertorio","Buy Repertoire first","먼저 기술 폭을 구매하세요"],
+  ["Eliges el segundo ataque con el que empiezas (necesita Repertorio)","Choose the second move you start with (needs Repertoire)","두 번째 시작 기술을 선택합니다 (시작 기술 확장 필요)"],
+  ["Necesita Repertorio","Needs Repertoire","시작 기술 확장 필요"],
+  ["Primero compra Repertorio","Buy Repertoire first","먼저 시작 기술 확장을 구매하세요"],
   ["Tirar ×100 ·","Pull ×100 ·","100회 뽑기 ·"],
   ["Elige una recompensa","Choose a reward","보상을 선택하세요"],
   ["×1,8 daño, rayo un 50% más grueso y carga más rápido","×1.8 damage, 50% thicker beam and faster charge","피해 ×1.8, 빔 두께 50% 증가, 충전 속도 증가"],
@@ -111,6 +111,12 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ["×1,8 daño, +3 ondas y ondas más grandes","×1.8 damage, +3 waves and bigger waves","피해 ×1.8, 파동 3개 추가 및 크기 증가"],
   ["Sólo puedes llevar uno","You can only hold one","하나만 지닐 수 있습니다"],
   ["esferas ·","orbs ·","구슬 ·"],
+  ["{x} (tecla {x}): {x}","{x} (key {x}): {x}","{x} ({x}번 키): {x}"],
+  ["{x} (X para usarla): {x}","{x} (X to use it): {x}","{x} (X 버튼으로 사용): {x}"],
+  ["{x} (tócala encima de tus ataques): {x}","{x} (tap it above your moves): {x}","{x} (기술 위의 구슬을 터치): {x}"],
+  ["Tus esferas","Your orbs","보유 구슬"],
+  ["Aún no llevas esferas. Salen de los cofres, de los jefes y, a veces, al derrotar a un Pokémon.","You have no orbs yet. They come from chests, bosses and sometimes from defeated Pokémon.","아직 보유한 구슬이 없습니다. 상자를 열거나 보스를 쓰러뜨리면 구슬을 얻을 수 있습니다. 일반 포켓몬도 가끔 구슬을 떨어뜨립니다."],
+  ["Arrastra el dedo para moverte · toca un ataque para cambiarlo · toca una esfera para usarla","Drag your finger to move · tap a move to switch · tap an orb to use it","드래그해서 이동 · 기술을 터치해서 전환 · 구슬을 터치해서 사용"],
   ["Daño a Arceus","Damage to Arceus","아르세우스에게 준 피해"],
   ["desplazar las listas · apuntar (si activas Apuntar a mano en Accesibilidad)","scroll lists · aim (if you turn on Manual aim in Accessibility)","목록 스크롤 · 조준 (접근성에서 수동 조준을 켠 경우)"],
   ["Ninguno con estos filtros.","None with these filters.","조건에 맞는 포켓몬이 없습니다."],
@@ -153,3 +159,32 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
 globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ["Sentencia de Arceus", "Judgment of Arceus", "아르세우스의 심판"]
 ]);
+
+// Keep the title and effect together so the canvas can identify wrapped tooltip lines.
+globalThis.PSKO_ORBS = [
+  [
+    ["Soporesfera","Slumber Orb","잠들기구슬"],
+    ["Duerme a los enemigos de la pantalla 4 s (a los jefes, 1 s).","Puts the enemies on screen to sleep for 4 s (bosses, 1 s).","화면 안의 적을 4초 동안 재웁니다. 보스는 1초 동안 잠듭니다."],
+  ],
+  [
+    ["Ralentosfera","Slow Orb","둔화의구슬"],
+    ["Los enemigos de la pantalla van un 50 % más lentos durante 8 s (los jefes, un 20 %).","Enemies on screen move 50% slower for 8 s (bosses, 20%).","8초 동안 화면 안의 적은 이동 속도가 50%, 보스는 20% 감소합니다."],
+  ],
+  [
+    ["Rafagaesfera","Blowback Orb","날려버리기구슬"],
+    ["Lanza lejos a los enemigos que tienes cerca (a los jefes, la mitad).","Blows nearby enemies far away (bosses, half as far).","주변의 적을 멀리 날려버립니다. 보스는 절반 거리만큼 밀려납니다."],
+  ],
+  [
+    ["Focosfera","Focus Orb","집중의 구슬"],
+    ["+25 % de crítico durante 15 s, para ti y los compañeros cercanos.","+25% critical chance for 15 s, for you and nearby teammates.","15초 동안 자신과 주변 팀원의 급소 확률이 25% 증가합니다."],
+  ],
+  [
+    ["Luminosfera","Luminous Orb","빛의구슬"],
+    ["Ves más campo (la cámara se aleja) durante 15 s, tú y los compañeros cercanos.","You see more of the map (the camera zooms out) for 15 s, you and nearby teammates.","15초 동안 자신과 주변 팀원의 카메라가 멀어져 더 넓은 범위를 볼 수 있습니다."],
+  ],
+  [
+    ["Rapidosfera","Quick Orb","발빠름구슬"],
+    ["+40 % de velocidad durante 10 s, para ti y los compañeros cercanos.","+40% speed for 10 s, for you and nearby teammates.","10초 동안 자신과 주변 팀원의 이동 속도가 40% 증가합니다."],
+  ],
+];
+globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat(globalThis.PSKO_ORBS.flat());

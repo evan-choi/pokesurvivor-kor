@@ -1,7 +1,7 @@
 // Shop text and TM pool from the official game; move names cross-checked with PokéAPI.
 // Hidden Ability Capsule is a game-specific item, distinct from Ability Patch.
 globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
-  ["¡Bienvenido! Mentas, Cápsulas y MT. Lo que compres va a tu Mochila (en el menú principal); úsalo desde la ficha de cada Pokémon en la colección.","Welcome! Mints, Capsules and TMs. What you buy goes to your Bag (in the main menu); use it from each Pokémon’s page in your collection.","어서 오세요! 민트, 특성캡슐, 기술머신을 판매합니다. 구매한 도구는 메뉴의 가방에 보관되며, 포켓몬 목록의 상세 화면에서 사용할 수 있습니다."],
+  ["¡Bienvenido! Mentas, Cápsulas y MT. Lo que compres va a tu Mochila (en el menú principal); úsalo desde la ficha de cada Pokémon en la colección.","Welcome! Mints, Capsules and TMs. What you buy goes to your Bag (in the main menu); use it from each Pokémon’s page in your collection.","어서 오세요! 민트, 특성캡슐, 기술머신을 판매합니다. 구매한 도구는 메뉴의 가방에 보관되며, 도감의 상세 화면에서 사용할 수 있습니다."],
   ["Comprar","Buy","구매"],
   ["Objetos","Items","도구"],
   ["MT de hoy","Today’s TMs","오늘의 기술머신"],
@@ -20,8 +20,8 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ["Amuleto Iris de {x}","{x} Shiny Charm","{x} 빛나는부적"],
   ["Completa la Pokédex de {x}","Complete the {x} Pokédex","{x} 도감 완성"],
   ["Shiny al 2 % en el banner de {x}","2% shiny in the {x} banner","{x} 뽑기에서 색이 다른 포켓몬 등장 확률 2%"],
-  ["Para usarlo, abre la colección, elige un Pokémon y pulsa Menta, Cápsula o Enseñar MT en su ficha.","To use it, open your collection, pick a Pokémon and press Mint, Capsule or Teach TM on its page.","포켓몬 목록에서 포켓몬을 선택한 뒤, 상세 화면의 민트·특성캡슐·기술머신 가르치기를 누르세요."],
-  ["Ir a la colección","Go to the collection","포켓몬 목록으로"],
+  ["Para usarlo, abre la colección, elige un Pokémon y pulsa Menta, Cápsula o Enseñar MT en su ficha.","To use it, open your collection, pick a Pokémon and press Mint, Capsule or Teach TM on its page.","도감에서 포켓몬을 선택한 뒤, 상세 화면의 민트·특성캡슐·기술머신 가르치기를 누르세요."],
+  ["Ir a la colección","Go to the collection","도감으로"],
   ["La pueden aprender {x} de tus Pokémon","{x} of your Pokémon can learn it","보유 포켓몬 중 {x}마리가 배울 수 있습니다"],
   ["Ninguno de tus Pokémon la puede aprender","None of your Pokémon can learn it","배울 수 있는 보유 포켓몬이 없습니다"],
   ["Esa MT ya no está a la venta.","That TM is no longer for sale.","더 이상 판매하지 않는 기술머신입니다."],
@@ -119,7 +119,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ["Un viento maldito que arremolina a los enemigos y los va dañando.","A cursed wind that swirls enemies together and keeps damaging them.","저주받은 바람으로 적을 휘감아 지속적으로 피해를 줍니다."],
   ["Un aliento de dragón en abanico corto que frena.","A short fan of dragon breath that slows.","짧은 부채꼴 범위에 용의 숨결을 내뿜어 적을 느리게 합니다."],
   ["Un zarpazo de dragón en arco.","A dragon claw swipe in an arc.","용의 발톱으로 호를 그리며 할큅니다."],
-  ["Una furia de golpes en giro que no deja a nadie en pie.","A fury of spinning blows that leaves no one standing.","거세게 회전하며 연속 공격해 주변의 모든 적을 쓰러뜨립니다."],
+  ["Una furia de golpes en giro que no deja a nadie en pie.","A fury of spinning blows that leaves no one standing.","거세게 회전하며 주변 적을 연속으로 공격합니다."],
   ["Un beso que persigue al enemigo y te cura un poco al darle.","A kiss that chases the enemy and heals you a little when it hits.","적을 추적하는 키스를 날려 명중하면 체력을 조금 회복합니다."],
   ["Un ataque juguetón pero muy fuerte en arco.","A playful but very strong attack in an arc.","장난스럽지만 강력한 공격을 부채꼴로 가합니다."],
   ["Un grito encantador que daña y aparta a los que tienes cerca.","A charming cry that damages and pushes away those near you.","매혹적인 울음소리로 주변 적에게 피해를 주고 밀어냅니다."],

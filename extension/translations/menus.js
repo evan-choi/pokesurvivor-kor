@@ -187,12 +187,12 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Flotante",
     "Floating",
-    "터치 위치"
+    "이동형"
   ],
   [
     "Fijo",
     "Fixed",
-    "고정 위치"
+    "위치 고정형"
   ],
   [
     "Ataques",
@@ -202,7 +202,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Flotante: aparece donde pones el dedo. Fijo: siempre en el mismo sitio.",
     "Floating: it appears where you put your finger. Fixed: always in the same place.",
-    "터치 위치: 손가락을 댄 곳에 나타납니다. 고정 위치: 항상 같은 곳에 나타납니다."
+    "이동형: 손가락을 댄 곳에 나타납니다. 위치 고정형: 항상 같은 곳에 나타납니다."
   ],
   [
     "Restablecer",
@@ -1087,7 +1087,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Tu colección",
     "Your collection",
-    "나의 컬렉션"
+    "나의 도감"
   ],
   [
     "Mejoras",

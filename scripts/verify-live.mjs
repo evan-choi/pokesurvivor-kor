@@ -8,6 +8,7 @@ const output = path.resolve('test-results/live');
 await mkdir(output, { recursive: true });
 const context = await chromium.launchPersistentContext('', {
   channel: 'chromium', headless: true,
+  serviceWorkers: 'block',
   args: [`--disable-extensions-except=${extension}`, `--load-extension=${extension}`],
   viewport: { width: 1365, height: 960 },
 });
@@ -15,6 +16,18 @@ const page = await context.newPage();
 page.setDefaultTimeout(20_000);
 const errors = [];
 page.on('pageerror', (error) => errors.push(error.message));
+
+async function enterMenu(language) {
+  await page.waitForFunction(lang => globalThis.PS_LOCALES?.lang === lang, language);
+  await page.locator('#tap-start:not(.hidden), #scr-login:not(.hidden) #btn-guest, #scr-menu:not(.hidden)').first().waitFor();
+  if (await page.locator('#tap-start').isVisible()) await page.locator('#tap-start').click();
+  if (await page.locator('#btn-guest').isVisible()) {
+    await page.locator('#btn-guest').click();
+    for (let i = 0; i < 8; i++) await page.locator('#test-a button').first().click();
+    await page.locator('#res-ok').click();
+  }
+  await page.locator('#scr-menu').waitFor();
+}
 
 async function checkTextAlignment(selectors) {
   const samples = await page.locator(selectors).evaluateAll((elements) => elements.filter((element) => element.checkVisibility()).flatMap((element) => {
@@ -52,7 +65,7 @@ try {
   await frame.locator('#res-ok').click();
   await frame.locator('[data-go="settings"]').click();
   await frame.locator('#set-tabs [data-t="gfx"]').click();
-  await frame.locator('[data-psko-language].on').waitFor();
+  await frame.locator('[data-lang="ko"].on').waitFor();
   assert.match(await frame.locator('#scr-settings').innerText(), /한국어/);
   await page.screenshot({ path: path.join(output, 'settings-korean.png'), animations: 'disabled' });
   const buttonSizes = await frame.locator('.set-row > .btn').evaluateAll((buttons) => buttons.map((button) => {
@@ -62,9 +75,15 @@ try {
   assert.ok(buttonSizes.length > 1);
   assert.ok(buttonSizes.every(({ width, height }) => width === buttonSizes[0].width && height === buttonSizes[0].height));
   console.log('Korean settings:', await frame.locator('#scr-settings').innerText());
-  await frame.locator('[data-lang="en"]').click();
+  await Promise.all([page.waitForEvent('domcontentloaded'), frame.locator('[data-lang="en"]').click()]);
+  await enterMenu('en');
+  await frame.locator('[data-go="settings"]').click();
+  await frame.locator('#set-tabs [data-t="gfx"]').click();
   await frame.locator('#scr-settings h2').filter({ hasText: /^Settings$/ }).waitFor();
-  await frame.locator('[data-psko-language]').click();
+  assert.equal(await frame.locator('[data-lang="ko"]').count(), 1);
+  await Promise.all([page.waitForEvent('domcontentloaded'), frame.locator('[data-lang="ko"]').click()]);
+  await enterMenu('ko');
+  await frame.locator('[data-go="settings"]').click();
   await frame.locator('#scr-settings h2').filter({ hasText: /^설정$/ }).waitFor();
   await frame.locator('#set-close').click();
   for (const viewport of [{ width: 1920, height: 1080 }, { width: 1365, height: 960 }, { width: 960, height: 600 }]) {

@@ -672,6 +672,11 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
     "No. {x} · {x}"
   ],
   [
+    "{x} · {x} niveles",
+    "{x} · {x} levels",
+    "{x} · 강화 {x}레벨"
+  ],
+  [
     "· {x} niveles",
     "· {x} niveles",
     "· 강화 {x}레벨"

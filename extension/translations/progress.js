@@ -272,7 +272,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Colección",
     "Collection",
-    "컬렉션"
+    "도감"
   ],
   [
     "Supervivencia",

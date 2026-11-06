@@ -450,6 +450,28 @@ test('translates dex controls and protected nature and ability names without cha
   await expect(detail.locator('button').first()).toHaveText('Rarity');
 });
 
+test('gacha result cards translate natures and abilities without changing the hidden-ability marker', async () => {
+  const pairs = [
+    ['Bashful', 'Pickup', '수줍음 · 픽업'], ['Docile', 'Blaze', '온순 · 맹화'],
+    ['Bashful', 'Anticipation', '수줍음 · 위험예지'], ['Jolly', 'Shed Skin', '명랑 · 탈피'],
+    ['Lonely', 'Swarm', '외로움 · 벌레의알림'], ['Naive', 'Shed Skin', '천진난만 · 탈피'],
+    ['Bashful', 'Inner Focus', '수줍음 · 정신력'], ['Lonely', 'Flower Gift', '외로움 · 플라워기프트'],
+    ['Sassy', 'Levitate', '건방 · 부유'],
+  ];
+  await frame.locator('body').evaluate((body, pairs) => {
+    const results = document.createElement('div');
+    results.id = 'pull-results';
+    results.innerHTML = pairs.map(([nature, ability]) =>
+      `<div class="pcard"><div class="pmon" translate="no">${nature} · <span class="gold">${ability}</span></div></div>`).join('');
+    body.append(results);
+  }, pairs);
+  const cards = frame.locator('#pull-results .pmon');
+  await expect(cards).toHaveText(pairs.map(pair => pair[2]));
+  await expect(cards.locator('span.gold')).toHaveCount(9);
+  await popup.locator('#enabled').uncheck();
+  await expect(cards).toHaveText(pairs.map(([nature, ability]) => `${nature} · ${ability}`));
+});
+
 test('translates account notices and populated run summaries while preserving player tabs', async () => {
   await frame.locator('body').evaluate((body) => {
     body.insertAdjacentHTML('beforeend', `<section id="scr-savenote"><div class="box" translate="no">

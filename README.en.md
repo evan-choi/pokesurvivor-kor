@@ -15,7 +15,7 @@ Keep the installed folder in place. Do not move or delete it.
 
 ## Change language
 
-Choose a language under **설정 → 그래픽 → 언어** (Settings → Graphics → Language). You can also turn **한국어로 플레이** on or off from the extension icon in Chrome.
+Choose a language under **설정 → 그래픽 → 언어** (Settings → Graphics → Language). You can also turn **한국어로 플레이** on or off from the extension icon in Chrome. Changing the language reloads the game.
 
 ## Owned Pokémon tiers
 

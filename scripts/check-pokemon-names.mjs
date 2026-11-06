@@ -10,8 +10,9 @@ if (!process.argv.includes('--online')) {
 }
 
 const context = vm.createContext({});
-for (const file of ['moves', 'menus', 'progress', 'settings', 'extra', 'shop', 'pokedex', 'interface', 'changelog', 'pokemon']) {
-  vm.runInContext(await readFile(new URL(`../extension/translations/${file}.js`, import.meta.url), 'utf8'), context);
+const manifest = JSON.parse(await readFile(new URL('../extension/manifest.json', import.meta.url), 'utf8'));
+for (const file of manifest.content_scripts[0].js.filter(path => path.startsWith('translations/'))) {
+  vm.runInContext(await readFile(new URL(`../extension/${file}`, import.meta.url), 'utf8'), context);
 }
 vm.runInContext(await readFile(new URL('../extension/translation-core.js', import.meta.url), 'utf8'), context);
 
@@ -106,5 +107,19 @@ for (const [, english, korean] of context.PSKO_MESSAGES) {
   assert.equal(korean, itemNames.get(english), `도구 이름: ${english}`);
   itemCount++;
 }
-console.log(`최신 PokéAPI 대조 통과: 포켓몬·별칭 ${Object.keys(context.PSKO_POKEMON).length}개, 게임 기술 ${gameMoveNames.length}개(특성명 1개 포함), 타입 18개, 지방 9개, 도구 ${itemCount}개.`);
 
+// Korean names recorded in the Wonder Orb multilingual table, including the
+// Spanish aliases used by the game: https://bulbapedia.bulbagarden.net/wiki/Wonder_Orb#In_other_languages
+for (const [spanish, english, korean] of [
+  ['Soporesfera', 'Slumber Orb', '잠들기구슬'],
+  ['Ralentosfera', 'Slow Orb', '둔화의구슬'],
+  ['Rafagaesfera', 'Blowback Orb', '날려버리기구슬'],
+  ['Luminosfera', 'Luminous Orb', '빛의구슬'],
+  ['Rapidosfera', 'Quick Orb', '발빠름구슬'],
+  ['Mundo Misterioso', 'Mystery Dungeon', '불가사의 던전'],
+]) {
+  assert.equal(context.PSKO.translate(spanish), korean, spanish);
+  assert.equal(context.PSKO.translate(english), korean, english);
+}
+
+console.log(`명칭 대조 통과: 포켓몬·별칭 ${Object.keys(context.PSKO_POKEMON).length}개, 게임 기술 ${gameMoveNames.length}개(특성명 1개 포함), 타입 18개, 지방 9개, 도구 ${itemCount}개, 불가사의 던전 명칭 6개.`);

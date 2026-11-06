@@ -146,7 +146,7 @@ test('popup remains visible and usable while the guide is slow', async () => {
     await expect(popup.getByRole('heading', { name: '한국어 모드' })).toBeVisible();
     await expect(popup.locator('#enabled')).toBeEnabled();
     await popup.locator('#enabled').uncheck();
-    await expect(popup.locator('#status')).toContainText('게임의 원래 언어');
+    await expect(popup.locator('#status')).toContainText('원본 언어');
     release();
     await expect(popup.locator('#collection-count')).toHaveText('3마리');
   } finally {

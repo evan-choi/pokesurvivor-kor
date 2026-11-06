@@ -7,7 +7,7 @@ const status = document.getElementById('status');
 
 function render(enabled) {
   toggle.checked = enabled;
-  status.textContent = enabled ? '한국어 모드가 켜져 있습니다.' : '게임의 원래 언어를 사용합니다.';
+  status.textContent = enabled ? '한국어 · 전환하면 게임 새로고침' : '원본 언어 · 전환하면 게임 새로고침';
 }
 
 chrome.storage.local.get({ enabled: true }).then(({ enabled }) => {

@@ -492,7 +492,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Si creas una cuenta, guardamos tu nombre de jugador y tu partida (colección, monedas, mejoras y estadísticas) en Google Firebase para que puedas seguir en cualquier ordenador. Si entras con Google, Firebase guarda también tu correo de Google para identificarte (nunca se enseña a otros jugadores). No usamos tus datos para nada más, ni los compartimos, ni hay publicidad ni seguimiento. Como invitado no se guarda nada fuera de tu navegador.",
     "If you create an account, we store your player name and your game (collection, coins, upgrades and stats) in Google Firebase so you can continue on any computer. If you sign in with Google, Firebase also stores your Google email to identify you (it is never shown to other players). We don't use your data for anything else, we don't share it, and there are no ads or tracking. As a guest, nothing is stored outside your browser.",
-    "계정을 만들면 어떤 컴퓨터에서든 이어서 플레이할 수 있도록 플레이어 이름과 게임 데이터(컬렉션, 코인, 강화, 통계)를 Google Firebase에 저장합니다. Google로 로그인하면 본인 확인을 위해 Google 이메일도 Firebase에 저장하며, 다른 플레이어에게는 공개하지 않습니다. 데이터를 다른 목적으로 사용하거나 공유하지 않으며 광고나 추적도 하지 않습니다. 게스트로 플레이하면 브라우저 밖에는 아무것도 저장하지 않습니다."
+    "계정을 만들면 어떤 컴퓨터에서든 이어서 플레이할 수 있도록 플레이어 이름과 게임 데이터(도감, 코인, 강화, 통계)를 Google Firebase에 저장합니다. Google로 로그인하면 본인 확인을 위해 Google 이메일도 Firebase에 저장하며, 다른 플레이어에게는 공개하지 않습니다. 데이터를 다른 목적으로 사용하거나 공유하지 않으며 광고나 추적도 하지 않습니다. 게스트로 플레이하면 브라우저 밖에는 아무것도 저장하지 않습니다."
   ],
   [
     "Amigos y ranking: tu",
