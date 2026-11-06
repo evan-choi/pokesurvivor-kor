@@ -374,6 +374,23 @@ test('loads the supplied Korean font and centers menu icons across title and des
   await expect(frame.locator('.menu-item small').first()).toHaveCSS('text-shadow', 'rgb(10, 20, 48) 2px 2px 0px');
 });
 
+test('centers Korean glyphs and counters across common control sizes', async () => {
+  const offsets = await frame.locator('body').evaluate(() => {
+    const context = document.createElement('canvas').getContext('2d');
+    return [13, 14, 16, 22].flatMap((size) => ['600', '0', '풀', '전체', '최근 포획순'].map((text) => {
+      context.font = `700 ${size}px "NeoDunggeunmo"`;
+      const m = context.measureText(text);
+      return {
+        size, text,
+        offset: (m.fontBoundingBoxAscent - m.fontBoundingBoxDescent - m.actualBoundingBoxAscent + m.actualBoundingBoxDescent) / 2,
+      };
+    }));
+  });
+  for (const sample of offsets) {
+    expect(Math.abs(sample.offset), `${sample.size}px ${sample.text}`).toBeLessThan(0.9);
+  }
+});
+
 test('centers direct and wrapped dex filter icons at the same height', async () => {
   await frame.locator('body').evaluate((body) => {
     const icon = `<img class="pix" width="12" height="12" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='6'/%3E%3C/svg%3E">`;

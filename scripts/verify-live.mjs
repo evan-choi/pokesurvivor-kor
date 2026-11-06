@@ -16,6 +16,27 @@ page.setDefaultTimeout(20_000);
 const errors = [];
 page.on('pageerror', (error) => errors.push(error.message));
 
+async function checkTextAlignment(selectors) {
+  const samples = await page.locator(selectors).evaluateAll((elements) => elements.filter((element) => element.checkVisibility()).flatMap((element) => {
+    const text = [...element.childNodes].find((node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
+    if (!text) return [];
+    const range = document.createRange();
+    range.selectNodeContents(text);
+    if (range.getClientRects().length !== 1) return [];
+    const textBox = range.getBoundingClientRect();
+    const box = (element.closest('.pill') || element).getBoundingClientRect();
+    const style = getComputedStyle(element);
+    const context = document.createElement('canvas').getContext('2d');
+    context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    const metrics = context.measureText(text.textContent.trim());
+    const baseline = textBox.bottom - metrics.fontBoundingBoxDescent;
+    const inkCenter = baseline + (metrics.actualBoundingBoxDescent - metrics.actualBoundingBoxAscent) / 2;
+    return [{ text: text.textContent.trim(), offset: inkCenter - box.top - box.height / 2 }];
+  }));
+  assert.ok(samples.length > 0, 'The layout check must measure visible text.');
+  assert.ok(samples.every(({ offset }) => Math.abs(offset) <= 1), `Off-center text: ${JSON.stringify(samples)}`);
+}
+
 try {
   // Run only in this disposable browser; never submit an account, score or save.
   await context.route('**/*', (route) => {
@@ -46,6 +67,11 @@ try {
   await frame.locator('[data-psko-language]').click();
   await frame.locator('#scr-settings h2').filter({ hasText: /^설정$/ }).waitFor();
   await frame.locator('#set-close').click();
+  for (const viewport of [{ width: 1920, height: 1080 }, { width: 1365, height: 960 }, { width: 960, height: 600 }]) {
+    await page.setViewportSize(viewport);
+    await checkTextAlignment('#coins, #btn-logout, #menu-partner-info .type');
+  }
+  await page.setViewportSize({ width: 1365, height: 960 });
   await page.screenshot({ path: path.join(output, 'menu-korean.png'), animations: 'disabled' });
   const menu = await frame.locator('#scr-menu').innerText();
   assert.match(menu, /켈리몬 상점/);
@@ -62,6 +88,7 @@ try {
 
   await frame.locator('[data-go="dex"]').click();
   await frame.locator('#dex-grid .cell:not(.locked)').first().click();
+  await checkTextAlignment('#dex-filters .chip, .dex-sort .chip, #dex-detail .type');
   const dexText = await frame.locator('#scr-dex').innerText();
   assert.match(dexText, /희귀도/);
   assert.match(dexText, /최근 포획순/);
