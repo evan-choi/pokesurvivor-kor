@@ -4,7 +4,7 @@
   font-style: normal;
   font-weight: 400;
   /* Balance Neo둥근모's baseline for centered Korean labels and counters. */
-  ascent-override: 81.25%;
-  descent-override: 18.75%;
+  ascent-override: 80%;
+  descent-override: 21%;
   font-display: swap;
 }
