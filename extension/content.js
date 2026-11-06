@@ -15,6 +15,7 @@
     if (!owner) return false;
     // These containers contain fixed game copy, not player-entered names or room codes.
     if (owner.matches('#news-body > .news-day, #rk-me > span')) return false;
+    if (owner.matches('#dex-detail .mon-extra > .mx-row:nth-child(-n+2) > b')) return false;
     if (owner.matches('#user-pill > span') && owner.parentElement.querySelector('.sync.guest')) return false;
     return true;
   }
@@ -36,6 +37,10 @@
       );
     const translate = moveName ? globalThis.PSKO.translateMove : globalThis.PSKO.translate;
     let translated = enabled ? translate(source) : source;
+    if (enabled && key === 'text' && element.matches('#dex-detail .mon-extra > .mx-row:nth-child(-n+2) > b')) {
+      const names = element.parentElement.matches(':first-child') ? globalThis.PSKO_NATURES : globalThis.PSKO_ABILITIES;
+      translated = source.replace(/\S(?:[\s\S]*\S)?/, (name) => names?.[name] || name);
+    }
     if (enabled && key === 'text' && element.id === 'starter-info') {
       translated = source.split(/(\s*[·,]\s*)/).map((part, index) => (
         index === 0 ? globalThis.PSKO.translateMove(part) : globalThis.PSKO.translate(part)

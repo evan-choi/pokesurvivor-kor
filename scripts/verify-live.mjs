@@ -62,6 +62,11 @@ try {
 
   await frame.locator('[data-go="dex"]').click();
   await frame.locator('#dex-grid .cell:not(.locked)').first().click();
+  const dexText = await frame.locator('#scr-dex').innerText();
+  assert.match(dexText, /희귀도/);
+  assert.match(dexText, /최근 포획순/);
+  assert.match(dexText, /많이 사용한 순/);
+  assert.doesNotMatch(dexText.replace(/(?:No\.|Nº)\s*\d+/g, ''), /[\p{Script=Latin}\p{Script=Han}]/u);
   await page.screenshot({ path: path.join(output, 'pokedex-korean.png'), animations: 'disabled' });
   await frame.locator('#scr-dex [data-back]').click();
   await frame.locator('[data-go="shop"]').click();

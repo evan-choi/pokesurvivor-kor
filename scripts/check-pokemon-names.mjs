@@ -10,7 +10,7 @@ if (!process.argv.includes('--online')) {
 }
 
 const context = vm.createContext({});
-for (const file of ['moves', 'menus', 'progress', 'settings', 'extra', 'shop', 'interface', 'changelog', 'pokemon']) {
+for (const file of ['moves', 'menus', 'progress', 'settings', 'extra', 'shop', 'pokedex', 'interface', 'changelog', 'pokemon']) {
   vm.runInContext(await readFile(new URL(`../extension/translations/${file}.js`, import.meta.url), 'utf8'), context);
 }
 vm.runInContext(await readFile(new URL('../extension/translation-core.js', import.meta.url), 'utf8'), context);
@@ -59,11 +59,20 @@ async function names(filename) {
   return [...records.values()];
 }
 
-const [species, moves, types, items, regions, abilities] = await Promise.all([
+const [species, moves, types, items, regions, abilities, natures] = await Promise.all([
   names('pokemon_species_names.csv'), names('move_names.csv'), names('type_names.csv'),
   names('item_names.csv'), names('region_names.csv'), names('ability_names.csv'),
+  names('nature_names.csv'),
 ]);
 const koreanByEnglish = (records) => new Map(records.filter((record) => record[3] && record[9]).map((record) => [record[9], record[3]]));
+for (const [dictionary, records] of [[context.PSKO_NATURES, natures], [context.PSKO_ABILITIES, abilities]]) {
+  for (const record of records) {
+    if (!record[3]) continue;
+    for (const language of [7, 9]) {
+      if (record[language]) assert.equal(dictionary[record[language]], record[3], `성격·특성 이름: ${record[language]}`);
+    }
+  }
+}
 const normalize = (text) => text.replaceAll('’', "'").toLowerCase();
 const speciesByAlias = new Map();
 for (const record of species) {

@@ -374,6 +374,39 @@ test('loads the supplied Korean font and centers menu icons across title and des
   await expect(frame.locator('.menu-item small').first()).toHaveCSS('text-shadow', 'rgb(10, 20, 48) 2px 2px 0px');
 });
 
+test('translates dex controls and protected nature and ability names without changing player names', async () => {
+  await frame.locator('#dex-detail').evaluate((detail) => {
+    detail.innerHTML = `<input placeholder="Search by name or number"><select><option value="grass">All types</option></select>
+      <button>Rarity</button><button>Recently caught</button><button>Most played</button><button>Favorites</button>
+      <button>Mark as favorite</button><span>Sort:</span><span>Sp. Atk</span><span>Defense</span><span>Sp. Def</span>
+      <p>Hits harder with <b>physical moves</b></p>
+      <div class="mon-extra">
+        <div class="mx-row"><span>Nature</span><b translate="no">Rash</b><small>+Sp. Atk −Sp. Def</small></div>
+        <div class="mx-row"><span>Ability</span><b translate="no">Overgrow</b></div>
+        <p>+35% Grass-type damage at low HP (under 1/3).</p>
+        <div class="mx-row"><span>TM</span><small>It has not learned any yet</small></div>
+      </div><p>Single type: +20% damage with its Grass-type moves</p>
+      <div class="player-name" translate="no">Rash</div>`;
+  });
+  const detail = frame.locator('#dex-detail');
+  await expect(detail.locator('button')).toHaveText(['희귀도', '최근 포획순', '많이 사용한 순', '즐겨찾기', '즐겨찾기 추가']);
+  await expect(detail.locator('input')).toHaveAttribute('placeholder', '이름 또는 도감 번호로 검색');
+  await expect(detail.locator('option')).toHaveAttribute('value', 'grass');
+  await expect(detail.locator('.mx-row > b')).toHaveText(['덜렁', '심록']);
+  await expect(detail.locator('.mx-row > small').first()).toHaveText('+특수공격 −특수방어');
+  await expect(detail.locator('.player-name')).toHaveText('Rash');
+  expect(await detail.evaluate((element) => {
+    const copy = element.cloneNode(true);
+    copy.querySelector('.player-name').remove();
+    return copy.textContent;
+  })).not.toMatch(/[a-z]/i);
+  await detail.locator('.mx-row > b').first().evaluate((node) => { node.textContent = 'Calm'; });
+  await expect(detail.locator('.mx-row > b').first()).toHaveText('차분');
+  await popup.locator('#enabled').uncheck();
+  await expect(detail.locator('.mx-row > b')).toHaveText(['Calm', 'Overgrow']);
+  await expect(detail.locator('button').first()).toHaveText('Rarity');
+});
+
 test('leaves authentication pages untouched and preserves native registration forms', async () => {
   const auth = await context.newPage();
   await auth.route('**/*', (route) => route.fulfill({ contentType: 'text/html', body: `

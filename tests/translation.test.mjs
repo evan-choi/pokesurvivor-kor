@@ -25,7 +25,7 @@ function readMessages(name) {
 }
 
 const context = vm.createContext({});
-for (const name of [...gameDictionaries.map(([name]) => name), 'extra', 'shop', 'interface', 'changelog', 'pokemon']) {
+for (const name of [...gameDictionaries.map(([name]) => name), 'extra', 'shop', 'pokedex', 'interface', 'changelog', 'pokemon']) {
   evaluate(context, `translations/${name}.js`);
 }
 evaluate(context, 'translation-core.js');
@@ -80,7 +80,7 @@ test('all 1,188 game messages have complete translations and matching placeholde
 });
 
 test('audited interface, shop and changelog text resolves as a complete phrase in both input forms', () => {
-  for (const file of ['interface', 'shop', 'changelog']) {
+  for (const file of ['interface', 'shop', 'pokedex', 'changelog']) {
     for (const [source, intermediate, korean] of readMessages(file)) {
       const count = (text) => (text.match(/\{x\}/g) || []).length;
       assert.equal(count(source), count(korean), source);
