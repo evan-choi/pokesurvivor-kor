@@ -2,7 +2,7 @@
 Pokémon species names: PokéAPI (English language 9 / Korean language 3).
 Source: https://github.com/PokeAPI/pokeapi/blob/master/data/v2/csv/pokemon_species_names.csv
 Retrieved: 2026-11-04
-Includes Spanish names observed in PokeSurvivor and straight-apostrophe aliases.
+Includes Spanish names observed in PokéSurvivor and straight-apostrophe aliases.
 
 Copyright (c) © 2013–2023 Paul Hallett and PokéAPI contributors (https://github.com/PokeAPI/pokeapi#contributing). Pokémon and Pokémon character names are trademarks of Nintendo.
 

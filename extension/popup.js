@@ -54,7 +54,7 @@ async function loadRankings(refresh) {
       }
       cached = tierCache;
     } catch (error) {
-      console.error('[PokeSurvivor 한국어] 저장된 티어 읽기 실패', error);
+      console.error('[PokéSurvivor 한국어] 저장된 티어 읽기 실패', error);
     }
   }
   if (!refresh && cached && Date.now() - cached.fetchedAt < cacheDuration) return cached;
@@ -68,12 +68,12 @@ async function loadRankings(refresh) {
     try {
       await chrome.storage.local.set({ tierCache: result });
     } catch (error) {
-      console.error('[PokeSurvivor 한국어] 티어 저장 실패', error);
+      console.error('[PokéSurvivor 한국어] 티어 저장 실패', error);
       return { ...result, notice: '티어를 표시했지만 기기에 저장하지 못했습니다.' };
     }
     return result;
   } catch (error) {
-    console.error('[PokeSurvivor 한국어] 티어 불러오기 실패', error);
+    console.error('[PokéSurvivor 한국어] 티어 불러오기 실패', error);
     if (cached) return { ...cached, notice: '티어를 갱신하지 못해 마지막으로 저장한 티어를 표시합니다.' };
     throw new Error('티어를 불러오지 못했습니다. 인터넷 연결을 확인하고 다시 시도하세요.');
   }
@@ -162,7 +162,7 @@ async function loadCollection(refresh = false) {
     collectionStatus.textContent = rankings.notice || '전체 순위가 높은 순서입니다.';
     tierUpdated.textContent = `티어 확인: ${new Date(rankings.fetchedAt).toLocaleString('ko-KR')}`;
   } catch (error) {
-    console.error('[PokeSurvivor 한국어] 보유 목록 표시 실패', error);
+    console.error('[PokéSurvivor 한국어] 보유 목록 표시 실패', error);
     collectionStatus.textContent = error.message || '보유 목록을 불러오지 못했습니다. 다시 시도하세요.';
   } finally {
     refreshCollection.disabled = false;

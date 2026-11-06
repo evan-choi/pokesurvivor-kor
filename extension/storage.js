@@ -15,7 +15,7 @@
       enabled = value;
       publish();
     } catch (error) {
-      console.error('[PokeSurvivor 한국어] 설정 저장 실패', error);
+      console.error('[PokéSurvivor 한국어] 설정 저장 실패', error);
       document.dispatchEvent(new Event('psko:storage-error'));
     }
   });
@@ -28,7 +28,7 @@
     enabled = settings.enabled !== false;
     publish();
   }).catch((error) => {
-    console.error('[PokeSurvivor 한국어] 설정 읽기 실패', error);
+    console.error('[PokéSurvivor 한국어] 설정 읽기 실패', error);
     publish();
   });
 })();

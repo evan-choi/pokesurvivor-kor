@@ -2,7 +2,7 @@
 
 프로젝트 기본 라이선스는 `LICENSE`에 있습니다. 아래 자료의 원래 라이선스와 저작권 고지는 그대로 적용되며, 프로젝트 기본 라이선스가 이를 대체하지 않습니다.
 
-## PokeSurvivor
+## PokéSurvivor
 
 - 원저작권 표시: **Copyright 2026 JPTER78**
 - 게임: [공식 웹사이트](https://pokesurvivor.com/), [제작자 배포 페이지](https://jpter78.itch.io/pokesurvivor)

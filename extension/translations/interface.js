@@ -49,32 +49,32 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Inicio de sesión de PokeSurvivor",
     "Inicio de sesión de PokeSurvivor",
-    "PokeSurvivor 로그인"
+    "PokéSurvivor 로그인"
   ],
   [
     "PokeSurvivor sign-in",
     "PokeSurvivor sign-in",
-    "PokeSurvivor 로그인"
+    "PokéSurvivor 로그인"
   ],
   [
     "PokeSurvivor 登录",
     "PokeSurvivor 登录",
-    "PokeSurvivor 로그인"
+    "PokéSurvivor 로그인"
   ],
   [
     "Cuenta de juego de PokeSurvivor",
     "Account de juego de PokeSurvivor",
-    "PokeSurvivor 게임 계정"
+    "PokéSurvivor 게임 계정"
   ],
   [
     "PokeSurvivor game account",
     "PokeSurvivor game account",
-    "PokeSurvivor 게임 계정"
+    "PokéSurvivor 게임 계정"
   ],
   [
     "PokeSurvivor 游戏账号",
     "PokeSurvivor 游戏账号",
-    "PokeSurvivor 게임 계정"
+    "PokéSurvivor 게임 계정"
   ],
   [
     "Cerrar inicio de sesión",
@@ -289,17 +289,17 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Esta cuenta se administra con el inicio de sesión de PokeSurvivor.",
     "Esta Account se administra con el inicio de sesión de PokeSurvivor.",
-    "이 계정은 PokeSurvivor 게임 로그인으로 관리됩니다."
+    "이 계정은 PokéSurvivor 게임 로그인으로 관리됩니다."
   ],
   [
     "This account is managed by PokeSurvivor game sign-in.",
     "This account is managed by PokeSurvivor game sign-in.",
-    "이 계정은 PokeSurvivor 게임 로그인으로 관리됩니다."
+    "이 계정은 PokéSurvivor 게임 로그인으로 관리됩니다."
   ],
   [
     "账号已由 PokeSurvivor 游戏登录管理。",
     "账号已由 PokeSurvivor 游戏登录管理。",
-    "이 계정은 PokeSurvivor 게임 로그인으로 관리됩니다."
+    "이 계정은 PokéSurvivor 게임 로그인으로 관리됩니다."
   ],
   [
     "Termina la elección actual antes de iniciar sesión.",
@@ -319,17 +319,17 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Usa la misma cuenta en PokeSurvivor y en todos los sitios que integren el juego. También puedes jugar como invitado.",
     "Usa la misma Account en PokeSurvivor y en All los sitios que integren el juego. También puedes Play as guest.",
-    "PokeSurvivor와 이 게임을 제공하는 사이트에서 같은 게임 계정을 사용할 수 있습니다. 게스트로도 플레이할 수 있습니다."
+    "PokéSurvivor와 이 게임을 제공하는 사이트에서 같은 게임 계정을 사용할 수 있습니다. 게스트로도 플레이할 수 있습니다."
   ],
   [
     "Use the same game account on PokeSurvivor and every site that embeds the game. You can also play as a guest.",
     "Use the same game account on PokeSurvivor and every site that embeds the game. You can also play as a guest.",
-    "PokeSurvivor와 이 게임을 제공하는 사이트에서 같은 게임 계정을 사용할 수 있습니다. 게스트로도 플레이할 수 있습니다."
+    "PokéSurvivor와 이 게임을 제공하는 사이트에서 같은 게임 계정을 사용할 수 있습니다. 게스트로도 플레이할 수 있습니다."
   ],
   [
     "游戏账号可在 PokeSurvivor 官网及嵌入游戏的网站共用。游客也可以直接开始游戏。",
     "游戏账号可在 PokeSurvivor 官网及嵌入游戏的网站共用。游客也可以直接开始游戏。",
-    "PokeSurvivor와 이 게임을 제공하는 사이트에서 같은 게임 계정을 사용할 수 있습니다. 게스트로도 플레이할 수 있습니다."
+    "PokéSurvivor와 이 게임을 제공하는 사이트에서 같은 게임 계정을 사용할 수 있습니다. 게스트로도 플레이할 수 있습니다."
   ],
   [
     "Sesión iniciada mediante tu cuenta de PokeSurvivor.pro.",

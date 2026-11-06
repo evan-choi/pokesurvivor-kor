@@ -2,7 +2,7 @@
   "name": "pokesurvivor-kor",
   "version": "0.1.0",
   "private": true,
-  "description": "PokeSurvivor 한국어 모드 Chrome extension",
+  "description": "PokéSurvivor 한국어 모드 Chrome extension",
   "license": "PolyForm-Noncommercial-1.0.0",
   "author": "Evan Choi (https://github.com/evan-choi)",
   "repository": {

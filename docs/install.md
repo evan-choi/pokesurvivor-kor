@@ -1,4 +1,4 @@
-# PokeSurvivor 한국어 모드 설치
+# PokéSurvivor 한국어 모드 설치
 
 1. 설치 ZIP의 압축을 풉니다.
 2. Chrome 주소창에 `chrome://extensions`를 입력합니다.

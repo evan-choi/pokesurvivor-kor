@@ -27,7 +27,7 @@ export function readOwnedPokemon() {
     }
     return { owned: owned.map(Number) };
   } catch (error) {
-    console.error('[PokeSurvivor 한국어] 보유 목록 읽기 실패', error);
+    console.error('[PokéSurvivor 한국어] 보유 목록 읽기 실패', error);
     return { error: '보유 목록을 읽지 못했습니다. 게임을 새로고침해 주세요.' };
   }
 }

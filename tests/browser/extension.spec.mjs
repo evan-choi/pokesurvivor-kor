@@ -40,7 +40,7 @@ test.beforeAll(async () => {
   page.on('pageerror', (error) => errors.push(error.message));
   const management = await context.newPage();
   await management.goto('chrome://extensions');
-  const item = management.locator('extensions-item').filter({ hasText: 'PokeSurvivor' });
+  const item = management.locator('extensions-item').filter({ hasText: 'PokéSurvivor' });
   await expect(item).toHaveCount(1);
   const id = await item.getAttribute('id');
   popup = await context.newPage();
