@@ -205,6 +205,37 @@ try {
   await resetScreens(true);
   await frame.locator('[data-go="dex"]').click();
   await capture('dex');
+  // Exercise state-dependent labels, including the selected favorite state.
+  for (let index = 0; index < await frame.locator('#dex-filters .chip').count(); index++) {
+    await frame.locator('#dex-filters .chip').nth(index).click();
+    await capture(`dex-filter-${index}`);
+    if (index > 0) await frame.locator('#dex-filters .chip').nth(index).click();
+    await frame.locator('#dex-filters .chip').first().click();
+  }
+  for (let index = 0; index < await frame.locator('.dex-sort .chip').count(); index++) {
+    await frame.locator('.dex-sort .chip').nth(index).click();
+    await capture(`dex-sort-${index}`);
+  }
+  await frame.locator('#dex-q').fill('no-such-pokemon-99999');
+  await capture('dex-search-empty');
+  await frame.locator('#dex-q').fill('');
+  await frame.locator('#dex-type').selectOption('grass');
+  await capture('dex-type-grass');
+  await frame.locator('#dex-type').selectOption('');
+  // Select the all-region tab to include every owned fixture.
+  await frame.locator('#dex-gens .gen-tab').first().click();
+  await frame.locator('#dex-filters .chip').nth(1).click();
+  await capture('dex-owned-list');
+  const ownedCount = await frame.locator('#dex-grid .cell:not(.locked)').count();
+  if (ownedCount < 3) throw new Error('The audit must inspect all owned Pokémon fixtures.');
+  for (let index = 0; index < ownedCount; index++) {
+    await frame.locator('#dex-grid .cell:not(.locked)').nth(index).click();
+    await capture(`dex-owned-${index}`);
+    const favorite = frame.locator('#dex-detail button.chip').first();
+    await favorite.click();
+    await capture(`dex-favorite-${index}`);
+    await favorite.click();
+  }
   await resetScreens(true);
   await frame.locator('[data-go="upgrades"]').click();
   await capture('upgrades');
