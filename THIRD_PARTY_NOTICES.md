@@ -26,6 +26,12 @@ PokéAPI에서 제공하는 한국어 포켓몬·기술·타입·지방·도구 
 
 보유 목록의 이미지는 [PokéAPI sprites](https://github.com/PokeAPI/sprites)의 Showdown GIF와 PNG를 실행 중에 불러옵니다. 이미지 파일은 확장 프로그램에 포함하지 않습니다.
 
+## Pokemon DPPt
+
+게임과 팝업에 사용하는 **Pokemon DPPt** 폰트는 [aztecwarrior28의 FontStruction](https://fontstruct.com/fontstructions/show/1951915)이며, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)으로 제공됩니다.
+
+사용자가 제공한 WOFF2 파일을 변경 없이 포함했습니다. 원본의 `license.txt`와 `readme.txt`는 `extension/fonts/pokemon-dppt/`에 함께 보존합니다.
+
 ## PokéSurvivor Guide
 
 보유 목록의 티어와 전체 순위는 [PokéSurvivor Guide의 티어표](https://pokesurvivor.net/tier-list/)를, 도감 번호 연결은 [도감](https://pokesurvivor.net/pokedex/)을 실행 중에 읽어 사용합니다. 사이트의 HTML·스크립트는 확장 프로그램에 포함하지 않습니다. 사이트 자체의 능력치 기준 평가이며, 원본 게임의 공식 순위가 아닙니다.

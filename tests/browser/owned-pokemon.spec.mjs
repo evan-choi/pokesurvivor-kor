@@ -56,6 +56,7 @@ async function openPopup() {
   await page.bringToFront();
   await popup.goto(popupUrl);
   await expect(popup.locator('#refresh-collection')).toBeEnabled();
+  await popup.evaluate(() => document.fonts.ready);
 }
 
 test.beforeEach(async () => {
@@ -108,6 +109,7 @@ test('opens the toolbar popup and displays the active game collection', async ()
     await popup.evaluate(() => chrome.action.openPopup());
     await expect.poll(() => popup.evaluate(() => chrome.extension.getViews({ type: 'popup' })
       .map((view) => view.document.querySelector('#collection-count')?.textContent))).toEqual(['3마리']);
+    await popup.evaluate(() => Promise.all(chrome.extension.getViews({ type: 'popup' }).map((view) => view.document.fonts.ready)));
     const views = await popup.evaluate(() => chrome.extension.getViews({ type: 'popup' }).map((view) => ({
       names: [...view.document.querySelectorAll('.pokemon-name a')].map((node) => node.textContent),
       visible: view.document.visibilityState,

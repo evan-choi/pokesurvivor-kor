@@ -3,6 +3,7 @@
 
   let enabled = false;
   let gameDocument = false;
+  const fontFamily = '"Pokemon DPPt", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
   const detectGame = () => { gameDocument = !!document.querySelector('#tap-start, #scr-settings'); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', detectGame, { once: true });
   else detectGame();
@@ -26,12 +27,12 @@
       const original = prototype[method];
       prototype[method] = function (text, ...args) {
         const result = translate(text);
-        if (typeof result !== 'string' || !/[가-힣]/.test(result)) {
+        if (!enabled || !gameDocument || typeof result !== 'string') {
           return original.call(this, result, ...args);
         }
         const font = this.font;
-        // Retain the game's font size/weight while supplying Korean glyphs.
-        this.font = font.replace(/(\d+(?:\.\d+)?px(?:\s*\/\s*[^ ]+)?)\s+.*/, '$1 "Apple SD Gothic Neo", "Malgun Gothic", sans-serif');
+        // Use the same font for measuring and drawing, retaining size and weight.
+        this.font = font.replace(/(\d+(?:\.\d+)?px(?:\s*\/\s*[^ ]+)?)\s+.*/, `$1 ${fontFamily}`);
         try {
           return original.call(this, result, ...args);
         } finally {

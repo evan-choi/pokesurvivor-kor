@@ -55,6 +55,7 @@ test.beforeEach(async () => {
   await page.goto('https://pokesurvivor.com/');
   frame = page.frameLocator('iframe');
   await expect(frame.locator('#pokemon')).toHaveText('이상해씨');
+  await frame.locator('body').evaluate(() => document.fonts.ready);
 });
 
 test('loads in srcdoc, translates dynamic text and attributes, preserves player input', async () => {
@@ -312,7 +313,7 @@ test('profile title selector keeps its action on a separate line with and withou
   await page.setViewportSize({ width: 1280, height: 720 });
 });
 
-test('leaves canvas text outside the game and letter-animated boss headings unchanged', async () => {
+test('leaves host canvas unchanged and measures boss headings in the drawing font', async () => {
   const measure = (page) => page.evaluate(() => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -320,16 +321,48 @@ test('leaves canvas text outside the game and letter-animated boss headings unch
     return ctx.measureText('Bulbasaur').width;
   });
   const hostWidth = await measure(page);
+  const drawingFont = '20px "Pokemon DPPt", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
+  const expectedBossWidth = await page.evaluate(async (font) => {
+    await document.fonts.load(font, 'THE JUDGMENT');
+    const ctx = document.createElement('canvas').getContext('2d');
+    ctx.font = font;
+    return ctx.measureText('THE JUDGMENT').width;
+  }, drawingFont);
   const bossWidth = await frame.locator('canvas').evaluate((canvas) => {
     const ctx = canvas.getContext('2d');
     ctx.font = '20px monospace';
     return ctx.measureText('THE JUDGMENT').width;
   });
+  expect(bossWidth).toBe(expectedBossWidth);
   await popup.locator('#enabled').uncheck();
   await expect(frame.locator('#pokemon')).toHaveText('Bulbasaur');
   expect(await measure(page)).toBe(hostWidth);
-  expect(await frame.locator('canvas').evaluate((canvas) => canvas.getContext('2d').measureText('THE JUDGMENT').width)).toBe(bossWidth);
+  expect(await frame.locator('canvas').evaluate((canvas, font) => {
+    const ctx = canvas.getContext('2d');
+    ctx.font = font;
+    return ctx.measureText('THE JUDGMENT').width;
+  }, drawingFont)).toBe(expectedBossWidth);
   expect(errors).toEqual([]);
+});
+
+test('loads the supplied Korean font and centers menu icons across title and description', async () => {
+  expect(await frame.locator('body').evaluate(async () => (await document.fonts.load('16px "Pokemon DPPt"', '한글 ABC')).length)).toBe(1);
+  await expect(frame.locator('body')).toHaveCSS('font-family', /"Pokemon DPPt"/);
+  await frame.locator('body').evaluate((body) => {
+    body.insertAdjacentHTML('beforeend', `<style>
+      .menu-item { display: grid; grid-template-columns: 30px 1fr; gap: 4px 8px; padding: 12px; width: 220px; }
+      .menu-item small { grid-column: 2; }
+      .mi-ico { display: flex; width: 24px; height: 24px; }
+    </style><button class="menu-item"><span class="mi-ico">●</span><strong>플레이</strong><small>던전 입장</small></button>
+    <button class="menu-item"><span class="mi-ico">●</span><strong>뽑기</strong><small>여러 줄로 길게 표시되는 포켓몬과 색이 다른 포켓몬 설명</small></button>`);
+  });
+  const offsets = await frame.locator('.menu-item').evaluateAll((buttons) => buttons.map((button) => {
+    const box = button.getBoundingClientRect();
+    const icon = button.querySelector('.mi-ico').getBoundingClientRect();
+    return Math.abs(icon.y + icon.height / 2 - box.y - box.height / 2);
+  }));
+  expect(offsets).toHaveLength(2);
+  expect(offsets.every((offset) => offset < 1)).toBe(true);
 });
 
 test('leaves authentication pages untouched and preserves native registration forms', async () => {

@@ -1,5 +1,5 @@
 html.psko-enabled {
-  --font: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font: "Pokemon DPPt", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --muted: #d3def3;
 }
 
@@ -23,7 +23,7 @@ html.psko-enabled :where(body, body *) {
 }
 
 html.psko-enabled .logo .t1 {
-  font-family: "Pixelify", system-ui, sans-serif;
+  font-family: "Pokemon DPPt", "Pixelify", system-ui, sans-serif;
   text-shadow: 3px 3px 0 #a55f00, 6px 6px 0 var(--shadow) !important;
 }
 
@@ -55,10 +55,10 @@ html.psko-enabled .menu-item small {
   line-height: 1.45;
 }
 
-/* Pin the icon to the title row even when its Korean description wraps. */
+/* Center the icon across both the title and description rows. */
 html.psko-enabled .menu-item .mi-ico {
   grid-column: 1;
-  grid-row: 1;
+  grid-row: 1 / span 2;
   align-self: center;
   justify-content: center;
 }
@@ -152,5 +152,5 @@ html.psko-enabled .tab {
 }
 
 [data-psko-language] {
-  font-family: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  font-family: "Pokemon DPPt", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
 }

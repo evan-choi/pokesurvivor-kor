@@ -50,6 +50,14 @@ try {
   const menu = await frame.locator('#scr-menu').innerText();
   assert.match(menu, /켈리몬 상점/);
   assert.match(menu, /가방/);
+  assert.equal(await frame.evaluate(async () => (await document.fonts.load('16px "Pokemon DPPt"', '한글 ABC')).length), 1);
+  const iconOffsets = await frame.locator('.menu-item').evaluateAll((buttons) => buttons.map((button) => {
+    const bounds = button.getBoundingClientRect();
+    const icon = button.querySelector('.mi-ico').getBoundingClientRect();
+    return Math.abs(icon.y + icon.height / 2 - bounds.y - bounds.height / 2);
+  }));
+  assert.equal(iconOffsets.length, 10);
+  assert.ok(iconOffsets.every((offset) => offset < 1), 'Menu icons must be centered across the title and description.');
   console.log('Korean menu:', menu);
 
   await frame.locator('[data-go="dex"]').click();
