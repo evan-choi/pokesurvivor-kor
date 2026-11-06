@@ -354,11 +354,10 @@ test('loads the supplied Korean font and centers menu icons across title and des
     const metrics = context.measureText('한글 모부기 ABC');
     return metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
   });
-  expect(glyphHeight).toBeGreaterThanOrEqual(13);
-  expect(glyphHeight).toBeLessThanOrEqual(16);
+  expect(glyphHeight).toBeCloseTo(12, 0);
   await frame.locator('body').evaluate((body) => {
     body.insertAdjacentHTML('beforeend', `<style>
-      .menu-item { display: grid; grid-template-columns: 30px 1fr; gap: 4px 8px; padding: 12px; width: 220px; }
+      .menu-item { display: grid; grid-template-columns: 30px 1fr; gap: 4px 8px; padding: 12px; width: 220px; text-shadow: 2px 2px 0 #0a1430; }
       .menu-item small { grid-column: 2; }
       .mi-ico { display: flex; width: 24px; height: 24px; }
     </style><button class="menu-item"><span class="mi-ico">●</span><strong>플레이</strong><small>던전 입장</small></button>
@@ -371,6 +370,8 @@ test('loads the supplied Korean font and centers menu icons across title and des
   }));
   expect(offsets).toHaveLength(2);
   expect(offsets.every((offset) => offset < 1)).toBe(true);
+  await expect(frame.locator('.menu-item').first()).toHaveCSS('text-shadow', 'rgb(10, 20, 48) 2px 2px 0px');
+  await expect(frame.locator('.menu-item small').first()).toHaveCSS('text-shadow', 'rgb(10, 20, 48) 2px 2px 0px');
 });
 
 test('leaves authentication pages untouched and preserves native registration forms', async () => {

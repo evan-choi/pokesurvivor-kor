@@ -17,14 +17,8 @@ html.psko-enabled textarea {
   font-family: var(--font);
 }
 
-/* The game's hard pixel shadows merge the closely spaced strokes in Hangul. */
-html.psko-enabled :where(body, body *) {
-  text-shadow: none !important;
-}
-
 html.psko-enabled .logo .t1 {
   font-family: "Pokemon DPPt", "Pixelify", system-ui, sans-serif;
-  text-shadow: 3px 3px 0 #a55f00, 6px 6px 0 var(--shadow) !important;
 }
 
 html.psko-enabled .box :is(h1, h2, h3),
