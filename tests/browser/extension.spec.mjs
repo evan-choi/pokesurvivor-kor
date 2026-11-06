@@ -250,3 +250,37 @@ test('leaves canvas text outside the game and letter-animated boss headings unch
   expect(await frame.locator('canvas').evaluate((canvas) => canvas.getContext('2d').measureText('THE JUDGMENT').width)).toBe(bossWidth);
   expect(errors).toEqual([]);
 });
+
+test('leaves authentication pages untouched and preserves native registration forms', async () => {
+  const auth = await context.newPage();
+  await auth.route('**/*', (route) => route.fulfill({ contentType: 'text/html', body: `
+    <!doctype html><html lang="en"><body>
+      <form><label>Name<input name="name" required></label>
+        <label>Email<input name="email" type="email" required></label>
+        <label>Password<input name="password" type="password" minlength="8" required></label>
+        <button type="submit">Create account</button>
+      </form><p id="result"></p>
+      <script>document.querySelector('form').onsubmit = (event) => {
+        event.preventDefault();
+        document.querySelector('#result').textContent = 'Submitted';
+      };</script>
+    </body></html>` }));
+  try {
+    for (const url of [
+      'https://pokesurvivor.pro/game-auth?mode=login&embed=1',
+      'https://pokesurvivor.pro/ko/game-auth?mode=login',
+      'https://www.pokesurvivor.pro/game-auth?mode=google',
+    ]) {
+      await auth.goto(url);
+      expect(await auth.evaluate(() => typeof globalThis.PSKO)).toBe('undefined');
+      expect(await auth.evaluate(() => /\[native code\]/.test(window.alert.toString()))).toBe(true);
+      await auth.locator('[name="name"]').fill('LocalTest');
+      await auth.locator('[name="email"]').fill('local-test@example.com');
+      await auth.locator('[name="password"]').fill('LocalTestOnly9!');
+      await auth.getByRole('button', { name: 'Create account' }).click();
+      await expect(auth.locator('#result')).toHaveText('Submitted');
+    }
+  } finally {
+    await auth.close();
+  }
+});
