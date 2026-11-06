@@ -374,6 +374,28 @@ test('loads the supplied Korean font and centers menu icons across title and des
   await expect(frame.locator('.menu-item small').first()).toHaveCSS('text-shadow', 'rgb(10, 20, 48) 2px 2px 0px');
 });
 
+test('centers direct and wrapped dex filter icons at the same height', async () => {
+  await frame.locator('body').evaluate((body) => {
+    const icon = `<img class="pix" width="12" height="12" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='6'/%3E%3C/svg%3E">`;
+    body.insertAdjacentHTML('beforeend', `<style>
+      .chip { border: 2px solid; padding: 4px 10px; }
+      img.pix { vertical-align: middle; }
+    </style><section id="scr-dex"><div id="dex-filters">
+      <button class="chip">${icon} 색이 다른</button>
+      <button class="chip">${icon} 즐겨찾기</button>
+      <button class="chip"><span class="rarity-ball">${icon}</span> 전설</button>
+      <button class="chip"><span class="rarity-ball">${icon}</span> 일반</button>
+    </div></section>`);
+  });
+  const offsets = await frame.locator('#dex-filters .chip').evaluateAll((buttons) => buttons.map((button) => {
+    const box = button.getBoundingClientRect();
+    const icon = button.querySelector('img').getBoundingClientRect();
+    return Math.abs(icon.top + icon.height / 2 - box.top - box.height / 2);
+  }));
+  expect(offsets).toHaveLength(4);
+  expect(offsets.every((offset) => offset < 0.5)).toBe(true);
+});
+
 test('translates dex controls and protected nature and ability names without changing player names', async () => {
   await frame.locator('#dex-detail').evaluate((detail) => {
     detail.innerHTML = `<input placeholder="Search by name or number"><select><option value="grass">All types</option></select>
@@ -395,6 +417,10 @@ test('translates dex controls and protected nature and ability names without cha
   await expect(detail.locator('.mx-row > b')).toHaveText(['덜렁', '심록']);
   await expect(detail.locator('.mx-row > small').first()).toHaveText('+특수공격 −특수방어');
   await expect(detail.locator('.player-name')).toHaveText('Rash');
+  await detail.locator('button').last().evaluate((button) => { button.textContent = '★ Favorite'; });
+  await expect(detail.locator('button').last()).toHaveText('★ 즐겨찾기');
+  await detail.locator('button').last().evaluate((button) => { button.textContent = 'Mark as favorite'; });
+  await expect(detail.locator('button').last()).toHaveText('즐겨찾기 추가');
   expect(await detail.evaluate((element) => {
     const copy = element.cloneNode(true);
     copy.querySelector('.player-name').remove();

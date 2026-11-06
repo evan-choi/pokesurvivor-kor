@@ -67,6 +67,17 @@ try {
   assert.match(dexText, /최근 포획순/);
   assert.match(dexText, /많이 사용한 순/);
   assert.doesNotMatch(dexText.replace(/(?:No\.|Nº)\s*\d+/g, ''), /[\p{Script=Latin}\p{Script=Han}]/u);
+  const filterIconOffsets = await frame.locator('#dex-filters .chip img').evaluateAll((icons) => icons.map((icon) => {
+    const button = icon.closest('.chip').getBoundingClientRect();
+    const bounds = icon.getBoundingClientRect();
+    return Math.abs(bounds.top + bounds.height / 2 - button.top - button.height / 2);
+  }));
+  assert.equal(filterIconOffsets.length, 7);
+  assert.ok(filterIconOffsets.every((offset) => offset < 0.5), 'All filter icons must be vertically centered.');
+  await frame.locator('#dex-detail').getByRole('button', { name: '즐겨찾기 추가', exact: true }).click();
+  await frame.locator('#dex-detail').getByRole('button', { name: '즐겨찾기', exact: true }).waitFor();
+  await frame.locator('#dex-detail').getByRole('button', { name: '즐겨찾기', exact: true }).click();
+  await frame.locator('#dex-detail').getByRole('button', { name: '즐겨찾기 추가', exact: true }).waitFor();
   await page.screenshot({ path: path.join(output, 'pokedex-korean.png'), animations: 'disabled' });
   await frame.locator('#scr-dex [data-back]').click();
   await frame.locator('[data-go="shop"]').click();

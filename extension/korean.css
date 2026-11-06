@@ -93,9 +93,15 @@ html.psko-enabled #scr-dex .chip {
   padding-block: 3px 5px;
 }
 
-html.psko-enabled #scr-dex .chip > img {
+html.psko-enabled #scr-dex .chip > :is(img, .rarity-ball) {
   position: relative;
   top: 1px;
+  flex-shrink: 0;
+}
+
+html.psko-enabled #scr-dex .chip > .rarity-ball {
+  display: inline-flex;
+  line-height: 0;
 }
 
 html.psko-enabled .type,

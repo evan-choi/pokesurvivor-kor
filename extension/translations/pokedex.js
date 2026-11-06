@@ -1,5 +1,7 @@
 // Pokédex UI; official Korean nature and ability names from PokéAPI name tables.
 globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
+  ["Favorito", "Favorite", "즐겨찾기"],
+  ["neutra", "neutral", "능력치 보정 없음"],
   [
     "Rareza",
     "Rarity",
