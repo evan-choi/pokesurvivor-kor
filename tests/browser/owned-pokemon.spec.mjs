@@ -97,6 +97,8 @@ test('renders only owned Pokémon in tier order with Korean names and runtime im
   await popup.setViewportSize({ width: 380, height: 600 });
   expect(await popup.evaluate(() => document.documentElement.scrollWidth)).toBe(380);
   expect(await popup.locator('body').evaluate((body) => body.scrollHeight)).toBeLessThanOrEqual(600);
+  await popup.locator('html').evaluate((root) => { root.style.fontFamily = 'system-ui'; });
+  expect(await popup.locator('body').evaluate((body) => body.scrollHeight)).toBeLessThanOrEqual(600);
   expect(errors).toEqual([]);
 });
 

@@ -1,4 +1,4 @@
-:root { color-scheme: dark; font-family: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; background: #101a33; color: #f3f6ff; }
+:root { color-scheme: dark; font-family: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; line-height: 1.2; background: #101a33; color: #f3f6ff; }
 * { box-sizing: border-box; }
 body { width: 380px; margin: 0; padding: 16px; }
 header { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
