@@ -40,6 +40,13 @@ test('partner selection translates the complete button with or without a shiny s
   }
 });
 
+test('starter descriptions translate moves and the current personality labels together', () => {
+  for (const source of ['Ember · Loner, Proud', 'Ascuas · Solitario, Orgulloso']) {
+    assert.equal(translate(source), '불꽃세례 · 독립적, 자부심');
+  }
+  assert.equal(translate('Razor Leaf · Proud, Clever'), '잎날가르기 · 자부심, 영리함');
+});
+
 test('Psychic is distinguished as a type or a move', () => {
   assert.equal(translate('Psychic'), '에스퍼');
   assert.equal(translate('Psíquico'), '에스퍼');

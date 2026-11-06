@@ -28,6 +28,7 @@
     const moveName = key === 'title'
       ? element.matches('.move-icons > span')
       : key === 'text' && (
+        element.matches('#starter-info') ||
         element.matches('#dex-detail > p > b.gold') ||
         element.matches('.bind-slot option, .ban-moves .chip') ||
         (element.closest('#cards .nm, #bond-cards .nm') && !element.closest('.type, .tag-chip')) ||

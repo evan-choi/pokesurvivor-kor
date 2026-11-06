@@ -922,6 +922,11 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
     "영리함"
   ],
   [
+    "Clever",
+    "Clever",
+    "영리함"
+  ],
+  [
     "Alegre",
     "Cheerful",
     "명랑함"
@@ -939,6 +944,11 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Solitario",
     "Solitary",
+    "독립적"
+  ],
+  [
+    "Loner",
+    "Loner",
     "독립적"
   ],
   [

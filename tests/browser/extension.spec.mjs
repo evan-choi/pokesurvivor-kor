@@ -157,6 +157,21 @@ test('partner selection remains a complete sentence after the game updates the b
   expect(errors).toEqual([]);
 });
 
+test('starter info translates move and personality changes while preserving the type label', async () => {
+  await frame.locator('body').evaluate((body) => {
+    body.insertAdjacentHTML('beforeend', '<span id="starter-info"><span class="type">Fire</span> Ember · Loner, Proud</span>');
+  });
+  const info = frame.locator('#starter-info');
+  await expect(info).toHaveText('불꽃 불꽃세례 · 독립적, 자부심');
+  await info.evaluate((element) => {
+    element.innerHTML = '<span class="type">Psychic</span> Psychic · Proud, Clever';
+  });
+  await expect(info).toHaveText('에스퍼 사이코키네시스 · 자부심, 영리함');
+  await popup.locator('#enabled').uncheck();
+  await expect(info).toHaveText('Psychic Psychic · Proud, Clever');
+  expect(errors).toEqual([]);
+});
+
 test('translates authored protected notices without translating player names or room codes', async () => {
   await frame.locator('body').evaluate((body) => {
     body.insertAdjacentHTML('beforeend', `
