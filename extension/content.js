@@ -14,7 +14,8 @@
     const owner = element.closest('[translate="no"]');
     if (!owner) return false;
     // These containers contain fixed game copy, not player-entered names or room codes.
-    if (owner.matches('#news-body > .news-day, #rk-me > span')) return false;
+    if (owner.matches('#news-body > .news-day, #rk-me > span, #scr-savenote > .box, #savenote-body')) return false;
+    if (owner.matches('#over-sum > p.sub')) return false;
     if (owner.matches('#dex-detail .mon-extra > .mx-row:nth-child(-n+2) > b')) return false;
     if (owner.matches('#user-pill > span') && owner.parentElement.querySelector('.sync.guest')) return false;
     return true;
@@ -33,7 +34,8 @@
         element.matches('#shop-body .upg-item b, #bag-body .upg-item b') ||
         element.matches('.bind-slot option, .ban-moves .chip') ||
         (element.closest('#cards .nm, #bond-cards .nm') && !element.closest('.type, .tag-chip')) ||
-        element.matches('#over-stats > div > b[style*="font-size:15px"]')
+        element.matches('#over-stats > div > b[style*="font-size:15px"]') ||
+        element.matches('#over-sum .sum-moves td:first-child')
       );
     const translate = moveName ? globalThis.PSKO.translateMove : globalThis.PSKO.translate;
     let translated = enabled ? translate(source) : source;

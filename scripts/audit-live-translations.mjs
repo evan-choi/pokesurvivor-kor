@@ -136,7 +136,9 @@ try {
       const source = await response.text();
       const prefix = source.match(/var (_0x[\da-f]+)=Object\[_0x[\da-f]+\(0x[\da-f]+\)\]\(null\);/);
       if (!prefix) throw new Error('UI audit hook no longer matches the official game bundle.');
-      await route.fulfill({ response, body: source.replace(prefix[0], `${prefix[0]}window.__PSKO_TEST_GAME__=${prefix[1]};`) });
+      if (!source.includes('_0x40206e=[')) throw new Error('Account notice fixture no longer matches the game bundle.');
+      const fixtureSource = source.replace('_0x40206e=[', '_0x40206e=window.__PSKO_TEST_NOTICES__=[');
+      await route.fulfill({ response, body: fixtureSource.replace(prefix[0], `${prefix[0]}window.__PSKO_TEST_GAME__=${prefix[1]};`) });
     } catch (error) {
       errors.push(error.stack || error.message);
       await route.abort();
@@ -170,6 +172,18 @@ try {
   await capture('quiz-result');
   await frame.locator('#res-ok').click();
   await capture('menu');
+  await run(() => {
+    for (const notice of window.__PSKO_TEST_NOTICES__) {
+      notice.when = () => true;
+      localStorage.removeItem(notice.key);
+    }
+    window.__PSKO_TEST_GAME__._0d718df.updateNotices();
+  });
+  await capture('account-update-notice');
+  if (/[a-z]/i.test(await frame.locator('#scr-savenote').innerText())) {
+    throw new Error('The account update notice still contains untranslated text.');
+  }
+  await frame.locator('#savenote-ok').click();
 
   for (const tab of ['sound', 'gfx', 'ctl', 'a11y', 'acc', 'about']) {
     await openPanel('SettingsUI', tab);
@@ -295,10 +309,13 @@ try {
   await resetScreens();
   await run(() => window.__PSKO_TEST_GAME__.RunUI.showOver({
     dead: true, time: 300, level: 20, kills: 300, bosses: 3, judge: { time: 60, bosses: 2 },
-    coins: 100, breakdown: '300 derrotados · 3 jefes', t1: 1, t10: 1,
+    coins: 17, breakdown: 'Tiempo 9 · Derrotados 6 · recogidas 2', t1: 1, t10: 1,
+    team: [{ me: true, name: 'Local player', sum: { dex: 387, lv: 4, t: 46, it: null, mv: [['razor-leaf', 2, 1592, 0, false], ['tackle', 2, 0, 0, false]] } }],
     moves: [{ id: 'psychic', name: 'Psíquico', lvl: 5 }], caught: [{ dex: 1, isNew: true }], record: true,
   }, () => {}));
   await capture('run-result');
+  const resultText = (await frame.locator('#scr-over').innerText()).replace(/\d[\d,.]*\/s\b/g, '');
+  if (/[a-z]/i.test(resultText)) throw new Error('The populated run summary still contains untranslated text.');
 } catch (error) {
   errors.push(error.stack || error.message);
   console.error(error);

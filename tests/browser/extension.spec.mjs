@@ -450,6 +450,31 @@ test('translates dex controls and protected nature and ability names without cha
   await expect(detail.locator('button').first()).toHaveText('Rarity');
 });
 
+test('translates account notices and populated run summaries while preserving player tabs', async () => {
+  await frame.locator('body').evaluate((body) => {
+    body.insertAdjacentHTML('beforeend', `<section id="scr-savenote"><div class="box" translate="no">
+      <h2>The leaderboards have been reset</h2>
+      <div id="savenote-body" translate="no"><p>We have adjusted the <b>Judgment of Arceus</b>: running away with maxed-out speed and poison no longer let you last forever.</p>
+      <p>So everyone competes on equal terms, <b>all leaderboards start from scratch</b> (daily, weekly, monthly, yearly and all-time). Go for first place!</p></div>
+      <button>Got it</button></div></section>
+      <section id="scr-over"><div>Time 9 · Defeated 6 · recogidas 2</div><span>RUN SUMMARY</span>
+      <div id="over-tabs"><button translate="no">Turtwig</button></div>
+      <div id="over-sum"><p class="sub" translate="no">Turtwig · Lv. 4 · 1,592 damage in total</p>
+      <table class="sum-moves"><tr><th>Damage</th><th>Per second</th></tr><tr><td>Psychic <small>Lv. 2</small></td><td>1,592</td></tr></table><p>No item.</p></div></section>`);
+  });
+  await expect(frame.locator('#scr-savenote h2')).toHaveText('순위표가 초기화되었습니다');
+  await expect(frame.locator('#scr-savenote button')).toHaveText('확인');
+  expect(await frame.locator('#savenote-body').innerText()).not.toMatch(/[a-z]/i);
+  await expect(frame.locator('#over-sum > p').first()).toHaveText('모부기 · 레벨 4 · 총 피해량 1,592');
+  await expect(frame.locator('#over-sum td').first()).toHaveText('사이코키네시스 레벨 2');
+  await expect(frame.locator('#over-sum > p').last()).toHaveText('지닌 도구가 없습니다.');
+  await expect(frame.locator('#over-tabs button')).toHaveText('Turtwig');
+  await expect(frame.locator('#scr-over > div').first()).toHaveText('시간 보상 9 · 격파 보상 6 · 주운 코인 2');
+  await popup.locator('#enabled').uncheck();
+  await expect(frame.locator('#over-sum > p').first()).toHaveText('Turtwig · Lv. 4 · 1,592 damage in total');
+  await expect(frame.locator('#scr-savenote button')).toHaveText('Got it');
+});
+
 test('leaves authentication pages untouched and preserves native registration forms', async () => {
   const auth = await context.newPage();
   await auth.route('**/*', (route) => route.fulfill({ contentType: 'text/html', body: `

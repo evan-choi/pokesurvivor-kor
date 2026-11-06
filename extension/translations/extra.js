@@ -129,3 +129,27 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ['Atrae los objetos desde más lejos (+10 % de imán).', 'Atrae los objetos desde más lejos (+10 % de imán).', '도구를 더 먼 곳에서 끌어당깁니다 (자석 범위 10% 증가).'],
   ['Habla del juego, busca grupo y entérate de todo antes que nadie.', 'Talk about the game, find a group and hear about everything first.', '게임 이야기를 나누고, 함께할 동료를 찾고, 새 소식을 먼저 받아보세요.']
 ]);
+
+globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
+  ['Las clasificaciones se han reiniciado', 'The leaderboards have been reset', '순위표가 초기화되었습니다'],
+  ['Entendido', 'Got it', '확인'],
+  ['Resumen de la partida', 'Run summary', '전투 요약'],
+  ['Daño', 'Damage', '피해량'],
+  ['Por segundo', 'Per second', '초당 피해량'],
+  ['Sin objeto.', 'No item.', '지닌 도구가 없습니다.'],
+  ['{x} · Nv. {x} · {x} de daño en total', '{x} · Lv. {x} · {x} damage in total', '{x} · 레벨 {x} · 총 피해량 {x}'],
+  ['Tiempo {x} · Derrotados {x} · recogidas {x}', 'Time {x} · Defeated {x} · recogidas {x}', '시간 보상 {x} · 격파 보상 {x} · 주운 코인 {x}']
+]);
+
+globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
+  ['Los rankings se han reiniciado', 'The leaderboards have been reset', '순위표가 초기화되었습니다'],
+  ['Hemos ajustado la', 'We have adjusted the', '다음 콘텐츠를 조정했습니다:'],
+  [': huir corriendo con toda la velocidad subida y el veneno ya no sirven para aguantar para siempre.', ': running away with maxed-out speed and poison no longer let you last forever.', '. 이제 이동 속도를 최대로 높이고 독을 이용해 도망쳐도 무한히 버틸 수 없습니다.'],
+  ['Para que todos compitáis en igualdad,', 'So everyone competes on equal terms,', '공정한 경쟁을 위해'],
+  ['todos los rankings empiezan de cero', 'all leaderboards start from scratch', '모든 순위표를 초기화했습니다'],
+  ['(hoy, semana, mes, año e histórico). ¡A por el primer puesto!', '(daily, weekly, monthly, yearly and all-time). Go for first place!', '(일간·주간·월간·연간·전체 기간). 1위에 도전하세요!']
+]);
+
+globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
+  ["Sentencia de Arceus", "Judgment of Arceus", "아르세우스의 심판"]
+]);
