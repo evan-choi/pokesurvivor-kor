@@ -167,8 +167,12 @@ test('starter info translates move and personality changes while preserving the 
     element.innerHTML = '<span class="type">Psychic</span> Psychic · Proud, Clever';
   });
   await expect(info).toHaveText('에스퍼 사이코키네시스 · 자부심, 영리함');
+  await info.evaluate((element) => {
+    element.innerHTML = '<span class="type">Psychic</span> Confusion · Chaotic, Shy';
+  });
+  await expect(info).toHaveText('에스퍼 염동력 · 예측 불가, 수줍음');
   await popup.locator('#enabled').uncheck();
-  await expect(info).toHaveText('Psychic Psychic · Proud, Clever');
+  await expect(info).toHaveText('Psychic Confusion · Chaotic, Shy');
   expect(errors).toEqual([]);
 });
 

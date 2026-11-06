@@ -28,7 +28,6 @@
     const moveName = key === 'title'
       ? element.matches('.move-icons > span')
       : key === 'text' && (
-        element.matches('#starter-info') ||
         element.matches('#dex-detail > p > b.gold') ||
         element.matches('.bind-slot option, .ban-moves .chip') ||
         (element.closest('#cards .nm, #bond-cards .nm') && !element.closest('.type, .tag-chip')) ||
@@ -36,6 +35,11 @@
       );
     const translate = moveName ? globalThis.PSKO.translateMove : globalThis.PSKO.translate;
     let translated = enabled ? translate(source) : source;
+    if (enabled && key === 'text' && element.id === 'starter-info') {
+      translated = source.split(/(\s*[·,]\s*)/).map((part, index) => (
+        index === 0 ? globalThis.PSKO.translateMove(part) : globalThis.PSKO.translate(part)
+      )).join('');
+    }
     if (enabled && key === 'text' && element.matches('.bind-slot option[value=""]') && /^(Free|Libre)$/i.test(source.trim())) {
       translated = source.replace(/Free|Libre/i, '빈 슬롯');
     }
