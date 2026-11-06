@@ -102,6 +102,30 @@ test('renders only owned Pokémon in tier order with Korean names and runtime im
   expect(errors).toEqual([]);
 });
 
+test('opens the toolbar popup and displays the active game collection', async () => {
+  await openPopup();
+  try {
+    await popup.evaluate(() => chrome.action.openPopup());
+    await expect.poll(() => popup.evaluate(() => chrome.extension.getViews({ type: 'popup' })
+      .map((view) => view.document.querySelector('#collection-count')?.textContent))).toEqual(['3마리']);
+    const views = await popup.evaluate(() => chrome.extension.getViews({ type: 'popup' }).map((view) => ({
+      names: [...view.document.querySelectorAll('.pokemon-name a')].map((node) => node.textContent),
+      visible: view.document.visibilityState,
+      width: view.innerWidth,
+      height: view.innerHeight,
+    })));
+    expect(views).toHaveLength(1);
+    expect(views[0].names).toEqual(['무한다이노', '라이코', '피카츄']);
+    expect(views[0].visible).toBe('visible');
+    expect(views[0].width).toBeGreaterThan(0);
+    expect(views[0].width).toBeLessThanOrEqual(800);
+    expect(views[0].height).toBeGreaterThan(0);
+    expect(views[0].height).toBeLessThanOrEqual(600);
+  } finally {
+    await popup.evaluate(() => chrome.extension.getViews({ type: 'popup' }).forEach((view) => view.close()));
+  }
+});
+
 test('refresh reads account changes, uses cached ranks on reopen and labels stale fallback', async () => {
   await openPopup();
   await expect(popup.locator('#collection-count')).toHaveText('3마리');
