@@ -128,6 +128,33 @@ test('opens the toolbar popup and displays the active game collection', async ()
   }
 });
 
+test('popup remains visible and usable while the guide is slow', async () => {
+  let release;
+  const pending = new Promise((resolve) => { release = resolve; });
+  let requests = 0;
+  const delayGuide = async (route) => {
+    requests++;
+    await pending;
+    await route.fallback();
+  };
+  await context.route('https://pokesurvivor.net/**', delayGuide);
+  try {
+    await page.bringToFront();
+    await popup.goto(popupUrl);
+    await expect.poll(() => requests).toBe(2);
+    await expect(popup.locator('#collection-status')).toHaveText('티어 불러오는 중…');
+    await expect(popup.getByRole('heading', { name: '한국어 모드' })).toBeVisible();
+    await expect(popup.locator('#enabled')).toBeEnabled();
+    await popup.locator('#enabled').uncheck();
+    await expect(popup.locator('#status')).toContainText('게임의 원래 언어');
+    release();
+    await expect(popup.locator('#collection-count')).toHaveText('3마리');
+  } finally {
+    release();
+    await context.unroute('https://pokesurvivor.net/**', delayGuide);
+  }
+});
+
 test('refresh reads account changes, uses cached ranks on reopen and labels stale fallback', async () => {
   await openPopup();
   await expect(popup.locator('#collection-count')).toHaveText('3마리');
