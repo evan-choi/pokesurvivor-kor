@@ -1,4 +1,4 @@
-# PokeSurvivor Korean Patch
+# PokéSurvivor Korean Patch
 
 An unofficial Chrome extension that translates menus, Pokémon names, and move descriptions into Korean.
 
@@ -26,7 +26,7 @@ Ranks come from the stat-based [PokéSurvivor Guide tier list](https://pokesurvi
 <details>
 <summary>View the Korean interface</summary>
 
-<img src="docs/assets/settings-korean.png" width="480" alt="PokeSurvivor settings in Korean">
+<img src="docs/assets/settings-korean.png" width="480" alt="PokéSurvivor settings in Korean">
 
 </details>
 

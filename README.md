@@ -1,4 +1,4 @@
-# PokeSurvivor 한국어 모드
+# PokéSurvivor 한국어 모드
 
 메뉴, 포켓몬 이름, 기술 설명을 한국어로 바꾸는 비공식 Chrome 확장 프로그램입니다.
 
@@ -26,7 +26,7 @@
 <details>
 <summary>한국어 화면 보기</summary>
 
-<img src="docs/assets/settings-korean.png" width="480" alt="한국어로 표시된 PokeSurvivor 설정 화면">
+<img src="docs/assets/settings-korean.png" width="480" alt="한국어로 표시된 PokéSurvivor 설정 화면">
 
 </details>
 
