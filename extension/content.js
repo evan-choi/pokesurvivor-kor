@@ -28,6 +28,7 @@
     const previous = entries?.get(key);
     // Game rerenders always become the new original, even for reused nodes.
     const source = previous && value === previous.translated ? previous.source : value;
+    if (!/[\p{Script=Latin}\p{Script=Han}]/u.test(source)) return;
     const element = key === 'text' ? node.parentElement : node;
     const moveName = key === 'title'
       ? element.matches('.move-icons > span')
@@ -176,11 +177,24 @@
     if (!isGame()) return;
     observer = new MutationObserver((records) => {
       const roots = new Set();
+      const attributeTargets = new Set();
       for (const record of records) {
         if (record.type === 'childList') record.addedNodes.forEach((node) => roots.add(node));
+        else if (record.type === 'attributes') attributeTargets.add(record.target);
         else roots.add(record.target);
       }
-      for (const root of roots) walk(root);
+      const coveredByRoot = (node) => {
+        for (; node; node = node.parentNode) {
+          if (roots.has(node)) return true;
+        }
+        return false;
+      };
+      for (const root of roots) {
+        if (!coveredByRoot(root.parentNode)) walk(root);
+      }
+      for (const target of attributeTargets) {
+        if (!coveredByRoot(target)) updateNode(target);
+      }
       addLanguageChoice();
     });
     observer.observe(document.body, {

@@ -72,6 +72,100 @@ test('loads in srcdoc, translates dynamic text and attributes, preserves player 
   expect(errors).toEqual([]);
 });
 
+test('attribute changes translate only the target instead of walking its descendants', async () => {
+  const result = await frame.locator('body').evaluate(async body => {
+    const root = document.createElement('section');
+    for (let i = 0; i < 200; i++) {
+      const item = document.createElement('span');
+      item.textContent = 'Bulbasaur';
+      root.append(item);
+    }
+    body.append(root);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    const original = document.createTreeWalker;
+    let walks = 0;
+    document.createTreeWalker = function (...args) { walks++; return original.apply(this, args); };
+    try {
+      root.title = 'Fire';
+      await new Promise(resolve => setTimeout(resolve, 0));
+      return { title: root.title, walks, children: [...root.children].every(item => item.textContent === '이상해씨') };
+    } finally {
+      document.createTreeWalker = original;
+      root.remove();
+    }
+  });
+  expect(result).toEqual({ title: '불꽃', walks: 0, children: true });
+});
+
+test('nested multiplayer UI insertions translate each subtree once', async () => {
+  const result = await frame.locator('body').evaluate(async body => {
+    const root = document.createElement('section');
+    const child = document.createElement('div');
+    const original = document.createTreeWalker;
+    let walks = 0;
+    document.createTreeWalker = function (...args) { walks++; return original.apply(this, args); };
+    try {
+      body.append(root);
+      root.append(child);
+      for (let i = 0; i < 20; i++) {
+        const item = document.createElement('span');
+        item.textContent = 'Bulbasaur';
+        child.append(item);
+      }
+      await new Promise(resolve => setTimeout(resolve, 0));
+      return { walks, translated: [...child.children].every(item => item.textContent === '이상해씨') };
+    } finally {
+      document.createTreeWalker = original;
+      root.remove();
+    }
+  });
+  expect(result).toEqual({ walks: 1, translated: true });
+});
+
+test('numeric and native Korean UI updates bypass the translation lookup', async () => {
+  const result = await frame.locator('body').evaluate(async body => {
+    const root = document.createElement('p');
+    root.textContent = '0';
+    body.append(root);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    const original = globalThis.PSKO;
+    let translations = 0;
+    globalThis.PSKO = { ...original, translate(text) { translations++; return original.translate(text); } };
+    try {
+      for (const value of ['120 / 200', '플레이어 준비 완료']) {
+        root.firstChild.nodeValue = value;
+        await new Promise(resolve => setTimeout(resolve, 0));
+      }
+      return { translations, text: root.textContent };
+    } finally {
+      globalThis.PSKO = original;
+      root.remove();
+    }
+  });
+  expect(result).toEqual({ translations: 0, text: '플레이어 준비 완료' });
+});
+
+test('moving translated text preserves move and type context', async () => {
+  const texts = await frame.locator('body').evaluate(async body => {
+    const card = document.createElement('div');
+    card.className = 'nm';
+    const text = document.createTextNode('Psychic');
+    card.append(text);
+    document.querySelector('#cards').append(card);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    const move = text.nodeValue;
+    const type = document.createElement('p');
+    body.append(type);
+    type.append(text);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    const result = { move, type: text.nodeValue };
+    card.remove();
+    type.remove();
+    return result;
+  });
+  expect(texts).toEqual({ move: '사이코키네시스', type: '에스퍼' });
+});
+
 test('translates the official game directly on root and localized pages', async () => {
   for (const url of ['https://pokesurvivor.com/', 'https://pokesurvivor.com/en/', 'https://www.pokesurvivor.com/']) {
     await page.route(url, (route) => route.fulfill({ contentType: 'text/html', body: game }));

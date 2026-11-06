@@ -7,7 +7,7 @@
 5. `manifest.json`이 바로 들어 있는 폴더를 선택합니다.
 6. [게임 페이지](https://pokesurvivor.com/)를 열거나 새로고침합니다.
 
-`pokesurvivor-korean-0.2.3.zip`은 압축을 풀어 생긴 폴더 자체를 선택합니다. GitHub의 **Code → Download ZIP**으로 저장소를 받았다면 그 안의 `extension/` 폴더를 선택합니다.
+설치 ZIP은 압축을 풀어 생긴 폴더 자체를 선택합니다. GitHub의 **Code → Download ZIP**으로 저장소를 받았다면 그 안의 `extension/` 폴더를 선택합니다.
 
 처음 설치하면 한국어 모드가 켜집니다. 게임의 **Settings → Graphics → Language**에서 **한국어**를 선택하거나, Chrome 툴바의 확장 프로그램 아이콘에서 켜고 끌 수 있습니다.
 

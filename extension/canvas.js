@@ -4,6 +4,7 @@
   let enabled = false;
   let gameDocument = false;
   const fontFamily = '"NeoDunggeunmo", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
+  const fonts = new Map();
   const detectGame = () => { gameDocument = !!document.querySelector('#tap-start, #scr-settings'); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', detectGame, { once: true });
   else detectGame();
@@ -63,13 +64,28 @@
     for (const method of ['fillText', 'strokeText', 'measureText']) {
       const original = prototype[method];
       prototype[method] = function (text, ...args) {
+        if (!enabled || !gameDocument || typeof text !== 'string') {
+          return original.call(this, text, ...args);
+        }
         const result = translateCanvasText(this, text);
-        if (!enabled || !gameDocument || typeof result !== 'string') {
+        if (typeof result !== 'string') {
           return original.call(this, result, ...args);
         }
         const font = this.font;
         // Use the same font for measuring and drawing, retaining size and weight.
-        this.font = font.replace(/(\d+(?:\.\d+)?px(?:\s*\/\s*[^ ]+)?)\s+.*/, `$1 ${fontFamily}`);
+        let translatedFont = fonts.get(font);
+        const uncachedFont = translatedFont === undefined;
+        if (uncachedFont) {
+          translatedFont = font.replace(/(\d+(?:\.\d+)?px(?:\s*\/\s*[^ ]+)?)\s+.*/, `$1 ${fontFamily}`);
+          if (fonts.size >= 128) fonts.clear();
+          fonts.set(font, translatedFont);
+        }
+        if (font === translatedFont) return original.call(this, result, ...args);
+        this.font = translatedFont;
+        if (uncachedFont) {
+          const normalizedFont = this.font;
+          fonts.set(normalizedFont, normalizedFont);
+        }
         try {
           return original.call(this, result, ...args);
         } finally {

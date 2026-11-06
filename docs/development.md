@@ -34,7 +34,7 @@ npm run test:browser
 npm run package
 ```
 
-`npm test`는 번역 처리와 데이터 검증을 실행합니다. `npm run test:browser`는 Playwright로 extension의 브라우저 동작을 확인합니다. `npm run package`는 `dist/pokesurvivor-korean-0.2.3.zip`을 만듭니다. ZIP 최상위에 `manifest.json`과 확장 프로그램 파일들이 들어 있으므로, 압축을 풀어 생긴 `pokesurvivor-korean-0.2.3/` 폴더 자체를 Chrome에 불러오면 됩니다.
+`npm test`는 번역 처리와 데이터 검증을 실행합니다. `npm run test:browser`는 Playwright로 extension의 브라우저 동작을 확인합니다. `npm run package`는 `extension/manifest.json`의 버전에 맞는 `dist/pokesurvivor-korean-<버전>.zip`을 만듭니다. ZIP 최상위에 `manifest.json`과 확장 프로그램 파일들이 들어 있으므로, 압축을 풀어 생긴 폴더 자체를 Chrome에 불러오면 됩니다.
 
 실제 사이트에서 확인하려면 `npm run test:live`를 실행합니다. 임시 브라우저에서 공식 `.com`에 게스트로 접속해 설정과 플레이 화면을 확인하고 `test-results/live/`에 스크린샷을 남깁니다. 접속 전부터 서버에 저장하는 요청을 차단해 테스트 점수가 등록되지 않게 합니다.
 
