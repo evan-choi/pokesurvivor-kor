@@ -348,6 +348,14 @@ test('leaves host canvas unchanged and measures boss headings in the drawing fon
 test('loads the supplied Korean font and centers menu icons across title and description', async () => {
   expect(await frame.locator('body').evaluate(async () => (await document.fonts.load('16px "Pokemon DPPt"', '한글 ABC')).length)).toBe(1);
   await expect(frame.locator('body')).toHaveCSS('font-family', /"Pokemon DPPt"/);
+  const glyphHeight = await frame.locator('body').evaluate(() => {
+    const context = document.createElement('canvas').getContext('2d');
+    context.font = '16px "Pokemon DPPt"';
+    const metrics = context.measureText('한글 모부기 ABC');
+    return metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+  });
+  expect(glyphHeight).toBeGreaterThanOrEqual(13);
+  expect(glyphHeight).toBeLessThanOrEqual(16);
   await frame.locator('body').evaluate((body) => {
     body.insertAdjacentHTML('beforeend', `<style>
       .menu-item { display: grid; grid-template-columns: 30px 1fr; gap: 4px 8px; padding: 12px; width: 220px; }

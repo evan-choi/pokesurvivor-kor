@@ -3,5 +3,7 @@
   src: url("chrome-extension://__MSG_@@extension_id__/fonts/pokemon-dppt/pokemon-dppt.otf.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
+  /* Match the visible glyph height of the Korean system font. */
+  size-adjust: 140%;
   font-display: swap;
 }
