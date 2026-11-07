@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "PokéSurvivor 한국어 모드",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "PokéSurvivor의 메뉴, 기술, 포켓몬 이름과 전투 표시를 한국어로 바꿉니다.",
   "minimum_chrome_version": "119",
   "permissions": ["storage", "scripting"],

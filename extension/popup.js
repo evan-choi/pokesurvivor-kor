@@ -162,7 +162,6 @@ async function loadCollection(refresh = false) {
     collectionStatus.textContent = rankings.notice || '전체 순위가 높은 순서입니다.';
     tierUpdated.textContent = `티어 확인: ${new Date(rankings.fetchedAt).toLocaleString('ko-KR')}`;
   } catch (error) {
-    console.error('[PokéSurvivor 한국어] 보유 목록 표시 실패', error);
     collectionStatus.textContent = error.message || '보유 목록을 불러오지 못했습니다. 다시 시도하세요.';
   } finally {
     refreshCollection.disabled = false;
