@@ -28,6 +28,7 @@ test('same or newer published versions and the same pending version are not uplo
   for (const status of [
     { publishedItemRevisionStatus: revision('0.2.20') },
     { publishedItemRevisionStatus: revision('0.2.21') },
+    { submittedItemRevisionStatus: revision('0.2.20', 'PENDING_REVIEW') },
     { publishedItemRevisionStatus: revision('0.2.19'), submittedItemRevisionStatus: revision('0.2.20', 'PENDING_REVIEW') },
   ]) {
     const mock = fixture([{ access_token: 'token' }, status]);

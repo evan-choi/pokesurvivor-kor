@@ -24,7 +24,6 @@ export async function publishStore({ env, version, zip, request = fetch, sleep =
   const status = await json(`${base}:fetchStatus`, { headers });
   if (status.takenDown || status.warned) throw new Error('Resolve the store policy notice in the dashboard first.');
   const published = status.publishedItemRevisionStatus;
-  if (!published) throw new Error('Complete the first publication in the developer dashboard before enabling CI updates.');
   const atLeast = (other) => {
     const left = other.split('.').map(Number), right = version.split('.').map(Number);
     for (let i = 0; i < 4; i++) {
@@ -32,12 +31,13 @@ export async function publishStore({ env, version, zip, request = fetch, sleep =
     }
     return true;
   };
-  if (published.distributionChannels?.some((channel) => atLeast(channel.crxVersion))) return `Version ${version} or newer is already published; no upload.`;
+  if (published?.distributionChannels?.some((channel) => atLeast(channel.crxVersion))) return `Version ${version} or newer is already published; no upload.`;
   const pending = status.submittedItemRevisionStatus;
   if (pending && !['REJECTED', 'CANCELLED'].includes(pending.state)) {
     if (pending.distributionChannels?.some((channel) => channel.crxVersion === version)) return `Version ${version} is already submitted (${pending.state}); no upload.`;
     throw new Error('Another submission is active. Wait for review, then rerun this workflow.');
   }
+  if (!published) throw new Error('Complete the first publication in the developer dashboard before enabling CI updates.');
   const uploaded = await json(`https://chromewebstore.googleapis.com/upload/v2/${name}:upload`, {
     method: 'POST', headers: { ...headers, 'Content-Type': 'application/zip' }, body: zip,
   });

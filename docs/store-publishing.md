@@ -25,7 +25,7 @@
 | Secret | `CWS_CLIENT_SECRET` | OAuth 클라이언트 보안 비밀 |
 | Secret | `CWS_REFRESH_TOKEN` | 위 범위로 발급받은 refresh token |
 
-두 ID 변수가 없으면 스토어 작업은 건너뛰고 웹사이트만 배포됩니다. 첫 공개와 secret 등록을 마친 뒤 ID 변수를 설정해 활성화하세요. [워크플로](../.github/workflows/store.yml)의 수동 실행은 `main` 브랜치를 선택합니다.
+두 ID 변수가 없으면 스토어 작업은 건너뛰고 웹사이트만 배포됩니다. 첫 심사 제출과 secret 등록을 마친 뒤 ID 변수를 설정해 활성화하세요. 첫 심사 중 같은 버전은 중복 제출하지 않으며, 새 버전 업로드는 최초 공개 후 진행합니다. [워크플로](../.github/workflows/store.yml)의 수동 실행은 `main` 브랜치를 선택합니다.
 
 ## 공개 후 설치 버튼 연결
 
