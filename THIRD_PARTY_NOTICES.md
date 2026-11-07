@@ -6,7 +6,7 @@
 
 - 원저작권 표시: **Copyright 2026 JPTER78**
 - 게임: [공식 웹사이트](https://pokesurvivor.com/), [제작자 배포 페이지](https://jpter78.itch.io/pokesurvivor)
-- 번역 기준: 초기 문구는 공개 배포본 `c31715d-game-auth-popup-overlay-20261017`, 공식 사이트 호환 확인은 `app.min.js?v=31fb6167ae` (2026-11-06)
+- 번역 기준: 초기 문구는 공개 배포본 `c31715d-game-auth-popup-overlay-20261017`, 기술 설명 및 공식 사이트 호환 확인은 `app.min.js?v=ab83565e21` (2026-11-07)
 - 포함 자료: 영어·스페인어 게임 문구와 이를 바탕으로 작성한 한국어 번역, README의 설정 화면 예시
 - 배포본에 표시된 라이선스: [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0)
 - 변경 사항: 한국어 번역 추가, 포켓몬·기술 명칭 대조, 한국어 표시를 위한 화면 조정

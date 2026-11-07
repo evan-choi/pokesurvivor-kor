@@ -25,7 +25,7 @@ test('network preferences survive a stale initial read without publishing premat
   finish({ enabled: false, lanDirect: false, debug: true });
   await Promise.resolve();
   assert.deepEqual(languages, [false]);
-  assert.deepEqual(networks, [{ lanDirect: true, debug: true }]);
+  assert.deepEqual(networks, [{ lanDirect: true, debug: false }]);
   changed({ debug: { newValue: false } }, 'local');
   assert.deepEqual(languages, [false]);
   assert.deepEqual(networks.at(-1), { lanDirect: true, debug: false });

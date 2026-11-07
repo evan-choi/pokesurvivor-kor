@@ -177,6 +177,32 @@ test('every current TM uses its Korean move name and a complete translated descr
   assert.equal(translate('Scorbunny la puede aprender'), '학습 가능: 염버니');
 });
 
+test('hover descriptions cover all current moves and fully translate evolved names and effects', () => {
+  evaluate(context, 'move-tooltip-data.js');
+  const { moves } = JSON.parse(readFileSync(new URL('./fixtures/official-game-moves.json', import.meta.url), 'utf8'));
+  assert.deepEqual(Object.keys(context.PSKO_MOVE_INFO).filter(id => !id.startsWith('item:')).sort(), moves.map(m => m.id).sort());
+  for (const { id, name: [, , korean] } of moves) {
+    const data = context.PSKO_MOVE_INFO[id];
+    for (const name of data.name) assert.equal(context.PSKO.translateMove(name), korean, id);
+    for (const entry of [data, data.evo].filter(Boolean)) {
+      for (const name of entry.name) assert.doesNotMatch(context.PSKO.translateMove(name), /[\p{Script=Latin}\p{Script=Han}]/u, id);
+      for (const desc of entry.desc) assert.doesNotMatch(translate(desc).replace(/\b(?:HP|XP|DPS)\b/g, ''), /[\p{Script=Latin}\p{Script=Han}]/u, id);
+    }
+  }
+});
+
+test('held-item hover descriptions cover all eleven items and translate their effects', () => {
+  evaluate(context, 'move-tooltip-data.js');
+  const items = Object.entries(context.PSKO_MOVE_INFO).filter(([id]) => id.startsWith('item:'));
+  assert.equal(items.length, 11);
+  for (const [id, data] of items) {
+    for (const value of [...data.name, ...data.desc]) {
+      assert.doesNotMatch(translate(value), /[\p{Script=Latin}\p{Script=Han}]/u, id);
+    }
+  }
+  assert.equal(translate(context.PSKO_MOVE_INFO['item:lifeorb'].name[1]), '생명의구슬');
+});
+
 test('handles native partial translations, Chinese notices, and localized durations', () => {
   assert.equal(translate('Estás como guest: '), '게스트로 플레이 중: ');
   assert.equal(translate('You have su shiny'), '색이 다른 모습을 보유 중입니다');

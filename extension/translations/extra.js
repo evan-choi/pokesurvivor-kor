@@ -1,5 +1,6 @@
 // Hosted build additions that are not part of the game's Spanish/English dictionary.
 globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
+  ['Infortunio +', 'Hex +', '병상첨병 +'],
   // The normal partner button has no suffix; the {x} variant requires one.
   ['Elegir de compañero', 'Choose as partner', '파트너로 선택'],
   // The game's own translator can partially translate this before our observer runs.

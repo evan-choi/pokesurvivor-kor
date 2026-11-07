@@ -82,7 +82,27 @@ test.beforeEach(async () => {
   await gameFrame.evaluate(() => { window.testUser = { uid: 'active' }; });
 });
 
-test('renders only owned Pokémon in tier order with Korean names and runtime images', async () => {
+test('popup keeps its header and shows game controls or the launch button according to open tabs', async ({}, testInfo) => {
+  await openPopup();
+  await expect(popup.locator('.play')).toBeHidden();
+  await expect(popup.locator('.setting')).toBeVisible();
+  await expect(popup.locator('.help, footer')).toHaveCount(0);
+  await popup.bringToFront();
+  await popup.reload();
+  await expect(popup.locator('#collection-count')).toHaveText('3마리');
+  await expect(popup.locator('.play')).toBeHidden();
+  await popup.locator('body').screenshot({ path: testInfo.outputPath('game-open.png') });
+  await page.goto('about:blank');
+  await popup.reload();
+  await expect(popup.locator('.play')).toBeVisible();
+  await expect(popup.locator('header')).toBeVisible();
+  await expect(popup.locator('.setting')).toBeHidden();
+  await expect(popup.locator('.collection')).toBeHidden();
+  expect((await popup.locator('body').innerText()).replace(/\s+/g, ' ').trim()).toBe('POKÉSURVIVOR 한국어 모드 게임 열기 ↗');
+  await popup.locator('body').screenshot({ path: testInfo.outputPath('game-closed.png') });
+});
+
+test('renders only owned Pokémon in tier order with Korean names and runtime images', async ({}, testInfo) => {
   await openPopup();
   await expect(popup.locator('#collection-count')).toHaveText('3마리');
   await expect(popup.locator('.pokemon-name a')).toHaveText(['무한다이노', '라이코', '피카츄']);
@@ -96,8 +116,13 @@ test('renders only owned Pokémon in tier order with Korean names and runtime im
   expect(await gameFrame.evaluate(() => JSON.parse(localStorage.getItem('ps.cloud.active')))).toEqual({ owned: { 243: {}, 890: {}, 25: {} } });
   expect(await popup.evaluate(() => chrome.storage.local.get(null))).not.toHaveProperty('owned');
   await popup.setViewportSize({ width: 380, height: 600 });
+  await popup.locator('#pokemon-list').evaluate(list => {
+    for (let i = 0; i < 20; i++) list.append(list.firstElementChild.cloneNode(true));
+  });
+  expect((await popup.locator('#pokemon-list').boundingBox()).height).toBeGreaterThan(300);
   expect(await popup.evaluate(() => document.documentElement.scrollWidth)).toBe(380);
   expect(await popup.locator('body').evaluate((body) => body.scrollHeight)).toBeLessThanOrEqual(600);
+  await popup.locator('body').screenshot({ path: testInfo.outputPath('expanded-ranking.png') });
   await popup.locator('html').evaluate((root) => { root.style.fontFamily = 'system-ui'; });
   expect(await popup.locator('body').evaluate((body) => body.scrollHeight)).toBeLessThanOrEqual(600);
   expect(errors).toEqual([]);
@@ -144,9 +169,9 @@ test('popup remains visible and usable while the guide is slow', async () => {
     await expect.poll(() => requests).toBe(2);
     await expect(popup.locator('#collection-status')).toHaveText('티어 불러오는 중…');
     await expect(popup.getByRole('heading', { name: '한국어 모드' })).toBeVisible();
-    await expect(popup.locator('#enabled')).toBeEnabled();
-    await popup.locator('#enabled').uncheck();
-    await expect(popup.locator('#status')).toContainText('원본 언어');
+    await expect(popup.locator('#lan-direct')).toBeEnabled();
+    await popup.locator('#lan-direct').check();
+    await expect(popup.locator('#lan-status')).toBeHidden();
     release();
     await expect(popup.locator('#collection-count')).toHaveText('3마리');
   } finally {
@@ -185,7 +210,8 @@ test('shows actionable errors without cached ranks and handles empty or logged-o
   await expect(popup.locator('#collection-status')).toContainText('로그인하세요');
   await page.goto('about:blank');
   await openPopup();
-  await expect(popup.locator('#collection-status')).toContainText('게임 탭에서');
+  await expect(popup.locator('.collection')).toBeHidden();
+  await expect(popup.locator('.play')).toBeVisible();
 });
 
 test('keeps species absent from the ranking and handles missing images', async () => {

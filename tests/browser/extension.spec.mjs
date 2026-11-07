@@ -51,57 +51,29 @@ test.beforeAll(async () => {
 test.afterAll(async () => { await context?.close(); });
 
 test.beforeEach(async () => {
-  await popup.locator('#enabled').check();
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: true }));
   await page.goto('https://pokesurvivor.com/');
   frame = page.frameLocator('iframe');
+  await popup.reload();
   await expect(frame.locator('#pokemon')).toHaveText('이상해씨');
   await frame.locator('body').evaluate(() => document.fonts.ready);
 });
 
-test('debug persists independently of language and shows metrics only inside the game', async ({}, testInfo) => {
-  const debug = popup.locator('#debug');
-  await expect(debug).toBeEnabled();
-  await expect(debug).not.toBeChecked();
+test('popup only offers the LAN switch and ignores the retired debug preference', async ({}, testInfo) => {
+  await expect(popup.locator('#enabled, #debug, #debug-status, #status')).toHaveCount(0);
+  await expect(popup.getByRole('switch', { name: 'LAN 직접 연결' })).toBeEnabled();
+  await popup.evaluate(() => chrome.storage.local.set({ debug: true }));
+  await page.reload();
+  const network = await frame.locator('body').evaluate(() => new Promise(resolve => {
+    document.addEventListener('psko:network-settings', e => resolve(e.detail), { once: true });
+    document.dispatchEvent(new Event('psko:network-ready'));
+  }));
+  expect(network.debug).toBe(false);
   await expect(frame.locator('#psko-debug')).toHaveCount(0);
-  await popup.locator('#enabled').uncheck();
-  const originalUrl = page.url();
-  let navigations = 0;
-  page.on('framenavigated', countNavigation);
-  function countNavigation() { navigations++; }
-  try {
-    await debug.check();
-    await page.bringToFront();
-    await expect(frame.locator('#psko-debug')).toContainText('FPS (rAF)');
-    await expect(frame.locator('#psko-debug')).toContainText('JS 힙');
-    await expect(frame.locator('#psko-debug')).toContainText('프레임 간격');
-    await expect(page.locator('#psko-debug')).toHaveCount(0);
-    await expect(frame.locator('#pokemon')).toHaveText('Bulbasaur');
-    expect(page.url()).toBe(originalUrl);
-    expect(navigations).toBe(0);
-    const layout = await frame.locator('#psko-debug').evaluate(node => {
-      const style = getComputedStyle(node);
-      const box = node.getBoundingClientRect();
-      return { position: style.position, pointerEvents: style.pointerEvents, x: box.x, y: box.y };
-    });
-    expect(layout).toEqual({ position: 'fixed', pointerEvents: 'none', x: 8, y: 8 });
-    await frame.locator('#psko-debug').screenshot({ path: testInfo.outputPath('debug-overlay.png') });
-    await popup.locator('body').screenshot({ path: testInfo.outputPath('debug-popup.png') });
-    await popup.reload();
-    await expect(debug).toBeChecked();
-    await expect(popup.locator('#enabled')).not.toBeChecked();
-    await page.reload();
-    await page.bringToFront();
-    await expect(frame.locator('#psko-debug')).toContainText('FPS (rAF)');
-    await debug.uncheck();
-    await expect(frame.locator('#psko-debug')).toHaveCount(0);
-    await expect(popup.locator('#enabled')).not.toBeChecked();
-  } finally {
-    page.off('framenavigated', countNavigation);
-    await popup.evaluate(() => chrome.storage.local.set({ debug: false }));
-  }
+  await popup.locator('body').screenshot({ path: testInfo.outputPath('lan-popup.png') });
 });
 
-test('LAN setting preserves existing peers and debug reports a real direct data channel', async ({}, testInfo) => {
+test('LAN switch persists, preserves existing peers and allows a direct data channel', async ({}, testInfo) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.locator('iframe').evaluate(node => { node.style.cssText = 'width:1100px;height:800px'; });
   const lan = popup.locator('#lan-direct');
@@ -112,7 +84,7 @@ test('LAN setting preserves existing peers and debug reports a real direct data 
   });
   try {
     await lan.check();
-    await expect(popup.locator('#lan-status')).toContainText('방에 다시');
+    await expect(popup.locator('#lan-status')).toBeHidden();
     await expect.poll(() => frame.locator('body').evaluate(() => {
       const pc = new RTCPeerConnection({ iceServers: [], iceTransportPolicy: 'relay' });
       const policy = pc.getConfiguration().iceTransportPolicy;
@@ -130,7 +102,6 @@ test('LAN setting preserves existing peers and debug reports a real direct data 
       pc.close();
       return policy;
     })).toBe('relay');
-    await popup.locator('#debug').check();
     await page.bringToFront();
     await frame.locator('body').evaluate(async () => {
       const a = new RTCPeerConnection({ iceServers: [], iceTransportPolicy: 'relay' });
@@ -162,7 +133,6 @@ test('LAN setting preserves existing peers and debug reports a real direct data 
       await a.setRemoteDescription(b.localDescription);
     });
     await expect.poll(() => frame.locator('body').evaluate(() => lanTestChannel.readyState)).toBe('open');
-    await expect(frame.locator('#psko-debug')).toContainText('직결 2');
     await frame.locator('body').evaluate(async () => {
       for (let i = 0; i < 4; i++) {
         lanTestChannel.send('test');
@@ -175,27 +145,9 @@ test('LAN setting preserves existing peers and debug reports a real direct data 
       }
     });
     await expect.poll(() => frame.locator('body').evaluate(() => echoes)).toBe(8);
-    const selector = frame.locator('#psko-debug select');
-    await expect(selector.locator('option')).toHaveCount(4);
-    await expect(frame.locator('#network-send')).toHaveAttribute('points', /\d/);
-    await expect(frame.locator('#network-receive')).toHaveAttribute('points', /\d/);
-    await expect(frame.locator('#network-values')).toContainText('최대(누적)');
-    await expect.poll(async () => Number((await frame.locator('#network-values').textContent()).match(/최대\(누적\) (\d+)/)?.[1])).toBeGreaterThanOrEqual(400);
-    const gOption = selector.locator('option').filter({ hasText: '일반(g)' }).first();
-    await selector.selectOption(await gOption.getAttribute('value'));
-    await expect(frame.locator('#network-values')).toContainText('송신 0.0회/s');
-    const sOption = selector.locator('option').filter({ hasText: '상태(s)' }).first();
-    await selector.selectOption(await sOption.getAttribute('value'));
-    await page.bringToFront();
-    const graphBox = await frame.locator('#psko-debug').boundingBox();
-    expect(graphBox.height).toBeLessThan(800);
-    await expect(frame.locator('#psko-debug svg')).toBeVisible();
-    await frame.locator('#psko-debug').screenshot({ path: testInfo.outputPath('lan-direct.png') });
-    await popup.locator('body').screenshot({ path: testInfo.outputPath('lan-popup.png') });
     await lan.uncheck();
     expect(await frame.locator('body').evaluate(() => lanTestPeers[0].getConfiguration().iceTransportPolicy)).toBe('all');
     await frame.locator('body').evaluate(() => lanTestPeers.forEach(pc => pc.close()));
-    await expect(frame.locator('#psko-debug')).toContainText('연결 없음');
   } finally {
     await frame.locator('body').evaluate(() => {
       window.oldPeer?.close();
@@ -226,9 +178,9 @@ test('translates the official game directly on root and localized pages', async 
       await page.goto(url);
       await expect(page.locator('#pokemon')).toHaveText('이상해씨');
       await expect(page.locator('[data-psko-language]')).toHaveAttribute('aria-pressed', 'true');
-      await popup.locator('#enabled').uncheck();
+      await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
       await expect(page.locator('#pokemon')).toHaveText('Bulbasaur');
-      await popup.locator('#enabled').check();
+      await popup.evaluate(() => chrome.storage.local.set({ enabled: true }));
     } finally {
       await page.unroute(url);
     }
@@ -236,18 +188,18 @@ test('translates the official game directly on root and localized pages', async 
   expect(errors).toEqual([]);
 });
 
-test('language buttons and popup restore originals, update all frames, and persist on reload', async () => {
+test('game language buttons restore originals and persist on reload', async () => {
   await expect(frame.locator('[data-psko-language]')).toHaveAttribute('aria-pressed', 'true');
   await frame.locator('[data-lang="en"]').click();
   await expect(frame.locator('#pokemon')).toHaveText('Bulbasaur');
-  await expect(popup.locator('#enabled')).not.toBeChecked();
+  expect((await popup.evaluate(() => chrome.storage.local.get('enabled'))).enabled).toBe(false);
   expect(await frame.locator('body').evaluate(() => window.englishClicks)).toBe(1);
   await page.reload();
   await expect(frame.locator('#pokemon')).toHaveText('Bulbasaur');
   await frame.locator('[data-psko-language]').click();
   await expect(frame.locator('#pokemon')).toHaveText('이상해씨');
-  await expect(popup.locator('#enabled')).toBeChecked();
-  await popup.locator('#enabled').uncheck();
+  expect((await popup.evaluate(() => chrome.storage.local.get('enabled'))).enabled).toBe(true);
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
   await expect(frame.locator('#pokemon')).toHaveText('Bulbasaur');
   await expect(frame.locator('[data-psko-language]')).toHaveAttribute('aria-pressed', 'false');
   expect(errors).toEqual([]);
@@ -265,7 +217,7 @@ test('canvas uses Korean measurements and preserves drawing state', async () => 
   const translated = await widths();
   expect(translated.english).toBe(translated.korean);
   expect(translated.font).toBe(translated.originalFont);
-  await popup.locator('#enabled').uncheck();
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
   await expect(frame.locator('#pokemon')).toHaveText('Bulbasaur');
   const original = await widths();
   expect(original.english).not.toBe(original.korean);
@@ -283,7 +235,7 @@ test('move titles and tooltips use move names while type badges retain type name
     return [ctx.measureText('Psychic').width, ctx.measureText('사이코키네시스').width];
   });
   expect(widths[0]).toBe(widths[1]);
-  await popup.locator('#enabled').uncheck();
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
   await expect(frame.locator('#cards .nm')).toHaveText('Psychic Psychic');
   await expect(frame.locator('.move-icons span')).toHaveAttribute('title', 'Psychic');
 });
@@ -302,7 +254,7 @@ test('partner selection remains a complete sentence after the game updates the b
   await expect(button).toHaveText('파트너로 선택');
   await button.evaluate((element) => { element.textContent = 'Elegir de compañero (shiny)'; });
   await expect(button).toHaveText('파트너로 선택 (색이 다른)');
-  await popup.locator('#enabled').uncheck();
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
   await expect(button).toHaveText('Elegir de compañero (shiny)');
   expect(errors).toEqual([]);
 });
@@ -321,7 +273,7 @@ test('starter info translates move and personality changes while preserving the 
     element.innerHTML = '<span class="type">Psychic</span> Confusion · Chaotic, Shy';
   });
   await expect(info).toHaveText('에스퍼 염동력 · 예측 불가, 수줍음');
-  await popup.locator('#enabled').uncheck();
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
   await expect(info).toHaveText('Psychic Confusion · Chaotic, Shy');
   expect(errors).toEqual([]);
 });
@@ -364,7 +316,7 @@ test('shop translates every rotating TM while keeping type badges and prices int
     expect((await frame.locator('#shop-body .sub').allTextContents()).some((text) => /[A-Za-z]/.test(text))).toBe(false);
     await expect(frame.locator('#shop-body button')).toHaveText(shopMoves.map(() => '1,500'));
   }
-  await popup.locator('#enabled').uncheck();
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
   expect(await frame.locator('#shop-body .upg-item b').first().evaluate((node) => node.firstChild.nodeValue)).toBe('TM Tackle');
   expect(errors).toEqual([]);
 });
@@ -383,7 +335,7 @@ test('translates authored protected notices without translating player names or 
   await expect(frame.locator('#player-name')).toHaveAttribute('title', '프로필 보기');
   await expect(frame.locator('#room-code')).toHaveText('FIRE012345');
   await expect(frame.locator('#user-pill span')).toHaveText('게스트');
-  await popup.locator('#enabled').uncheck();
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
   await expect(frame.locator('#news-body h3')).toHaveText('Recover your account with Gmail');
   await expect(frame.locator('#player-name')).toHaveAttribute('title', 'Ver su Profile');
 });
@@ -454,7 +406,7 @@ test('profile title selector keeps its action on a separate line with and withou
     }
     await expect(select).toHaveValue(hasTitle ? 'bright' : '');
   }
-  await popup.locator('#enabled').uncheck();
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
   await expect(select).toHaveCSS('display', 'inline-block');
   await expect(select).toHaveValue('bright');
   await page.setViewportSize({ width: 1280, height: 720 });
@@ -481,7 +433,7 @@ test('leaves host canvas unchanged and measures boss headings in the drawing fon
     return ctx.measureText('THE JUDGMENT').width;
   });
   expect(bossWidth).toBe(expectedBossWidth);
-  await popup.locator('#enabled').uncheck();
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
   await expect(frame.locator('#pokemon')).toHaveText('Bulbasaur');
   expect(await measure(page)).toBe(hostWidth);
   expect(await frame.locator('canvas').evaluate((canvas, font) => {
@@ -592,7 +544,7 @@ test('translates dex controls and protected nature and ability names without cha
   })).not.toMatch(/[a-z]/i);
   await detail.locator('.mx-row > b').first().evaluate((node) => { node.textContent = 'Calm'; });
   await expect(detail.locator('.mx-row > b').first()).toHaveText('차분');
-  await popup.locator('#enabled').uncheck();
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
   await expect(detail.locator('.mx-row > b')).toHaveText(['Calm', 'Overgrow']);
   await expect(detail.locator('button').first()).toHaveText('Rarity');
 });
@@ -615,7 +567,7 @@ test('gacha result cards translate natures and abilities without changing the hi
   const cards = frame.locator('#pull-results .pmon');
   await expect(cards).toHaveText(pairs.map(pair => pair[2]));
   await expect(cards.locator('span.gold')).toHaveCount(9);
-  await popup.locator('#enabled').uncheck();
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
   await expect(cards).toHaveText(pairs.map(([nature, ability]) => `${nature} · ${ability}`));
 });
 
@@ -639,7 +591,7 @@ test('translates account notices and populated run summaries while preserving pl
   await expect(frame.locator('#over-sum > p').last()).toHaveText('지닌 도구가 없습니다.');
   await expect(frame.locator('#over-tabs button')).toHaveText('Turtwig');
   await expect(frame.locator('#scr-over > div').first()).toHaveText('시간 보상 9 · 격파 보상 6 · 주운 코인 2');
-  await popup.locator('#enabled').uncheck();
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
   await expect(frame.locator('#over-sum > p').first()).toHaveText('Turtwig · Lv. 4 · 1,592 damage in total');
   await expect(frame.locator('#scr-savenote button')).toHaveText('Got it');
 });

@@ -1,6 +1,10 @@
 // Changelog text and dates from the hosted game release c31715d-game-auth-popup-overlay-20261017.
 // Historical announcements preserve the game author's stated URLs and release details.
 globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
+  ["«Sólo amigos» en Diario, Semanal y Mensual: ahora salen las 50 mejores marcas de tus amigos, aunque no estén en el top 50 mundial. Y ves tu puesto aunque estés fuera del top 50.", "\"Friends only\" in Daily, Weekly and Monthly now shows your friends' 50 best scores, even outside the world top 50. You also see your rank when you're outside the top 50.", "일간·주간·월간 순위표에서 ‘친구만’을 선택하면 세계 상위 50위 밖에 있는 기록도 포함해 친구들의 상위 50개 기록을 볼 수 있습니다. 자신이 상위 50위 밖에 있어도 내 순위가 표시됩니다."],
+  ["Las partidas en grupo no entraban en el ranking: ya se suben al acabar.", "Group runs weren't entering the leaderboard: they now upload when the run ends.", "그룹 플레이 기록이 순위표에 등록되지 않던 문제를 수정했습니다. 이제 플레이가 끝나면 기록이 등록됩니다."],
+  ["Las marcas, también las de tus amigos, se ven en el ranking en pocos minutos, no tras varias horas.", "Scores, including your friends', now show up on the leaderboard within minutes instead of hours.", "친구들의 기록을 포함한 플레이 기록이 이제 몇 시간씩 기다릴 필요 없이 몇 분 안에 순위표에 반영됩니다."],
+  ["Si falla la conexión al acabar, tu marca se vuelve a enviar; y si no entra, ahora te avisamos.", "If your connection fails at the end of a run, your score is sent again; and if it doesn't get in, we now tell you.", "플레이 종료 시 연결에 문제가 생기면 기록을 다시 전송합니다. 그래도 등록되지 않으면 안내 메시지가 표시됩니다."],
   ["Guardado automático", "Automatic saving", "자동 저장"],
   ["5 de noviembre de 2026", "5 November 2026", "2026년 11월 5일"],
   ["Ya no hace falta el botón Guardar: lo hemos quitado porque tu progreso se guarda solo.", "The Save button is gone: your progress now saves by itself.", "저장 버튼이 사라졌습니다. 이제 진행 상황이 자동으로 저장됩니다."],

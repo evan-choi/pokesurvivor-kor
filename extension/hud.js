@@ -29,6 +29,7 @@
       && x >= 16 && x <= 80 && y >= 30 && y <= 100) {
       frame = { transform: this.getTransform(), x, y: y - 10, depth: 0, mode: '' };
       frames.set(this, frame);
+      globalThis.PSKO_MOVE_TOOLTIPS?.begin(this);
       enlarge(this, frame, 'main');
     } else if (frame?.mode === 'main' && fontIs(this, 800, 26)) {
       reset(this, frame);
@@ -39,6 +40,7 @@
       this.translate(0, frame.partyOffset);
       frame.mode = 'party';
     }
+    globalThis.PSKO_MOVE_TOOLTIPS?.text(this, text, x, y);
     const result = original.fillText.call(this, text, x, y, ...rest);
     if (frame?.mode === 'power' || (frame?.mode === 'party' && fontIs(this, 800, 9))) reset(this, frame);
     return result;
@@ -63,7 +65,10 @@
     const frame = frames.get(this);
     const result = original.restore.call(this);
     if (frame) {
-      if (frame.depth === 0) frames.delete(this);
+      if (frame.depth === 0) {
+        frames.delete(this);
+        globalThis.PSKO_MOVE_TOOLTIPS?.end(this);
+      }
       else {
         frame.depth--;
         if (frame.depth === 0 && frame.mode === 'party') reset(this, frame);

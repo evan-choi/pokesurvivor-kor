@@ -2,63 +2,21 @@
 
 import { TIER_SOURCE, DEX_SOURCE, readOwnedPokemon, parseRankings, validateRankings, rankOwnedPokemon } from './owned-pokemon.mjs';
 
-const toggle = document.getElementById('enabled');
-const status = document.getElementById('status');
-const debugToggle = document.getElementById('debug');
-const debugStatus = document.getElementById('debug-status');
 const lanToggle = document.getElementById('lan-direct');
 const lanStatus = document.getElementById('lan-status');
 
-function render(enabled) {
-  toggle.checked = enabled;
-  status.textContent = enabled ? '한국어 · 전환하면 게임 새로고침' : '원본 언어 · 전환하면 게임 새로고침';
-}
-
-chrome.storage.local.get({ enabled: true, debug: false, lanDirect: false }).then(({ enabled, debug, lanDirect }) => {
-  render(enabled !== false);
-  debugToggle.checked = debug === true;
-  debugToggle.disabled = false;
+chrome.storage.local.get({ lanDirect: false }).then(({ lanDirect }) => {
   lanToggle.checked = lanDirect === true;
   lanToggle.disabled = false;
-  toggle.disabled = false;
-}).catch((error) => {
-  console.error(error);
-  status.textContent = '설정을 불러오지 못했습니다. 팝업을 다시 열어 주세요.';
-});
-
-toggle.addEventListener('change', async () => {
-  toggle.disabled = true;
-  try {
-    await chrome.storage.local.set({ enabled: toggle.checked });
-    render(toggle.checked);
-  } catch (error) {
-    console.error(error);
-    toggle.checked = !toggle.checked;
-    status.textContent = '설정을 저장하지 못했습니다. 다시 시도해 주세요.';
-  } finally {
-    toggle.disabled = false;
-  }
-});
-
-debugToggle.addEventListener('change', async () => {
-  debugToggle.disabled = true;
-  try {
-    await chrome.storage.local.set({ debug: debugToggle.checked });
-    debugStatus.hidden = true;
-  } catch {
-    debugToggle.checked = !debugToggle.checked;
-    debugStatus.textContent = '설정을 저장하지 못했습니다. 다시 시도해 주세요.';
-    debugStatus.hidden = false;
-  } finally {
-    debugToggle.disabled = false;
-  }
+}).catch(() => {
+  lanStatus.textContent = '설정을 불러오지 못했습니다. 팝업을 다시 열어 주세요.';
 });
 
 lanToggle.addEventListener('change', async () => {
   lanToggle.disabled = true;
   try {
     await chrome.storage.local.set({ lanDirect: lanToggle.checked });
-    lanStatus.textContent = '다음 연결부터 적용됩니다. 양쪽 PC에서 설정 후 방에 다시 참가하세요.';
+    lanStatus.textContent = '';
   } catch {
     lanToggle.checked = !lanToggle.checked;
     lanStatus.textContent = '설정을 저장하지 못했습니다. 다시 시도해 주세요.';
@@ -68,8 +26,6 @@ lanToggle.addEventListener('change', async () => {
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === 'local' && changes.enabled) render(changes.enabled.newValue !== false);
-  if (area === 'local' && changes.debug) debugToggle.checked = changes.debug.newValue === true;
   if (area === 'local' && changes.lanDirect) lanToggle.checked = changes.lanDirect.newValue === true;
 });
 
@@ -78,6 +34,8 @@ const collectionCount = document.getElementById('collection-count');
 const pokemonList = document.getElementById('pokemon-list');
 const tierUpdated = document.getElementById('tier-updated');
 const refreshCollection = document.getElementById('refresh-collection');
+const gameControls = document.getElementById('game-controls');
+const play = document.querySelector('.play');
 const cacheDuration = 24 * 60 * 60 * 1000;
 
 async function loadRankings(refresh) {
@@ -173,10 +131,12 @@ async function loadCollection(refresh = false) {
   tierUpdated.textContent = '';
   pokemonList.replaceChildren();
   try {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab?.id || !/^https:\/\/(?:www\.)?pokesurvivor\.com\//.test(tab.url || '')) {
-      throw new Error('게임 탭에서 이 메뉴를 열어 주세요.');
-    }
+    const tabs = await chrome.tabs.query({ url: ['https://pokesurvivor.com/*', 'https://www.pokesurvivor.com/*'] });
+    const tab = tabs.filter(tab => tab.id && !tab.url?.includes('/game-auth'))
+      .sort((a, b) => (b.lastAccessed || 0) - (a.lastAccessed || 0))[0];
+    gameControls.hidden = !tab;
+    play.hidden = !!tab;
+    if (!tab) return;
     const frames = await chrome.scripting.executeScript({
       target: { tabId: tab.id, allFrames: true },
       world: 'MAIN',

@@ -115,6 +115,25 @@ html.psko-enabled .set-row > .btn {
   padding-inline: 8px;
 }
 
+#set-body [data-psko-effects] .set-row {
+  align-items: center;
+}
+
+#set-body [data-psko-effects] select {
+  appearance: auto;
+  flex: 0 0 auto;
+  width: 140px;
+  max-width: 45%;
+  min-height: 36px;
+  align-self: center;
+}
+
+#set-body [data-psko-effects] option {
+  color: #fff;
+  background-color: #243e7c;
+  text-shadow: none;
+}
+
 html.psko-enabled .set-row .grow,
 html.psko-enabled .card .txt {
   min-width: 0;

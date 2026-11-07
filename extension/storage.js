@@ -5,7 +5,7 @@
   let initialized = false;
   const network = { lanDirect: false, debug: false };
   let networkInitialized = false;
-  const changedNetworkKeys = new Set();
+  let networkChanged = false;
   const publishNetwork = () => {
     if (networkInitialized) document.dispatchEvent(new CustomEvent('psko:network-settings', { detail: { ...network } }));
   };
@@ -32,13 +32,9 @@
   });
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'local') return;
-    for (const key of ['lanDirect', 'debug']) {
-      if (changes[key]) {
-        changedNetworkKeys.add(key);
-        network[key] = changes[key].newValue === true;
-      }
-    }
-    if (changes.lanDirect || changes.debug) {
+    if (changes.lanDirect) {
+      networkChanged = true;
+      network.lanDirect = changes.lanDirect.newValue === true;
       publishNetwork();
     }
     if (!changes.enabled) return;
@@ -46,11 +42,9 @@
     initialized = true;
     publish();
   });
-  chrome.storage.local.get({ enabled: true, lanDirect: false, debug: false }).then((settings) => {
+  chrome.storage.local.get({ enabled: true, lanDirect: false }).then((settings) => {
     enabled = settings.enabled !== false;
-    for (const key of ['lanDirect', 'debug']) {
-      if (!changedNetworkKeys.has(key)) network[key] = settings[key] === true;
-    }
+    if (!networkChanged) network.lanDirect = settings.lanDirect === true;
     networkInitialized = true;
     initialized = true;
     publish();

@@ -6,11 +6,15 @@ Chrome extension은 `extension/` 안의 JavaScript와 CSS를 그대로 사용합
 
 ## 번역 처리와 권한
 
+`effects.js`는 그래픽 설정에 내/파티원 이펙트 투명도(1, 0.5, 0.2, 0)를 추가합니다. `psko.effect-opacity`에 로컬 저장하며 계정 저장이나 네트워크에는 관여하지 않습니다. `app.min.js`가 처음 만드는 null-prototype 모듈 레지스트리만 포착하고 `Object.create`를 즉시 복원합니다. 예상한 인터페이스가 없으면 기능은 비활성화됩니다. 시전 중 생성한 효과의 소유자를 WeakMap에 기록하고, 투사체·장판의 명시된 소유자도 사용합니다. 효과 생성 중의 `Array.push`, 렌더 중의 배열 반복자만 동기 호출 범위에서 감싸고 `finally`로 복원합니다. Canvas 프록시는 실제 그리기 직전에 원래 alpha에 배율을 곱합니다. 기본 설정이면 원본 렌더를 그대로 호출합니다.
+
+소유자 없는 후속 피격 입자 등은 추측하지 않고 그대로 표시합니다. 원본 모듈/렌더 구조가 바뀌면 어댑터를 다시 검증해야 합니다. `tests/effects.test.mjs`는 소유자 분리·판정 유지·오류 복원을, `tests/browser/effects.spec.mjs`는 설정 저장·탭 전환·미지원 구조를 검사합니다.
+
 Manifest V3 확장 프로그램이며 런타임 의존성은 없습니다. 번역 데이터를 확장 프로그램에 포함해 기기 안에서 처리합니다. 외부 번역 서비스나 API key는 사용하지 않습니다.
 
 `native-locale.js`는 게임 시작 전에 `PS_LOCALES`에 `ko`와 `ko-KR`을 추가하고 `PS_LANG_Q`에 한국어 사전을 등록합니다. 게임의 번역 함수가 문장을 조합하거나 Canvas 설명을 줄바꿈하기 전에 한국어를 반환합니다. 기술명과 타입이 겹치는 `Psychic`은 게임의 `move` 번역 범위로 구분합니다. 원본의 번역 제외 영역이나 직접 그리는 문구는 기존 DOM·Canvas 보완 처리를 함께 사용합니다.
 
-게임의 언어는 시작할 때 결정되므로 언어 전환 시 새로고침합니다. 확장 프로그램의 설정을 읽기 전에는 초기 설정 이벤트를 보내지 않으며, 기기에 저장한 시작 설정과 다른 경우 한 번 새로고침해 맞춥니다. 게임의 언어 목록에서 선택한 언어와 팝업 설정을 함께 반영합니다.
+게임의 언어는 시작할 때 결정되므로 언어 전환 시 새로고침합니다. 확장 프로그램의 설정을 읽기 전에는 초기 설정 이벤트를 보내지 않으며, 기기에 저장한 시작 설정과 다른 경우 한 번 새로고침해 맞춥니다. 게임의 언어 목록에서 선택한 언어를 확장 저장소에 반영합니다. 팝업에는 별도 언어 스위치가 없습니다.
 
 `storage` 권한은 한국어 모드 설정과 티어 데이터를 저장하는 데 씁니다. `scripting` 권한으로 팝업을 열거나 새로고침할 때 공식 게임의 Firebase 로그인 계정 ID에 해당하는 `ps.cloud.*` 저장 데이터에서 보유 도감 번호만 읽습니다. 기존 로컬 계정은 `ps.session`을 따릅니다. 다른 계정의 저장 데이터와 인증 토큰은 읽지 않으며, 게임 계정·저장 데이터·점수는 수정하지 않습니다. 게임 페이지 접근 범위는 `https://pokesurvivor.com/*`, `https://www.pokesurvivor.com/*`와 그 안의 iframe입니다.
 
@@ -24,15 +28,9 @@ Neo둥근모 폰트를 게임 페이지·전투 표시·팝업에 사용합니�
 
 로그인·회원가입 전용 `/game-auth` 페이지는 언어별 경로를 포함해 패치 적용 범위에서 제외합니다. 이 페이지에는 번역 코드, Canvas 처리, 설정 전달 코드와 CSS를 주입하지 않습니다.
 
-## 성능 표시와 측정 범위
+## 성능 분석 기록
 
-팝업의 `debug`는 `chrome.storage.local`의 별도 불리언 설정이며 기본값은 `false`입니다. `debug.js`는 게임 문서의 isolated world에서 실행됩니다. 언어 전환 이벤트를 보내지 않으므로 체크 변경만으로 게임을 새로고침하지 않습니다.
-
-켜져 있고 탭이 보일 때만 자체 `requestAnimationFrame` 콜백 하나와 `PerformanceObserver`의 `longtask` 관찰을 사용합니다. 프레임 카운터와 채널별 최근 30초(최대 31개)의 간격 요약만 유지하고 약 1초마다 Shadow DOM 안의 텍스트·SVG 그래프를 갱신합니다. 번역용 관찰자와 게임 스타일이 이 표시에 관여하지 않습니다. 끄기·탭 숨김·페이지 이탈 시 콜백과 관찰자를 해제하고, 다시 보일 때 측정 구간을 초기화합니다. 계측용 네트워크 요청, 성능 로그 저장, DevTools 녹화는 하지 않습니다.
-
-FPS는 **자체 rAF 콜백 빈도**이며 실제 게임 렌더링 FPS나 디스플레이 표시 FPS가 아닙니다. 프레임 간격은 평균과 최댓값, 50ms 초과 간격은 횟수로 표시합니다. 긴 작업은 브라우저가 제공하는 50ms 이상 메인 스레드 작업이며 미지원 시 이를 표시합니다. `performance.memory.usedJSHeapSize`는 Chromium의 비표준 추정치로, 전체 프로세스·GPU 메모리나 메모리 누수 판정에 사용할 수 없습니다. 네트워크 지연도 측정하지 않습니다.
-
-API 범위: [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame), [PerformanceLongTaskTiming](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceLongTaskTiming), [performance.memory](https://developer.mozilla.org/en-US/docs/Web/API/Performance/memory).
+팝업의 debug 설정과 성능 오버레이는 제거했습니다. 이전 설치본의 `debug: true` 값도 무시하며, `storage.js`는 네트워크 계측에 항상 `debug: false`를 전달합니다.
 
 ### 2026-11-07 플레이 기록 검토
 
@@ -67,31 +65,17 @@ API 범위: [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web
 - 상태 전송 주기는 정상 `direct` 분기에서 약 67ms, 그 외 분기에서 약 333ms입니다. 후자는 실제 게임 상태 전송이 계속 성공한다는 보장이 없으며, 제보자의 연결이 이 분기라는 증거도 없습니다. WebRTC의 TURN 경유도 게임 내부에서는 `direct`일 수 있어 이 분기를 TURN과 동일시하면 안 됩니다.
 - 빠른 데이터 채널은 순서 보장·재전송 없이 상태를 보냅니다. 전송 대기량이 4KiB를 넘으면 이번 상태 전송을 생략하고, 패킷이 16KiB를 넘으면 일반 전송 경로로 넘깁니다. 일반 채널은 순서를 보장합니다. 많은 몬스터가 실제로 이 한계를 넘겼는지는 전송량 측정이 필요합니다.
 
-우선 확인할 지표는 참가자의 상태 수신 간격·마지막 수신 후 경과 시간, 방장의 상태 전송 간격·대기량, 연결 RTT입니다. 수신 지터가 확인되면 송신 시각 기반 속도 추정과 짧은 스냅샷 버퍼의 보간을, 방장 전송 지연이면 방장의 부하·전송량을 개선하는 순서입니다. 예측 시간을 무작정 늘리거나 순간 이동 보정을 제거하면 화면상 위치가 실제 판정과 더 멀어질 수 있습니다. 현재 debug는 채널별 송수신 간격과 송신 큐를 제공하지만 RTT 및 메시지 내용별 분류는 제공하지 않으며, 이 현상의 원인 확정이나 수정 완료를 뜻하지 않습니다.
-
-### 송수신 간격 계측
-
-게임에서 생성하거나 수신한 `RTCDataChannel` 중 `s`(빠른 상태)와 `g`(일반)를 WeakRef로 추적합니다. debug가 켜지고 탭이 보이며 채널이 열렸을 때만 개별 채널의 `send`를 Proxy로 감싸고 `message` 리스너를 붙입니다. 원본 호출의 인수·반환값·예외는 유지하며 성공한 호출만 셉니다. payload는 읽거나 저장하지 않습니다. 중단 시 원래 send 속성을 복구하고 리스너를 제거합니다. 닫힌 연결·채널은 요약에서 제외합니다.
-
-`performance.now()`로 이벤트 간격을 누적하며, 약 1초마다 별도 `psko:network-timing` 이벤트로 숫자 요약을 전달합니다. 느린 getStats 응답이 그래프를 막지 않도록 경로 조회와 별도로 처리합니다. isolated world는 입력값을 검증하고 연결·채널별로 30초의 최대 간격을 저장합니다. 서로 다른 연결을 합치지 않습니다. 진행 중인 무소식 시간도 최대 간격에 포함해 완전한 수신 중단을 표시합니다. 평균은 해당 구간에 완료된 간격들의 평균이며, 누적 최댓값은 체크 변경·탭 숨김 후 초기화합니다.
-
-송신 시각은 실제 패킷 출발이나 상대 수신 확인이 아닙니다. 수신 시각에는 네트워크뿐 아니라 로컬 이벤트 루프 지연도 섞입니다. 큰 상태 메시지는 g로 넘어갈 수 있으므로 s만으로 상태 전송 중단을 단정하면 안 됩니다. 게임 일시정지·메뉴·비활성 상태와 일반 채널의 드문 메시지도 공백을 만듭니다. 두 PC의 로컬 연결 번호는 서로 대응하지 않습니다.
-
-API 기준: [send](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/send), [송신 큐](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/bufferedAmount).
+우선 확인할 지표는 참가자의 상태 수신 간격·마지막 수신 후 경과 시간, 방장의 상태 전송 간격·대기량, 연결 RTT입니다. 수신 지터가 확인되면 송신 시각 기반 속도 추정과 짧은 스냅샷 버퍼의 보간을, 방장 전송 지연이면 방장의 부하·전송량을 개선하는 순서입니다. 예측 시간을 무작정 늘리거나 순간 이동 보정을 제거하면 화면상 위치가 실제 판정과 더 멀어질 수 있습니다. 이 기록만으로 해당 현상의 원인을 확정하거나 해결됐다고 판단할 수 없습니다.
 
 ### LAN 옵션과 실제 연결 경로
 
 `network.js`는 MAIN world에서 게임 코드보다 먼저 `RTCPeerConnection` 생성자를 Proxy로 감쌉니다. 게임 문서에서 `lanDirect`가 켜져 있을 때만 새 연결 설정의 `iceTransportPolicy`를 `all`로 바꾸고, ICE 서버·인증·나머지 옵션은 보존합니다. 꺼져 있거나 게임이 아닌 문서는 원래 설정을 그대로 전달합니다. 기존 연결을 재설정하거나 종료하지 않습니다. 원본 생성자의 정적 메서드·프로토타입·서브클래스 동작을 유지합니다.
 
-`storage.js`가 `lanDirect`와 `debug` 불리언을 전달하며, 언어 설정 이벤트와 분리합니다. 초기 저장 설정을 읽는 동안 발생한 네트워크 설정 변경은 오래된 초기값으로 덮지 않습니다. 페이지에서 받은 이벤트로 LAN 설정을 저장하지 않습니다.
+`storage.js`가 `lanDirect` 불리언과 고정된 `debug: false`를 전달하며, 언어 설정 이벤트와 분리합니다. 초기 저장 설정을 읽는 동안 발생한 네트워크 설정 변경은 오래된 초기값으로 덮지 않습니다. 페이지에서 받은 이벤트로 LAN 설정을 저장하지 않습니다.
 
-연결은 WeakRef로 추적하고 닫힌 연결은 목록에서 제외합니다. debug가 켜져 있고 문서가 보일 때만 약 1초마다 `getStats()`를 요청하며, 이전 요청이 진행 중이면 중복 실행하지 않습니다. `transport.selectedCandidatePairId`에 해당하는 양 끝 후보 중 하나라도 `relay`면 TURN, 둘 다 `host`/`srflx`/`prflx`면 직결로 분류합니다. 단순히 TURN 후보가 존재하거나 `nominated`인 것만으로는 실제 사용 경로라고 판단하지 않습니다. 실패·미연결·조회 실패는 별도 상태로 표시합니다. 후보 IP·SDP·TURN 인증정보는 화면이나 로그에 남기거나 isolated world로 전달하지 않고 경로별 개수만 전달합니다.
+`network.js`의 진단용 계측 함수는 단위 테스트에 남아 있지만, 배포판에서는 켜지지 않습니다. LAN 스위치는 계측이나 언어 전환 없이 연결 정책만 바꿉니다.
 
-`직결`은 TURN 미경유라는 뜻이며 LAN 주소 사용 여부를 확정하지 않습니다. `all`은 LAN 전용이나 직결 강제가 아니며 TURN도 사용될 수 있습니다. 실제 선택 경로의 RTT는 아직 표시하지 않습니다. 메시지 간격 그래프는 위의 별도 계측을 사용합니다.
-
-검증: 네이티브 Chrome에서 중계 전용 설정을 전달한 두 테스트 연결이 LAN 옵션을 통해 직접 연결되고 debug에 반영되는 것을 확인합니다. TURN 경유·혼합 경로·조회 실패는 고정된 stats 자료로 검사하며, 실제 두 PC 사이의 LAN 및 외부 TURN 서버를 이용한 검증은 별도로 필요합니다.
-
-API 기준: [선택된 후보 쌍](https://developer.mozilla.org/en-US/docs/Web/API/RTCTransportStats/selectedCandidatePairId), [후보 종류](https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidateStats/candidateType).
+`all`은 LAN 전용이나 직결 강제가 아니며 TURN도 사용될 수 있습니다. 네이티브 Chrome 테스트는 스위치 저장·복원, 기존 연결 유지, 두 테스트 연결의 직접 데이터 송수신을 검증합니다. 실제 두 PC의 방화벽과 네트워크 환경은 별도 확인이 필요합니다.
 
 ## 개발 환경과 검사
 
@@ -129,9 +113,8 @@ npm run audit:translations -- es
 | `extension/content.js` | 메뉴 번역과 게임 안의 한국어 버튼 |
 | `extension/canvas.js` | Canvas에 그리는 전투 텍스트 번역 |
 | `extension/storage.js` | 언어 설정 저장과 전달 |
-| `extension/debug.js` | 선택적으로 켜는 게임 성능 지표 |
 | `extension/hud.js` | Canvas 전투 HUD의 이름·HP·버프 1.5배 확대 |
-| `extension/network.js` | 새 WebRTC 연결의 직결 허용과 실제 사용 경로 판별 |
+| `extension/network.js` | 새 WebRTC 연결의 직결 허용 |
 | `extension/popup.html`, `extension/popup.js` | 확장 프로그램 팝업 |
 | `extension/owned-pokemon.mjs` | 현재 계정의 보유 목록 읽기, 티어 표 검증과 순위 연결 |
 | `tests/` | 번역 처리 및 브라우저 검증 |
