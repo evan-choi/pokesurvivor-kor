@@ -2,12 +2,11 @@ import { appendFile, readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { setTimeout } from 'node:timers/promises';
 
-export async function publishStore({ env, version, zip, request = fetch, sleep = setTimeout }) {
+export async function connectStore({ env, request = fetch }) {
   for (const key of ['CWS_PUBLISHER_ID', 'CWS_ITEM_ID', 'CWS_CLIENT_ID', 'CWS_CLIENT_SECRET', 'CWS_REFRESH_TOKEN']) {
     if (!env[key]) throw new Error(`Missing ${key}. See docs/store-publishing.md.`);
   }
   if (!/^[a-p]{32}$/.test(env.CWS_ITEM_ID) || !/^[\w-]+$/.test(env.CWS_PUBLISHER_ID)) throw new Error('Invalid store item or publisher ID.');
-  if (!/^\d+(\.\d+){0,3}$/.test(version)) throw new Error('Invalid extension version.');
   async function json(url, options) {
     const response = await request(url, { ...options, signal: AbortSignal.timeout(120_000) });
     // OAuth error bodies can contain credentials; never log response bodies.
@@ -21,6 +20,12 @@ export async function publishStore({ env, version, zip, request = fetch, sleep =
   const headers = { Authorization: `Bearer ${auth.access_token}` };
   const name = `publishers/${env.CWS_PUBLISHER_ID}/items/${env.CWS_ITEM_ID}`;
   const base = `https://chromewebstore.googleapis.com/v2/${name}`;
+  return { json, headers, name, base };
+}
+
+export async function publishStore({ env, version, zip, request = fetch, sleep = setTimeout }) {
+  if (!/^\d+(\.\d+){0,3}$/.test(version)) throw new Error('Invalid extension version.');
+  const { json, headers, name, base } = await connectStore({ env, request });
   const status = await json(`${base}:fetchStatus`, { headers });
   if (status.takenDown || status.warned) throw new Error('Resolve the store policy notice in the dashboard first.');
   const published = status.publishedItemRevisionStatus;

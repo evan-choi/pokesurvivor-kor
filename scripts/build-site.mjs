@@ -6,7 +6,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const output = path.join(root, 'dist/site');
 const { version } = JSON.parse(await readFile(path.join(root, 'extension/manifest.json'), 'utf8'));
 const baseUrl = 'https://evan-choi.github.io/pokesurvivor-kor/';
-// Set this only after the public listing is available, independently of CI credentials.
+// CI resolves this from the store's published revision, never a pending submission.
 const storeUrl = process.env.CWS_STORE_URL || '';
 if (storeUrl && !/^https:\/\/chromewebstore\.google\.com\/detail\/(?:[a-zA-Z0-9_-]+\/)?[a-p]{32}$/.test(storeUrl)) {
   throw new Error('CWS_STORE_URL must be a public Chrome Web Store item URL without query parameters.');
