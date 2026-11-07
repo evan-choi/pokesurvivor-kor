@@ -15,7 +15,7 @@ if (storeUrl && !/^https:\/\/chromewebstore\.google\.com\/detail\/(?:[a-zA-Z0-9_
 for (const directory of ['assets', 'downloads', 'en']) {
   await mkdir(path.join(output, directory), { recursive: true });
 }
-for (const file of ['index.html', 'en/index.html', 'styles.css']) {
+for (const file of ['index.html', 'en/index.html', 'privacy.html', 'styles.css']) {
   const source = await readFile(path.join(root, 'site', file), 'utf8');
   const english = file.startsWith('en/');
   const download = `${english ? '../' : ''}downloads/pokesurvivor-korean.zip`;

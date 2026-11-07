@@ -7,11 +7,11 @@
 - 원저작권 표시: **Copyright 2026 JPTER78**
 - 게임: [공식 웹사이트](https://pokesurvivor.com/), [제작자 배포 페이지](https://jpter78.itch.io/pokesurvivor)
 - 번역 기준: 초기 문구는 공개 배포본 `c31715d-game-auth-popup-overlay-20261017`, 기술 설명 및 공식 사이트 호환 확인은 `app.min.js?v=ab83565e21` (2026-11-07)
-- 포함 자료: 영어·스페인어 게임 문구와 이를 바탕으로 작성한 한국어 번역, README의 설정 화면 예시
+- 포함 자료: 영어·스페인어 게임 문구와 이를 바탕으로 작성한 한국어 번역, 설정·메뉴·강화 화면 예시, 게임 아이콘을 바탕으로 만든 Kor 아이콘
 - 배포본에 표시된 라이선스: [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0)
 - 변경 사항: 한국어 번역 추가, 포켓몬·기술 명칭 대조, 한국어 표시를 위한 화면 조정
 
-원본 게임의 실행 코드, 개별 이미지·음악 파일은 포함하지 않습니다. 라이선스 전문은 `LICENSE`에도 포함되어 있습니다. 게임의 원본 GitHub 라이선스 링크는 확인 시점에 열리지 않아, 공개 배포본의 저작권·라이선스 표시와 PolyForm 공식 전문을 기준으로 고지합니다.
+원본 게임의 실행 코드와 음악 파일은 포함하지 않습니다. 아이콘 원본은 [게임의 512px 아이콘](https://pokesurvivor.com/assets/icons/icon-512.png)이며, Neo둥근모 폰트로 Kor 표시를 추가했습니다. 라이선스 전문은 `LICENSE`에도 포함되어 있습니다. 게임의 원본 GitHub 라이선스 링크는 확인 시점에 열리지 않아, 공개 배포본의 저작권·라이선스 표시와 PolyForm 공식 전문을 기준으로 고지합니다.
 
 ## PokéAPI
 
