@@ -1,0 +1,32 @@
+name: Wait for store publication
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  website:
+    uses: ./.github/workflows/pages.yml
+    secrets: inherit
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+  stop:
+    needs: website
+    if: needs.website.outputs.store_url != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      actions: write
+    steps:
+      - name: Stop hourly checks after successful website update
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh workflow disable store-watch.yml
