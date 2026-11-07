@@ -31,6 +31,11 @@
   };
 
   const inside = (x, y, r) => x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h;
+  function hudCanvas(target) {
+    if (target instanceof HTMLCanvasElement && target.id === 'game') return target;
+    // The level-up backdrop covers the HUD; its cards and controls must still block hover.
+    return target?.id === 'scr-levelup' ? latest?.canvas : null;
+  }
   function hide() { if (tooltip) tooltip.style.display = 'none'; signature = ''; }
   function label(values, move = false) {
     const language = globalThis.PS_LOCALES?.lang;
@@ -40,7 +45,7 @@
   function show() {
     nextUpdate = performance.now() + 100;
     if (!pointer || !latest || pointer.canvas !== latest.canvas || document.hidden
-      || document.elementFromPoint(pointer.x, pointer.y) !== latest.canvas) return hide();
+      || hudCanvas(document.elementFromPoint(pointer.x, pointer.y)) !== latest.canvas) return hide();
     const bounds = latest.canvas.getBoundingClientRect();
     if (!bounds.width || !bounds.height) return hide();
     const sx = bounds.width / latest.canvas.width, sy = bounds.height / latest.canvas.height;
@@ -111,8 +116,8 @@
     },
   };
   document.addEventListener('pointermove', event => {
-    pointer = event.target instanceof HTMLCanvasElement && event.target.id === 'game'
-      ? { canvas: event.target, x: event.clientX, y: event.clientY } : null;
+    const canvas = hudCanvas(event.target);
+    pointer = canvas ? { canvas, x: event.clientX, y: event.clientY } : null;
     show();
   }, { passive: true });
   for (const type of ['blur', 'resize', 'pagehide']) window.addEventListener(type, () => { pointer = null; hide(); });
