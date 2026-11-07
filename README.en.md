@@ -30,6 +30,10 @@ Ranks come from the stat-based [PokéSurvivor Guide tier list](https://pokesurvi
 
 </details>
 
+## LAN direct connection
+
+If LAN multiplayer uses TURN because Windows blocks inbound Chrome UDP, an optional [Windows LAN helper](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-lan-helper.zip) can allow a trusted CIDR after confirmation. Read the [scope and undo instructions](tools/windows-lan/README.md) first.
+
 ## Update
 
 Replace the files in the installed folder with the new ZIP's contents. Reload the extension at `chrome://extensions`, then reload the game.

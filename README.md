@@ -30,6 +30,10 @@
 
 </details>
 
+## LAN 직접 연결
+
+같은 LAN에서 멀티플레이가 TURN으로 연결된다면 선택적으로 [Windows LAN 도구](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-lan-helper.zip)를 사용할 수 있습니다. 신뢰하는 CIDR을 입력하고 범위를 확인한 뒤 Chrome UDP 수신을 허용합니다. [사용법과 되돌리기](tools/windows-lan/README.md)를 먼저 확인하세요.
+
 ## 업데이트
 
 새 ZIP으로 기존 폴더의 파일을 교체한 뒤, `chrome://extensions`에서 확장 프로그램을 새로고침하세요. 게임도 새로고침하면 적용됩니다.

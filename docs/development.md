@@ -130,6 +130,7 @@ npm run audit:translations -- es
 | `extension/canvas.js` | Canvas에 그리는 전투 텍스트 번역 |
 | `extension/storage.js` | 언어 설정 저장과 전달 |
 | `extension/debug.js` | 선택적으로 켜는 게임 성능 지표 |
+| `extension/hud.js` | Canvas 전투 HUD의 이름·HP·버프 1.5배 확대 |
 | `extension/network.js` | 새 WebRTC 연결의 직결 허용과 실제 사용 경로 판별 |
 | `extension/popup.html`, `extension/popup.js` | 확장 프로그램 팝업 |
 | `extension/owned-pokemon.mjs` | 현재 계정의 보유 목록 읽기, 티어 표 검증과 순위 연결 |
@@ -139,6 +140,10 @@ npm run audit:translations -- es
 
 
 ## 자동 배포
+
+`tools/windows-lan/`은 사용자가 관리자 권한으로 직접 실행하는 선택적 Windows 방화벽 도구입니다. `npm run package`는 확장 ZIP의 `windows-lan/` 폴더와 별도 `dist/pokesurvivor-lan-helper.zip`에 동일한 도구를 넣습니다. 기기별 IP 설정 파일이나 `dist/`의 진단 자료는 포함하지 않습니다. PowerShell 소스는 Windows PowerShell 5.1에서 한글이 깨지지 않도록 UTF-8 BOM을 유지합니다.
+
+`npm test`는 Windows에서 `tests/windows-lan.test.ps1`도 실행합니다. CIDR·포트 검증, 규칙 범위, 실패 시 되돌리기와 삭제 확인을 모의 방화벽으로 검사하며 실제 허용 규칙을 만들지 않습니다.
 
 GitHub Actions는 `main` 변경 또는 수동 실행 시 확장 프로그램과 소개 페이지를 빌드하고 GitHub Pages에 바로 배포합니다. CI에서는 검사를 실행하지 않으며, 설치용 ZIP은 소개 페이지에서 내려받을 수 있습니다. 단위 테스트, 브라우저 테스트, 실제 사이트 검사와 PokéAPI 대조는 필요할 때 위 명령으로 로컬에서 실행합니다.
 

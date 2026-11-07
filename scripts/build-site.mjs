@@ -21,6 +21,7 @@ await copyFile(path.join(root, 'extension/icons/128.png'), path.join(output, 'as
 const packageName = `pokesurvivor-korean-${version}.zip`;
 await copyFile(path.join(root, 'dist', packageName), path.join(output, 'downloads', packageName));
 await copyFile(path.join(root, 'dist', packageName), path.join(output, 'downloads/pokesurvivor-korean.zip'));
+await copyFile(path.join(root, 'dist/pokesurvivor-lan-helper.zip'), path.join(output, 'downloads/pokesurvivor-lan-helper.zip'));
 await writeFile(path.join(output, '.nojekyll'), '');
 await writeFile(path.join(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

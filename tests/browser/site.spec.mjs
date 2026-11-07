@@ -85,6 +85,15 @@ for (const [language, pathname] of [['ko', '/'], ['en', '/en/']]) {
     const stableDownload = await page.request.get(`${origin}/downloads/pokesurvivor-korean.zip`);
     expect(stableDownload.ok()).toBe(true);
     expect(await stableDownload.body()).toEqual(await readFile(await download.path()));
+    const helper = await page.request.get(`${origin}/downloads/pokesurvivor-lan-helper.zip`);
+    expect(helper.ok()).toBe(true);
+    const helperPath = path.join(site, 'downloads/pokesurvivor-lan-helper.zip');
+    expect(await helper.body()).toEqual(await readFile(helperPath));
+    const helperFiles = execFileSync('unzip', ['-Z1', helperPath], { encoding: 'utf8' }).trim().split(/\r?\n/).sort();
+    expect(helperFiles).toEqual(['LICENSE', 'README.md', 'lan-firewall.ps1', 'run-as-administrator.cmd']);
+    const helperScript = execFileSync('unzip', ['-p', helperPath, 'lan-firewall.ps1']);
+    expect(helperScript.subarray(0, 3)).toEqual(Buffer.from([0xef, 0xbb, 0xbf]));
+    expect(execFileSync('unzip', ['-p', await download.path(), 'windows-lan/lan-firewall.ps1'])).toEqual(helperScript);
     expect(errors).toEqual([]);
   });
 }
