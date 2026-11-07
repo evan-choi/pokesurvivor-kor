@@ -1,17 +1,35 @@
 # PokéSurvivor Korean Patch
 
-An unofficial Chrome extension that translates menus, Pokémon names, and move descriptions into Korean.
+A Chrome extension with Korean translations, a larger battle HUD, move and item tooltips, and effect visibility controls.
 
-[**Download**](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip) · [Open game](https://pokesurvivor.com/) · [한국어](README.md)
+[**Install**](https://evan-choi.github.io/pokesurvivor-kor/en/#install) · [Open game](https://pokesurvivor.com/) · [한국어](README.md)
 
 ## Install
 
-1. Download the ZIP above and extract it.
+See the installation page for available installation methods and store availability. Chrome automatically delivers approved updates to store installations. Manual ZIP installation is also supported.
+
+<details>
+<summary>Install manually from ZIP</summary>
+
+1. Download the [installation ZIP](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip) and extract it.
 2. Open `chrome://extensions` in Chrome and turn on **Developer mode**.
 3. Click **Load unpacked** and select the extracted `pokesurvivor-korean` folder with `manifest.json` directly inside it.
 4. Open or reload [the game](https://pokesurvivor.com/). Korean is enabled on first installation.
 
 Keep the installed folder in place. Do not move or delete it.
+
+</details>
+
+When moving to the store version, disable the old unpacked extension. Do not run both installations together.
+
+## Features
+
+| Feature | Where to find it |
+| --- | --- |
+| Korean translation and official Korean Pokémon names | Settings → Graphics → Language |
+| 1.5× battle HUD and move/item tooltips | Battle screen |
+| Separate player and party effect opacity | Settings → Graphics |
+| Owned Pokémon tiers and LAN direct connection | Extension popup |
 
 ## Change language
 
@@ -52,7 +70,9 @@ If LAN multiplayer uses TURN because Windows blocks inbound Chrome UDP, an optio
 
 ## Update
 
-Replace the files in the installed folder with the new ZIP's contents. Reload the extension at `chrome://extensions`, then reload the game.
+Store installations update automatically. For ZIP installations, replace the installed files with the latest ZIP and reload the extension at `chrome://extensions`. Reload any open game tab afterwards.
+
+For maintainers, a version bump pushed to `main` can submit an update for store review through CI. The website deploys on every `main` push. [Store and CI setup (Korean)](docs/store-publishing.md) · [Development guide (Korean)](docs/development.md)
 
 [Installation help (Korean)](docs/install.md) · [Report a translation](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml)
 

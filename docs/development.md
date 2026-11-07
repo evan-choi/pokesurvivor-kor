@@ -124,6 +124,8 @@ npm run audit:translations -- es
 
 ## 자동 배포
 
+Chrome 웹 스토어 최초 공개 및 인증 설정은 [스토어 배포 안내](store-publishing.md)를 참고하세요. 설정 후 확장 소스를 `main`에 푸시하면 공식 v2 API로 새 버전을 업로드하고 심사에 제출합니다. `npm run package`는 방화벽 도구를 제외한 `dist/pokesurvivor-store-<버전>.zip`도 생성합니다. `CWS_STORE_URL` 변수를 공개된 스토어 주소로 설정하면 사이트 설치 버튼이 전환됩니다.
+
 `tools/windows-lan/`은 사용자가 관리자 권한으로 직접 실행하는 선택적 Windows 방화벽 도구입니다. `npm run package`는 확장 ZIP의 `windows-lan/` 폴더와 별도 `dist/pokesurvivor-lan-helper.zip`에 동일한 도구를 넣습니다. 기기별 IP 설정 파일이나 `dist/`의 진단 자료는 포함하지 않습니다. PowerShell 소스는 Windows PowerShell 5.1에서 한글이 깨지지 않도록 UTF-8 BOM을 유지합니다.
 
 `npm test`는 Windows에서 `tests/windows-lan.test.ps1`도 실행합니다. CIDR·포트 검증, 규칙 범위, 실패 시 되돌리기와 삭제 확인을 모의 방화벽으로 검사하며 실제 허용 규칙을 만들지 않습니다.

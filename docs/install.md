@@ -1,5 +1,7 @@
 # PokéSurvivor 한국어 모드 설치
 
+[설치 페이지](https://evan-choi.github.io/pokesurvivor-kor/#install)에서 현재 제공되는 설치 방법을 확인하세요. 스토어 설치본은 Chrome이 자동 업데이트하며, 아래는 ZIP 직접 설치 방법입니다. 스토어 설치본으로 옮길 때는 기존 확장을 꺼서 중복 실행을 피하세요.
+
 1. 설치 ZIP의 압축을 풉니다.
 2. Chrome 주소창에 `chrome://extensions`를 입력합니다.
 3. 오른쪽 위의 **개발자 모드**를 켭니다.

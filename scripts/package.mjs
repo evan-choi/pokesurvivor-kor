@@ -11,6 +11,11 @@ const temporaryDirectory = await mkdtemp(path.join(tmpdir(), 'pokesurvivor-packa
 const staging = path.join(temporaryDirectory, 'contents');
 await mkdir(path.dirname(output), { recursive: true });
 await cp(path.join(root, 'extension'), staging, { recursive: true });
+const storeStaging = path.join(temporaryDirectory, 'store');
+await cp(staging, storeStaging, { recursive: true });
+for (const file of ['LICENSE', 'THIRD_PARTY_NOTICES.md']) {
+  await copyFile(path.join(root, file), path.join(storeStaging, file));
+}
 await cp(path.join(root, 'tools/windows-lan'), path.join(staging, 'windows-lan'), { recursive: true });
 await copyFile(path.join(root, 'LICENSE'), path.join(staging, 'windows-lan/LICENSE'));
 await copyFile(path.join(root, 'docs/install.md'), path.join(staging, 'README.md'));
@@ -33,4 +38,5 @@ async function archive(directory, destination) {
   console.log(destination);
 }
 await archive(staging, output);
+await archive(storeStaging, path.join(root, 'dist', `pokesurvivor-store-${manifest.version}.zip`));
 await archive(path.join(staging, 'windows-lan'), path.join(root, 'dist/pokesurvivor-lan-helper.zip'));

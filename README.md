@@ -1,17 +1,35 @@
 # PokéSurvivor 한국어 모드
 
-메뉴, 포켓몬 이름, 기술 설명을 한국어로 바꾸는 비공식 Chrome 확장 프로그램입니다.
+한국어 번역부터 전투 HUD, 기술·도구 설명과 이펙트 조절까지 담은 Chrome 확장 프로그램입니다.
 
-[**다운로드**](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip) · [게임 열기](https://pokesurvivor.com/) · [English](README.en.md)
+[**설치하기**](https://evan-choi.github.io/pokesurvivor-kor/#install) · [게임 열기](https://pokesurvivor.com/) · [English](README.en.md)
 
 ## 설치
 
-1. 위의 ZIP 파일을 내려받아 압축을 풉니다.
+설치 페이지에서 현재 제공되는 설치 방법과 스토어 공개 여부를 확인하세요. 스토어 설치본은 Chrome이 승인된 업데이트를 자동으로 설치합니다. ZIP 직접 설치도 지원합니다.
+
+<details>
+<summary>ZIP으로 직접 설치하기</summary>
+
+1. [설치 ZIP](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean.zip)을 내려받아 압축을 풉니다.
 2. Chrome 주소창에 `chrome://extensions`를 입력하고 **개발자 모드**를 켭니다.
 3. **압축해제된 확장 프로그램을 로드합니다** 버튼을 눌러 `manifest.json`이 바로 들어 있는 `pokesurvivor-korean` 폴더를 선택합니다.
 4. [게임](https://pokesurvivor.com/)을 열거나 새로고침합니다. 처음 설치하면 한국어가 켜집니다.
 
 설치한 폴더는 옮기거나 삭제하지 마세요.
+
+</details>
+
+ZIP 설치본에서 스토어 설치본으로 옮길 때는 기존 확장을 끄세요. 두 설치본을 동시에 켜지 마세요.
+
+## 주요 기능
+
+| 기능 | 사용 위치 |
+| --- | --- |
+| 한국어와 공식 포켓몬 명칭 | 게임 설정 → 그래픽 → 언어 |
+| 1.5배 전투 HUD, 기술·도구 툴팁 | 게임 전투 화면 |
+| 내 이펙트·파티원 이펙트 투명도 | 게임 설정 → 그래픽 |
+| 보유 포켓몬 티어와 LAN 직접 연결 | 확장 프로그램 팝업 |
 
 ## 언어 바꾸기
 
@@ -52,7 +70,9 @@
 
 ## 업데이트
 
-새 ZIP으로 기존 폴더의 파일을 교체한 뒤, `chrome://extensions`에서 확장 프로그램을 새로고침하세요. 게임도 새로고침하면 적용됩니다.
+스토어 설치본은 자동 업데이트됩니다. ZIP 설치본은 새 ZIP으로 기존 폴더의 파일을 교체한 뒤, `chrome://extensions`에서 확장 프로그램을 새로고침하세요. 열려 있는 게임도 새로고침하면 적용됩니다.
+
+개발자는 버전을 올려 `main`에 푸시하면 CI에서 스토어 심사에 제출할 수 있습니다. 웹사이트는 `main` 변경 시 바로 배포됩니다. [최초 등록과 CI 연결](docs/store-publishing.md) · [개발 안내](docs/development.md)
 
 [설치 도움말](docs/install.md) · [번역 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml)
 

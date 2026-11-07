@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PokéSurvivor Korean Patch | Chrome Extension</title>
-  <meta name="description" content="An unofficial Chrome extension that translates PokéSurvivor menus, Pokémon names, and move descriptions into Korean. Download the patch and follow the installation steps.">
+  <meta name="description" content="A Chrome extension that translates PokéSurvivor menus, Pokémon names, and move descriptions into Korean. Download the patch and follow the installation steps.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://evan-choi.github.io/pokesurvivor-kor/en/">
   <link rel="alternate" hreflang="ko" href="https://evan-choi.github.io/pokesurvivor-kor/">
@@ -21,7 +21,7 @@
   <meta property="og:image" content="https://evan-choi.github.io/pokesurvivor-kor/assets/settings-korean.png">
   <meta property="og:image:alt" content="PokéSurvivor settings translated into Korean">
   <meta name="twitter:card" content="summary_large_image">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PokéSurvivor Korean Patch","alternateName":"PokéSurvivor Korean Language Patch","applicationCategory":"BrowserApplication","operatingSystem":"Windows, macOS, Linux","browserRequirements":"Chrome 119 or later","softwareVersion":"{{VERSION}}","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://evan-choi.github.io/pokesurvivor-kor/en/","downloadUrl":"https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean-{{VERSION}}.zip","license":"https://polyformproject.org/licenses/noncommercial/1.0.0","author":{"@type":"Person","name":"Evan Choi","url":"https://github.com/evan-choi"},"description":"An unofficial Chrome extension that translates PokéSurvivor menus, Pokémon names, and move descriptions into Korean."}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PokéSurvivor Korean Patch","alternateName":"PokéSurvivor Korean Language Patch","applicationCategory":"BrowserApplication","operatingSystem":"Windows, macOS, Linux","browserRequirements":"Chrome 119 or later","softwareVersion":"{{VERSION}}","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://evan-choi.github.io/pokesurvivor-kor/en/","downloadUrl":"https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-korean-{{VERSION}}.zip","license":"https://polyformproject.org/licenses/noncommercial/1.0.0","author":{"@type":"Person","name":"Evan Choi","url":"https://github.com/evan-choi"},"description":"A Chrome extension that translates PokéSurvivor menus, Pokémon names, and move descriptions into Korean."}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -31,30 +31,42 @@
 </header>
 <main id="main">
   <section class="hero" aria-labelledby="title">
-    <h1 id="title">PokéSurvivor Korean Patch</h1>
-    <p class="lead">An unofficial Chrome extension that translates menus, Pokémon names, and move descriptions into Korean.</p>
-    <div class="actions"><a class="button primary" href="../downloads/pokesurvivor-korean-{{VERSION}}.zip" download>Download</a><a class="button" href="https://pokesurvivor.com/">Open game</a></div>
+    <p class="eyebrow">POKÉSURVIVOR · CHROME EXTENSION</p>
+    <h1 id="title">Read in Korean.<br>Focus on the battle.</h1>
+    <p class="lead">Korean names, menus, and move descriptions,<br>with practical tools for every run.</p>
+    <div class="actions"><a class="button primary" href="{{INSTALL_URL}}" {{INSTALL_ATTR}}>{{INSTALL_LABEL}}</a><a class="button" href="https://pokesurvivor.com/">Open game</a></div>
+    <p class="note release">{{STORE_STATUS}}</p>
   </section>
 
+  <section class="features" aria-label="Features">
+    <article><span>01 / LANGUAGE</span><h2>Familiar Pokémon names</h2><p>Choose Korean in the game settings, with official Korean names for Pokémon, moves, and abilities.</p></article>
+    <article><span>02 / BATTLE</span><h2>Details at a glance</h2><p>A 1.5× player HUD and tooltips for moves and held items. Hover over linked moves to see their descriptions together.</p></article>
+    <article><span>03 / YOUR SETUP</span><h2>Make it comfortable</h2><p>Adjust your effects and party effects separately, and check tier rankings for the Pokémon you own.</p></article>
+  </section>
   <section class="install" id="install" aria-labelledby="install-title">
-    <h2 id="install-title">Install</h2>
+    <h2 id="install-title">Install and start playing</h2>
+    {{STORE_INSTALL}}
+    <details class="manual-install">
+    <summary>Install manually from ZIP</summary>
     <ol class="steps">
-      <li>Extract the downloaded ZIP file.</li>
+      <li>Download and extract the <a href="../downloads/pokesurvivor-korean.zip" download>installation ZIP</a>.</li>
       <li>Open <code>chrome://extensions</code> in Chrome and turn on <strong>Developer mode</strong>.</li>
       <li>Click <strong>Load unpacked</strong> and select the extracted folder that contains <code>manifest.json</code> directly inside it.</li>
-      <li>Open or reload <a href="https://pokesurvivor.com/">PokéSurvivor</a>. Korean is enabled automatically.</li>
+      <li>Open <a href="https://pokesurvivor.com/">PokéSurvivor</a> and choose <strong>Settings → Graphics → Language → 한국어</strong>.</li>
     </ol>
-    <p class="note">Keep the installed folder in place.</p>
+    <p class="note">Keep the installed folder in place. To update a ZIP installation, replace its files with the latest ZIP, then reload the extension and game.</p>
+    </details>
+    <p class="note migration">When moving from ZIP to the store version, disable the old extension. Do not run both installations together.</p>
   </section>
 
   <div class="details-list">
     <details>
       <summary>Change language</summary>
-      <p>Choose English or Español under <strong>설정 → 그래픽 → 언어</strong> (Settings → Graphics → Language) to restore the original language. You can also turn Korean on or off from the extension icon in Chrome.</p>
+      <p>Choose Korean or another language under <strong>Settings → Graphics → Language</strong>. Changing the language reloads the game.</p>
     </details>
     <details>
       <summary>Update</summary>
-      <p>Download the new ZIP and replace the files in the installed folder. Reload the extension at <code>chrome://extensions</code>, then reload the game.</p>
+      <p>Chrome automatically delivers approved updates to store installations. ZIP installations require replacing files with the latest ZIP. Reload any open game tab after an update.</p>
     </details>
     <details>
       <summary>Slow multiplayer on the same LAN?</summary>

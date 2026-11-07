@@ -85,6 +85,12 @@ for (const [language, pathname] of [['ko', '/'], ['en', '/en/']]) {
     const stableDownload = await page.request.get(`${origin}/downloads/pokesurvivor-korean.zip`);
     expect(stableDownload.ok()).toBe(true);
     expect(await stableDownload.body()).toEqual(await readFile(await download.path()));
+    const storeZip = path.join(site, 'downloads/pokesurvivor-store.zip');
+    const storeFiles = execFileSync('unzip', ['-Z1', storeZip], { encoding: 'utf8' }).trim().split(/\r?\n/);
+    expect(storeFiles).toContain('manifest.json');
+    expect(storeFiles).toContain('LICENSE');
+    expect(storeFiles.some((file) => /windows-lan|\.cmd$|\.ps1$/.test(file))).toBe(false);
+    expect(JSON.parse(execFileSync('unzip', ['-p', storeZip, 'manifest.json'], { encoding: 'utf8' }))).toEqual(manifest);
     const helper = await page.request.get(`${origin}/downloads/pokesurvivor-lan-helper.zip`);
     expect(helper.ok()).toBe(true);
     const helperPath = path.join(site, 'downloads/pokesurvivor-lan-helper.zip');
@@ -97,3 +103,23 @@ for (const [language, pathname] of [['ko', '/'], ['en', '/en/']]) {
     expect(errors).toEqual([]);
   });
 }
+
+test('published store link replaces ZIP CTA in both languages without changing README', async ({ page }) => {
+  const storeUrl = 'https://chromewebstore.google.com/detail/onfhhekmpdnbgpklcghiejdmgnbmjhci';
+  try {
+    execFileSync(process.execPath, ['scripts/build-site.mjs'], { cwd: root, env: { ...process.env, CWS_STORE_URL: storeUrl } });
+    for (const pathname of ['/', '/en/']) {
+      await page.goto(`${origin}${pathname}`);
+      await expect(page.locator('.button.primary')).toHaveAttribute('href', storeUrl);
+      expect(await page.locator('.button.primary').getAttribute('download')).toBeNull();
+      await expect(page.locator('.store-install')).toBeVisible();
+      expect(await page.locator('body').innerText()).not.toContain('{{');
+      expect(await page.locator('.release').innerText()).not.toMatch(/준비 중|preparation/);
+      await page.locator('.manual-install summary').click();
+      await expect(page.locator('.manual-install a[download]')).toBeVisible();
+    }
+    expect(() => execFileSync(process.execPath, ['scripts/build-site.mjs'], { cwd: root, env: { ...process.env, CWS_STORE_URL: 'https://example.com/evil' }, stdio: 'pipe' })).toThrow();
+  } finally {
+    execFileSync(process.execPath, ['scripts/build-site.mjs'], { cwd: root, env: { ...process.env, CWS_STORE_URL: '' } });
+  }
+});
