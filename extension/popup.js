@@ -4,14 +4,22 @@ import { TIER_SOURCE, DEX_SOURCE, readOwnedPokemon, parseRankings, validateRanki
 
 const toggle = document.getElementById('enabled');
 const status = document.getElementById('status');
+const debugToggle = document.getElementById('debug');
+const debugStatus = document.getElementById('debug-status');
+const lanToggle = document.getElementById('lan-direct');
+const lanStatus = document.getElementById('lan-status');
 
 function render(enabled) {
   toggle.checked = enabled;
   status.textContent = enabled ? '한국어 · 전환하면 게임 새로고침' : '원본 언어 · 전환하면 게임 새로고침';
 }
 
-chrome.storage.local.get({ enabled: true }).then(({ enabled }) => {
+chrome.storage.local.get({ enabled: true, debug: false, lanDirect: false }).then(({ enabled, debug, lanDirect }) => {
   render(enabled !== false);
+  debugToggle.checked = debug === true;
+  debugToggle.disabled = false;
+  lanToggle.checked = lanDirect === true;
+  lanToggle.disabled = false;
   toggle.disabled = false;
 }).catch((error) => {
   console.error(error);
@@ -32,8 +40,37 @@ toggle.addEventListener('change', async () => {
   }
 });
 
+debugToggle.addEventListener('change', async () => {
+  debugToggle.disabled = true;
+  try {
+    await chrome.storage.local.set({ debug: debugToggle.checked });
+    debugStatus.hidden = true;
+  } catch {
+    debugToggle.checked = !debugToggle.checked;
+    debugStatus.textContent = '설정을 저장하지 못했습니다. 다시 시도해 주세요.';
+    debugStatus.hidden = false;
+  } finally {
+    debugToggle.disabled = false;
+  }
+});
+
+lanToggle.addEventListener('change', async () => {
+  lanToggle.disabled = true;
+  try {
+    await chrome.storage.local.set({ lanDirect: lanToggle.checked });
+    lanStatus.textContent = '다음 연결부터 적용됩니다. 양쪽 PC에서 설정 후 방에 다시 참가하세요.';
+  } catch {
+    lanToggle.checked = !lanToggle.checked;
+    lanStatus.textContent = '설정을 저장하지 못했습니다. 다시 시도해 주세요.';
+  } finally {
+    lanToggle.disabled = false;
+  }
+});
+
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'local' && changes.enabled) render(changes.enabled.newValue !== false);
+  if (area === 'local' && changes.debug) debugToggle.checked = changes.debug.newValue === true;
+  if (area === 'local' && changes.lanDirect) lanToggle.checked = changes.lanDirect.newValue === true;
 });
 
 const collectionStatus = document.getElementById('collection-status');

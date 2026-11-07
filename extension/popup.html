@@ -12,7 +12,13 @@
   <body>
     <header><img src="icons/48.png" width="40" height="40" alt=""><div><span>POKÉSURVIVOR</span><h1>한국어 모드</h1></div></header>
     <label class="setting" for="enabled"><div><strong>한국어로 플레이</strong><small>메뉴 · 포켓몬 · 기술 · 전투 표시</small></div><input type="checkbox" id="enabled" role="switch" disabled></label>
-    <p id="status" role="status">설정 불러오는 중…</p>
+    <div class="settings-status">
+      <p id="status" role="status">설정 불러오는 중…</p>
+      <label class="debug-setting" for="debug" title="게임 왼쪽 위에 성능 지표 표시 · 한국어 설정과 별도"><input type="checkbox" id="debug" disabled><span>debug</span></label>
+    </div>
+    <p id="debug-status" role="status" hidden></p>
+    <label class="lan-setting" for="lan-direct"><input type="checkbox" id="lan-direct" disabled><span>LAN 직접 연결</span></label>
+    <p id="lan-status" role="status">직결 허용 · TURN 대체 경로 유지 · 다음 연결부터 적용</p>
     <section class="collection" aria-labelledby="collection-title">
       <div class="collection-heading">
         <h2 id="collection-title">보유 포켓몬 <span id="collection-count"></span></h2>

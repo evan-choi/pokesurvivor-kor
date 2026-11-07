@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "PokéSurvivor 한국어 모드",
-  "version": "0.2.5",
+  "version": "0.2.8",
   "description": "PokéSurvivor의 메뉴, 기술, 포켓몬 이름과 전투 표시를 한국어로 바꿉니다.",
   "minimum_chrome_version": "119",
   "permissions": ["storage", "scripting"],
@@ -23,7 +23,7 @@
       "match_origin_as_fallback": true,
       "run_at": "document_start",
       "world": "MAIN",
-      "js": ["translations/moves.js", "translations/menus.js", "translations/progress.js", "translations/settings.js", "translations/extra.js", "translations/gameplay.js", "translations/shop.js", "translations/pokedex.js", "translations/interface.js", "translations/changelog.js", "translations/pokemon.js", "translation-core.js", "native-locale.js", "canvas.js", "content.js"]
+      "js": ["network.js", "translations/moves.js", "translations/menus.js", "translations/progress.js", "translations/settings.js", "translations/extra.js", "translations/gameplay.js", "translations/shop.js", "translations/pokedex.js", "translations/interface.js", "translations/changelog.js", "translations/pokemon.js", "translation-core.js", "native-locale.js", "canvas.js", "content.js"]
     },
     {
       "matches": ["https://pokesurvivor.com/*", "https://www.pokesurvivor.com/*"],
@@ -32,7 +32,7 @@
       "match_origin_as_fallback": true,
       "run_at": "document_start",
       "world": "ISOLATED",
-      "js": ["storage.js"],
+      "js": ["storage.js", "debug.js"],
       "css": ["fonts.css", "korean.css"]
     }
   ]

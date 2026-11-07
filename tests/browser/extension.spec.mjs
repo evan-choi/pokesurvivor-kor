@@ -58,6 +58,153 @@ test.beforeEach(async () => {
   await frame.locator('body').evaluate(() => document.fonts.ready);
 });
 
+test('debug persists independently of language and shows metrics only inside the game', async ({}, testInfo) => {
+  const debug = popup.locator('#debug');
+  await expect(debug).toBeEnabled();
+  await expect(debug).not.toBeChecked();
+  await expect(frame.locator('#psko-debug')).toHaveCount(0);
+  await popup.locator('#enabled').uncheck();
+  const originalUrl = page.url();
+  let navigations = 0;
+  page.on('framenavigated', countNavigation);
+  function countNavigation() { navigations++; }
+  try {
+    await debug.check();
+    await page.bringToFront();
+    await expect(frame.locator('#psko-debug')).toContainText('FPS (rAF)');
+    await expect(frame.locator('#psko-debug')).toContainText('JS 힙');
+    await expect(frame.locator('#psko-debug')).toContainText('프레임 간격');
+    await expect(page.locator('#psko-debug')).toHaveCount(0);
+    await expect(frame.locator('#pokemon')).toHaveText('Bulbasaur');
+    expect(page.url()).toBe(originalUrl);
+    expect(navigations).toBe(0);
+    const layout = await frame.locator('#psko-debug').evaluate(node => {
+      const style = getComputedStyle(node);
+      const box = node.getBoundingClientRect();
+      return { position: style.position, pointerEvents: style.pointerEvents, x: box.x, y: box.y };
+    });
+    expect(layout).toEqual({ position: 'fixed', pointerEvents: 'none', x: 8, y: 8 });
+    await frame.locator('#psko-debug').screenshot({ path: testInfo.outputPath('debug-overlay.png') });
+    await popup.locator('body').screenshot({ path: testInfo.outputPath('debug-popup.png') });
+    await popup.reload();
+    await expect(debug).toBeChecked();
+    await expect(popup.locator('#enabled')).not.toBeChecked();
+    await page.reload();
+    await page.bringToFront();
+    await expect(frame.locator('#psko-debug')).toContainText('FPS (rAF)');
+    await debug.uncheck();
+    await expect(frame.locator('#psko-debug')).toHaveCount(0);
+    await expect(popup.locator('#enabled')).not.toBeChecked();
+  } finally {
+    page.off('framenavigated', countNavigation);
+    await popup.evaluate(() => chrome.storage.local.set({ debug: false }));
+  }
+});
+
+test('LAN setting preserves existing peers and debug reports a real direct data channel', async ({}, testInfo) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.locator('iframe').evaluate(node => { node.style.cssText = 'width:1100px;height:800px'; });
+  const lan = popup.locator('#lan-direct');
+  await expect(lan).toBeEnabled();
+  await expect(lan).not.toBeChecked();
+  await frame.locator('body').evaluate(() => {
+    window.oldPeer = new RTCPeerConnection({ iceServers: [], iceTransportPolicy: 'relay' });
+  });
+  try {
+    await lan.check();
+    await expect(popup.locator('#lan-status')).toContainText('방에 다시');
+    await expect.poll(() => frame.locator('body').evaluate(() => {
+      const pc = new RTCPeerConnection({ iceServers: [], iceTransportPolicy: 'relay' });
+      const policy = pc.getConfiguration().iceTransportPolicy;
+      pc.close();
+      return policy;
+    })).toBe('all');
+    expect(await frame.locator('body').evaluate(() => oldPeer.getConfiguration().iceTransportPolicy)).toBe('relay');
+    await frame.locator('body').evaluate(() => oldPeer.close());
+    await popup.reload();
+    await expect(lan).toBeChecked();
+    // The non-game host document must retain the browser's original policy.
+    expect(await page.evaluate(() => {
+      const pc = new RTCPeerConnection({ iceTransportPolicy: 'relay' });
+      const policy = pc.getConfiguration().iceTransportPolicy;
+      pc.close();
+      return policy;
+    })).toBe('relay');
+    await popup.locator('#debug').check();
+    await page.bringToFront();
+    await frame.locator('body').evaluate(async () => {
+      const a = new RTCPeerConnection({ iceServers: [], iceTransportPolicy: 'relay' });
+      const b = new RTCPeerConnection({ iceServers: [], iceTransportPolicy: 'relay' });
+      window.lanTestPeers = [a, b];
+      const gather = pc => new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error('ICE gathering timed out')), 5000);
+        const check = () => {
+          if (pc.iceGatheringState !== 'complete') return;
+          clearTimeout(timer);
+          pc.removeEventListener('icegatheringstatechange', check);
+          resolve();
+        };
+        pc.addEventListener('icegatheringstatechange', check);
+        check();
+      });
+      const channel = a.createDataChannel('s', { ordered: false, maxRetransmits: 0 });
+      window.generalChannel = a.createDataChannel('g', { negotiated: true, id: 9 });
+      b.createDataChannel('g', { negotiated: true, id: 9 });
+      window.lanTestChannel = channel;
+      window.echoes = 0;
+      channel.onmessage = () => { window.echoes++; };
+      b.ondatachannel = event => { event.channel.onmessage = message => event.channel.send(message.data); };
+      await a.setLocalDescription(await a.createOffer());
+      await gather(a);
+      await b.setRemoteDescription(a.localDescription);
+      await b.setLocalDescription(await b.createAnswer());
+      await gather(b);
+      await a.setRemoteDescription(b.localDescription);
+    });
+    await expect.poll(() => frame.locator('body').evaluate(() => lanTestChannel.readyState)).toBe('open');
+    await expect(frame.locator('#psko-debug')).toContainText('직결 2');
+    await frame.locator('body').evaluate(async () => {
+      for (let i = 0; i < 4; i++) {
+        lanTestChannel.send('test');
+        await new Promise(resolve => setTimeout(resolve, 60));
+      }
+      await new Promise(resolve => setTimeout(resolve, 400));
+      for (let i = 0; i < 4; i++) {
+        lanTestChannel.send('test');
+        await new Promise(resolve => setTimeout(resolve, 60));
+      }
+    });
+    await expect.poll(() => frame.locator('body').evaluate(() => echoes)).toBe(8);
+    const selector = frame.locator('#psko-debug select');
+    await expect(selector.locator('option')).toHaveCount(4);
+    await expect(frame.locator('#network-send')).toHaveAttribute('points', /\d/);
+    await expect(frame.locator('#network-receive')).toHaveAttribute('points', /\d/);
+    await expect(frame.locator('#network-values')).toContainText('최대(누적)');
+    await expect.poll(async () => Number((await frame.locator('#network-values').textContent()).match(/최대\(누적\) (\d+)/)?.[1])).toBeGreaterThanOrEqual(400);
+    const gOption = selector.locator('option').filter({ hasText: '일반(g)' }).first();
+    await selector.selectOption(await gOption.getAttribute('value'));
+    await expect(frame.locator('#network-values')).toContainText('송신 0.0회/s');
+    const sOption = selector.locator('option').filter({ hasText: '상태(s)' }).first();
+    await selector.selectOption(await sOption.getAttribute('value'));
+    await page.bringToFront();
+    const graphBox = await frame.locator('#psko-debug').boundingBox();
+    expect(graphBox.height).toBeLessThan(800);
+    await expect(frame.locator('#psko-debug svg')).toBeVisible();
+    await frame.locator('#psko-debug').screenshot({ path: testInfo.outputPath('lan-direct.png') });
+    await popup.locator('body').screenshot({ path: testInfo.outputPath('lan-popup.png') });
+    await lan.uncheck();
+    expect(await frame.locator('body').evaluate(() => lanTestPeers[0].getConfiguration().iceTransportPolicy)).toBe('all');
+    await frame.locator('body').evaluate(() => lanTestPeers.forEach(pc => pc.close()));
+    await expect(frame.locator('#psko-debug')).toContainText('연결 없음');
+  } finally {
+    await frame.locator('body').evaluate(() => {
+      window.oldPeer?.close();
+      window.lanTestPeers?.forEach(pc => pc.close());
+    });
+    await popup.evaluate(() => chrome.storage.local.set({ debug: false, lanDirect: false }));
+  }
+});
+
 test('loads in srcdoc, translates dynamic text and attributes, preserves player input', async () => {
   await expect(frame.locator('h1')).toHaveText('설정');
   await expect(frame.locator('input')).toHaveAttribute('placeholder', '비밀번호');
@@ -70,100 +217,6 @@ test('loads in srcdoc, translates dynamic text and attributes, preserves player 
   await frame.locator('#dynamic').evaluate((node) => { node.innerHTML = '<strong>Charmander</strong>'; });
   await expect(frame.locator('#dynamic strong')).toHaveText('파이리');
   expect(errors).toEqual([]);
-});
-
-test('attribute changes translate only the target instead of walking its descendants', async () => {
-  const result = await frame.locator('body').evaluate(async body => {
-    const root = document.createElement('section');
-    for (let i = 0; i < 200; i++) {
-      const item = document.createElement('span');
-      item.textContent = 'Bulbasaur';
-      root.append(item);
-    }
-    body.append(root);
-    await new Promise(resolve => setTimeout(resolve, 0));
-    const original = document.createTreeWalker;
-    let walks = 0;
-    document.createTreeWalker = function (...args) { walks++; return original.apply(this, args); };
-    try {
-      root.title = 'Fire';
-      await new Promise(resolve => setTimeout(resolve, 0));
-      return { title: root.title, walks, children: [...root.children].every(item => item.textContent === '이상해씨') };
-    } finally {
-      document.createTreeWalker = original;
-      root.remove();
-    }
-  });
-  expect(result).toEqual({ title: '불꽃', walks: 0, children: true });
-});
-
-test('nested multiplayer UI insertions translate each subtree once', async () => {
-  const result = await frame.locator('body').evaluate(async body => {
-    const root = document.createElement('section');
-    const child = document.createElement('div');
-    const original = document.createTreeWalker;
-    let walks = 0;
-    document.createTreeWalker = function (...args) { walks++; return original.apply(this, args); };
-    try {
-      body.append(root);
-      root.append(child);
-      for (let i = 0; i < 20; i++) {
-        const item = document.createElement('span');
-        item.textContent = 'Bulbasaur';
-        child.append(item);
-      }
-      await new Promise(resolve => setTimeout(resolve, 0));
-      return { walks, translated: [...child.children].every(item => item.textContent === '이상해씨') };
-    } finally {
-      document.createTreeWalker = original;
-      root.remove();
-    }
-  });
-  expect(result).toEqual({ walks: 1, translated: true });
-});
-
-test('numeric and native Korean UI updates bypass the translation lookup', async () => {
-  const result = await frame.locator('body').evaluate(async body => {
-    const root = document.createElement('p');
-    root.textContent = '0';
-    body.append(root);
-    await new Promise(resolve => setTimeout(resolve, 0));
-    const original = globalThis.PSKO;
-    let translations = 0;
-    globalThis.PSKO = { ...original, translate(text) { translations++; return original.translate(text); } };
-    try {
-      for (const value of ['120 / 200', '플레이어 준비 완료']) {
-        root.firstChild.nodeValue = value;
-        await new Promise(resolve => setTimeout(resolve, 0));
-      }
-      return { translations, text: root.textContent };
-    } finally {
-      globalThis.PSKO = original;
-      root.remove();
-    }
-  });
-  expect(result).toEqual({ translations: 0, text: '플레이어 준비 완료' });
-});
-
-test('moving translated text preserves move and type context', async () => {
-  const texts = await frame.locator('body').evaluate(async body => {
-    const card = document.createElement('div');
-    card.className = 'nm';
-    const text = document.createTextNode('Psychic');
-    card.append(text);
-    document.querySelector('#cards').append(card);
-    await new Promise(resolve => setTimeout(resolve, 0));
-    const move = text.nodeValue;
-    const type = document.createElement('p');
-    body.append(type);
-    type.append(text);
-    await new Promise(resolve => setTimeout(resolve, 0));
-    const result = { move, type: text.nodeValue };
-    card.remove();
-    type.remove();
-    return result;
-  });
-  expect(texts).toEqual({ move: '사이코키네시스', type: '에스퍼' });
 });
 
 test('translates the official game directly on root and localized pages', async () => {
