@@ -1,6 +1,6 @@
 {
   "name": "pokesurvivor-turn-credentials",
-  "main": "index.ts",
+  "main": "worker.mts",
   "compatibility_date": "2026-11-09",
   "workers_dev": true,
   "ratelimits": [{
