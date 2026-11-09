@@ -91,6 +91,11 @@ test('native Korean canvas notices keep player names and still translate source 
     assert.equal(canvas[method]('Ash Pokémon 관전 중 · 교체'), 'Ash Pokémon 관전 중 · 교체');
     assert.equal(canvas[method]('Watching Fire'), 'Fire 관전 중');
     assert.equal(canvas[method]('Psychic'), '사이코키네시스');
+    const { moves } = JSON.parse(readFileSync(new URL('./fixtures/official-game-moves.json', import.meta.url), 'utf8'));
+    for (const { name: [spanish, english, korean] } of moves) {
+      assert.equal(canvas[method](spanish), korean);
+      assert.equal(canvas[method](english), korean);
+    }
     const value = Symbol('canvas argument');
     assert.equal(canvas[method](value), value);
   }
@@ -177,6 +182,19 @@ test('Psychic is distinguished as a type or a move', () => {
   assert.equal(context.PSKO.translateMove('Psychic Fangs'), '사이코팽');
   assert.equal(context.PSKO.translateMove('Psychic Fangs Lv.3'), '사이코팽 레벨 3');
   assert.equal(context.PSKO.translateMove(null), null);
+});
+
+test('starting-move labels preserve all move names, including short names and type homonyms', () => {
+  const { moves } = JSON.parse(readFileSync(new URL('./fixtures/official-game-moves.json', import.meta.url), 'utf8'));
+  for (const { name: [spanish, english, korean] } of moves) {
+    for (const [name, choose, suffix] of [[spanish, 'Elegir', '(de serie)'], [english, 'Choose', '(default)']]) {
+      assert.equal(context.PSKO.translateMove(`${choose}: ${name}`), `선택: ${korean}`);
+      assert.equal(context.PSKO.translateMove(`${name} ${suffix}`), `${korean} (기본)`);
+    }
+  }
+  assert.equal(translate('Elegir: Psíquico'), '선택: 사이코키네시스');
+  assert.equal(translate('Choose: Psychic'), '선택: 사이코키네시스');
+  assert.equal(translate('Psychic'), '에스퍼');
 });
 
 test('all 1,188 game messages have complete translations and matching placeholders', () => {

@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
@@ -12,6 +12,7 @@ if (!['en', 'es'].includes(language) || process.argv.length > 3) {
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = path.join(root, 'test-results', `translation-audit-${language}.json`);
 const extension = path.join(root, 'extension');
+const { moves: expectedMoves } = JSON.parse(await readFile(path.join(root, 'tests/fixtures/official-game-moves.json'), 'utf8'));
 await mkdir(path.dirname(output), { recursive: true });
 
 // Only these named products, rights holders and technical labels may remain in Latin script.
@@ -25,7 +26,7 @@ const allowedNames = [
   'Google', 'Gmail', 'GitHub', 'YouTube', 'Ko-fi', 'Discord', 'Firebase', 'CREDITS.md', 'MIT',
   'Xbox', 'PlayStation', 'Switch', 'USB', 'Bluetooth',
   'iPhone', 'Safari', 'Chrome', 'Android', 'iOS', 'Windows', 'macOS',
-  'PMD', 'OFL', 'NFT', 'FPS', 'PC', 'HP', 'LAN',
+  'PMD', 'OFL', 'NFT', 'FPS', 'PC', 'HP', 'LAN', 'P2P',
 ];
 const escape = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const namesPattern = new RegExp(`(?<![A-Za-z0-9])(?:${allowedNames.sort((a, b) => b.length - a.length).map(escape).join('|')})(?![A-Za-z0-9])`, 'gi');
@@ -50,6 +51,8 @@ const screens = [];
 const findings = [];
 let localeEntriesChecked = 0;
 let traitNamesChecked = 0;
+let moveLabelsChecked = 0;
+let moveNameFindings = [];
 const context = await chromium.launchPersistentContext('', {
   channel: 'chromium',
   headless: true,
@@ -142,6 +145,79 @@ async function resetScreens(showMenu = false) {
 async function openPanel(component, argument) {
   await resetScreens(true);
   await run((body, { component, argument }) => window.__PSKO_TEST_GAME__[component].open(argument), { component, argument });
+}
+
+async function auditMoveNames() {
+  // Exercise the native game's translator and the extension together, not just
+  // whether the output contains Korean. These are the game's actual label structures.
+  const cases = await run((body, moves) => {
+    const live = window.__PSKO_TEST_GAME__.Moves.ALL;
+    if (live.length !== moves.length || live.some(move => !moves.some(expected => expected.id === move.id && expected.name.includes(move.name)))) {
+      throw new Error('Refresh the expected move names: the live move list has changed.');
+    }
+    const root = document.createElement('section');
+    root.id = 'psko-move-name-audit';
+    const cases = [];
+    function add(surface, html, selector, text, expected, move, language, attribute = 'text') {
+      const entry = document.createElement('div');
+      entry.innerHTML = html;
+      const node = entry.querySelector(selector);
+      if (attribute === 'text') node.textContent = node.textContent.replace('NAME', text);
+      else node.setAttribute(attribute, text);
+      const id = String(cases.length);
+      node.dataset.auditId = id;
+      root.append(entry);
+      cases.push({ id, move, language, surface, attribute, expected });
+    }
+    for (const { id, name: [spanish, english, korean] } of moves) {
+      for (const [language, name, choose, tm, suffix] of [
+        ['es', spanish, 'Elegir', 'MT', '(de serie)'], ['en', english, 'Choose', 'TM', '(default)'],
+      ]) {
+        const templates = [
+          ['start', `<div id="upg-list"><button data-start>${choose}: NAME</button></div>`, 'button', `선택: ${korean}`],
+          ['start2', `<div id="upg-list"><button data-start2>${choose}: NAME</button></div>`, 'button', `선택: ${korean}`],
+          ['picker', '<div class="ban-moves"><button class="chip">NAME</button></div>', '.chip', korean],
+          ['picker-default', `<div class="ban-moves"><button class="chip">NAME ${suffix}</button></div>`, '.chip', `${korean} (기본)`],
+          ['bind', '<div class="bind-slot"><select><option>NAME</option></select></div>', 'option', korean],
+          ['dex', '<div id="dex-detail"><p><b class="gold">NAME</b></p></div>', 'b', korean],
+          ['shop', `<div id="shop-body"><div class="upg-item"><b>${tm} NAME</b></div></div>`, 'b', `기술머신 ${korean}`],
+          ['bag', `<div id="bag-body"><div class="upg-item"><b>${tm} NAME</b></div></div>`, 'b', `기술머신 ${korean}`],
+          ['level-card', '<div id="cards"><div class="nm">NAME</div></div>', '.nm', korean],
+          ['bond-card', '<div id="bond-cards"><div class="nm">NAME</div></div>', '.nm', korean],
+          ['result', '<div id="over-stats"><div><b style="font-size:15px">NAME</b></div></div>', 'b', korean],
+          ['summary', '<div id="over-sum"><table class="sum-moves"><tr><td>NAME</td></tr></table></div>', 'td', korean],
+        ];
+        for (const [surface, html, selector, expected] of templates) add(surface, html, selector, name, expected, id, language);
+        add('move-icon', '<div class="move-icons"><span></span></div>', 'span', name, korean, id, language, 'title');
+      }
+    }
+    const typeNames = {
+      normal: '노말', fire: '불꽃', water: '물', grass: '풀', electric: '전기', ice: '얼음',
+      fighting: '격투', poison: '독', ground: '땅', flying: '비행', psychic: '에스퍼', bug: '벌레',
+      rock: '바위', ghost: '고스트', dragon: '드래곤', dark: '악', steel: '강철', fairy: '페어리',
+    };
+    for (const [type, expected] of Object.entries(typeNames)) {
+      for (const className of ['type', 'tag-chip']) {
+        add('type-badge', `<div id="cards"><div class="nm"><span class="${className}">NAME</span></div></div>`,
+          'span', window.__PSKO_TEST_GAME__.U.TYPE_NAME[type], expected, type, 'es');
+      }
+    }
+    document.body.append(root);
+    return cases;
+  }, expectedMoves);
+  try {
+    await run(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    moveNameFindings = await run((body, cases) => cases.flatMap(entry => {
+      const node = document.querySelector(`#psko-move-name-audit [data-audit-id="${entry.id}"]`);
+      const actual = entry.attribute === 'text' ? node.textContent : node.getAttribute(entry.attribute);
+      return actual === entry.expected ? [] : [{ ...entry, actual }];
+    }), cases);
+    moveLabelsChecked = cases.length;
+    console.log(`Move/type names: ${moveLabelsChecked} labels, ${moveNameFindings.length} mismatches`);
+    if (moveNameFindings.length) throw new Error(`Incorrect move/type labels: ${JSON.stringify(moveNameFindings)}`);
+  } finally {
+    await run(() => document.querySelector('#psko-move-name-audit').remove());
+  }
 }
 
 try {
@@ -294,6 +370,7 @@ try {
   const networkOverflow = await frame.locator('#set-body').evaluate(body => body.scrollWidth > body.clientWidth + 1);
   if (networkOverflow) throw new Error('The network settings overflow at 390px.');
   await page.setViewportSize({ width: 1400, height: 1000 });
+
   await frame.locator('#set-tabs [data-t="ctl"]').click();
   await run(() => {
     Object.defineProperty(navigator, 'getGamepads', { configurable: true, value: () => [{
@@ -417,6 +494,24 @@ try {
     }
   }
   await page.setViewportSize({ width: 1400, height: 1000 });
+  await resetScreens(true);
+  await run(() => {
+    const game = window.__PSKO_TEST_GAME__, save = game.DB.save;
+    save.owned[150] = 1;
+    save.partner = 150;
+    save.pupg[150] = { start: 1, start2: 1, moves: 1, ban: 3 };
+    save.pstart = { ...save.pstart, 150: 'confusion' };
+    save.pstart2 = { ...save.pstart2, 150: 'psychic' };
+    game.MenuUI.open();
+    document.querySelector('[data-go="upgrades"]').click();
+  });
+  await capture('upgrades-second-starting-move');
+  if (await frame.locator('[data-start2]').textContent() !== '선택: 사이코키네시스') throw new Error('Second starting move lost its move-name context.');
+  await frame.locator('[data-start]').click();
+  await frame.locator('.ban-moves [data-id="psychic"]').click();
+  await capture('upgrades-first-starting-move');
+  if (await frame.locator('[data-start]').textContent() !== '선택: 사이코키네시스') throw new Error('First starting move lost its move-name context.');
+  if (await frame.locator('[data-start2]').textContent() !== '선택: 무작위') throw new Error('Random second move label changed.');
   await run(() => {
     const save = window.__PSKO_TEST_GAME__.DB.save;
     save.bag = { mint: 5, cap: 5, caph: 5, candy: 70 };
@@ -567,11 +662,12 @@ try {
     game.RunUI.showPause();
   });
   await capture('pause-with-item-and-orbs');
+  await auditMoveNames();
 } catch (error) {
   errors.push(error.stack || error.message);
   console.error(error);
 } finally {
-  await writeFile(output, JSON.stringify({ language, localeEntriesChecked, traitNamesChecked, errors, findings, screens }, null, 2));
+  await writeFile(output, JSON.stringify({ language, localeEntriesChecked, traitNamesChecked, moveLabelsChecked, moveNameFindings, errors, findings, screens }, null, 2));
   await context.close();
   console.log(`${screens.length} screens checked; ${findings.length} unexplained entries; ${errors.length} errors.`);
   console.log(output);

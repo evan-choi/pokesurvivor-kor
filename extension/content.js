@@ -35,6 +35,7 @@
         element.matches('#dex-detail > p > b.gold') ||
         element.matches('#shop-body .upg-item b, #bag-body .upg-item b') ||
         element.matches('.bind-slot option, .ban-moves .chip') ||
+        element.matches('#upg-list [data-start], #upg-list [data-start2]') ||
         (element.closest('#cards .nm, #bond-cards .nm') && !element.closest('.type, .tag-chip')) ||
         element.matches('#over-stats > div > b[style*="font-size:15px"]') ||
         element.matches('#over-sum .sum-moves td:first-child')

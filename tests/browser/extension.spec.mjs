@@ -300,6 +300,32 @@ test('move titles and tooltips use move names while type badges retain type name
   await expect(frame.locator('.move-icons span')).toHaveAttribute('title', 'Psychic');
 });
 
+test('starting move selections use move names after rerenders and preserve type badges', async () => {
+  for (const [choose, psychic, hex, suffix] of [
+    ['Elegir', 'Psíquico', 'Infortunio', '(de serie)'], ['Choose', 'Psychic', 'Hex', '(default)'],
+  ]) {
+    await frame.locator('body').evaluate((body, { choose, psychic, hex, suffix }) => {
+      document.querySelector('#upg-list')?.remove();
+      const list = document.createElement('div');
+      list.id = 'upg-list';
+      list.innerHTML = `<button data-start>${choose}: ${psychic}</button><button data-start2>${choose}: ${psychic}</button>
+        <div class="ban-moves"><button class="chip">${hex} ${suffix}</button></div><span class="type">${psychic}</span>`;
+      body.append(list);
+    }, { choose, psychic, hex, suffix });
+    await expect(frame.locator('#upg-list [data-start]')).toHaveText('선택: 사이코키네시스');
+    await expect(frame.locator('#upg-list [data-start2]')).toHaveText('선택: 사이코키네시스');
+    await expect(frame.locator('#upg-list .chip')).toHaveText('병상첨병 (기본)');
+    await expect(frame.locator('#upg-list .type')).toHaveText('에스퍼');
+    await frame.locator('#upg-list [data-start2]').evaluate(button => { button.textContent = '선택: Psychic'; });
+    await expect(frame.locator('#upg-list [data-start2]')).toHaveText('선택: 사이코키네시스');
+    await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
+    await expect(frame.locator('#upg-list [data-start]')).toHaveText(`${choose}: ${psychic}`);
+    await expect(frame.locator('#upg-list .type')).toHaveText(psychic);
+    await popup.evaluate(() => chrome.storage.local.set({ enabled: true }));
+    await expect(frame.locator('#upg-list [data-start]')).toHaveText('선택: 사이코키네시스');
+  }
+});
+
 test('partner selection remains a complete sentence after the game updates the button', async () => {
   await frame.locator('#dex-detail').evaluate((detail) => {
     const button = document.createElement('button');
