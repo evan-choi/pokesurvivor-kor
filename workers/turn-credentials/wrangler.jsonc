@@ -1,0 +1,11 @@
+{
+  "name": "pokesurvivor-turn-credentials",
+  "main": "index.ts",
+  "compatibility_date": "2026-11-09",
+  "workers_dev": true,
+  "ratelimits": [{
+    "name": "TURN_REQUESTS",
+    "namespace_id": "1001",
+    "simple": { "limit": 10, "period": 60 }
+  }]
+}
