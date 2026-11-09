@@ -4,6 +4,8 @@
 
 [**Chrome 웹 스토어에서 설치**](https://chromewebstore.google.com/detail/onfhhekmpdnbgpklcghiejdmgnbmjhci) · [설치 안내](https://evan-choi.github.io/pokesurvivor-kor/#install) · [게임 열기](https://pokesurvivor.com/) · [English](README.en.md)
 
+![한국어 도감 — 포켓몬 이름, 성격, 특성과 기술 설명](docs/assets/pokedex-korean.jpg)
+
 ## 설치
 
 1. [Chrome 웹 스토어](https://chromewebstore.google.com/detail/onfhhekmpdnbgpklcghiejdmgnbmjhci)에서 **Chrome에 추가**를 누릅니다.
@@ -64,15 +66,23 @@ ZIP 설치본에서 스토어 설치본으로 옮길 때는 기존 확장을 끄
 순위는 [PokéSurvivor Guide](https://pokesurvivor.net/tier-list/)의 능력치 기준 평가입니다. 티어는 하루 동안 저장해 사용하고, **새로고침**을 누르면 보유 목록과 티어를 다시 가져옵니다. 갱신에 실패하면 마지막으로 저장한 티어와 안내를 표시합니다. 게임 저장 데이터는 외부로 전송하지 않으며, 게스트 플레이는 지원하지 않습니다.
 
 <details>
-<summary>한국어 화면 보기</summary>
+<summary>상점과 그래픽 설정 화면 보기</summary>
 
-<img src="docs/assets/settings-korean.png" width="480" alt="한국어로 표시된 PokéSurvivor 설정 화면">
+한국어로 표시된 도구와 기술머신 설명입니다.
+
+![켈리몬 상점의 도구와 기술머신](docs/assets/shop-korean.jpg)
+
+언어와 내 이펙트·파티원 이펙트는 게임의 그래픽 설정에서 조절합니다.
+
+<img src="docs/assets/settings-korean.png" width="640" alt="한국어 선택과 내 이펙트·파티원 이펙트 조절이 있는 그래픽 설정">
 
 </details>
 
 ## LAN 직접 연결
 
 게임 **설정 → 네트워크 → LAN 직접 연결**에서 켜고 끌 수 있습니다. 기본값은 꺼짐이며, 켜면 멀티플레이에서 다른 플레이어와 직접 연결할 수 있습니다.
+
+<img src="docs/assets/network-korean.png" width="640" alt="설정의 네트워크 탭과 LAN 직접 연결 스위치">
 
 게임이 제공하는 중계 연결(TURN)도 사용될 수 있으므로 직결이나 지연 시간 감소를 보장하지는 않습니다. VPN·방화벽·공유기 설정에 따라 직접 연결이 제한될 수 있습니다.
 

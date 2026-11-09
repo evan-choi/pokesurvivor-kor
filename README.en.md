@@ -4,6 +4,8 @@ A Chrome extension with Korean translations, a larger battle HUD, move and item 
 
 [**Install from Chrome Web Store**](https://chromewebstore.google.com/detail/onfhhekmpdnbgpklcghiejdmgnbmjhci) · [Installation guide](https://evan-choi.github.io/pokesurvivor-kor/en/#install) · [Open game](https://pokesurvivor.com/) · [한국어](README.md)
 
+![Korean Pokédex with Pokémon names, natures, abilities, and move descriptions](docs/assets/pokedex-korean.jpg)
+
 ## Install
 
 1. Open the [Chrome Web Store listing](https://chromewebstore.google.com/detail/onfhhekmpdnbgpklcghiejdmgnbmjhci) and click **Add to Chrome**.
@@ -64,15 +66,23 @@ When a game tab is open, the popup shows your collection. Otherwise it shows the
 Ranks come from the stat-based [PokéSurvivor Guide tier list](https://pokesurvivor.net/tier-list/). Rankings are cached for one day; **새로고침** (Refresh) reloads both your collection and the rankings. If an update fails, the last saved rankings are shown with a notice. Your game save is not sent to an external service. Guest play is not supported.
 
 <details>
-<summary>View the Korean interface</summary>
+<summary>View the shop and graphics settings</summary>
 
-<img src="docs/assets/settings-korean.png" width="480" alt="PokéSurvivor settings in Korean">
+Items and Technical Machines with Korean descriptions.
+
+![Kecleon Shop items and Technical Machines in Korean](docs/assets/shop-korean.jpg)
+
+Choose the language and adjust player and party effects in the game's graphics settings.
+
+<img src="docs/assets/settings-korean.png" width="640" alt="Graphics settings with Korean language selection and separate player and party effect controls">
 
 </details>
 
 ## LAN direct connection
 
 Turn it on or off under **Settings → Network → Direct LAN connection** in the game. It is off by default. Enabling it allows direct connections to other players in multiplayer.
+
+<img src="docs/assets/network-korean.png" width="640" alt="Network settings with the LAN direct connection switch">
 
 The game may still use its relay connections (TURN), so this does not guarantee a direct connection or lower latency. VPNs, firewalls, and router settings can prevent direct connections.
 
