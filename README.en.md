@@ -29,7 +29,8 @@ When moving to the store version, disable the old unpacked extension. Do not run
 | Korean translation and official Korean Pokémon names | Settings → Graphics → Language |
 | 1.5× battle HUD and move/item tooltips | Battle screen |
 | Separate player and party effect opacity | Settings → Graphics |
-| Owned Pokémon tiers and LAN direct connection | Extension popup |
+| Owned Pokémon tiers | Extension popup |
+| LAN direct connection | Settings → Network |
 
 ## Change language
 
@@ -53,7 +54,7 @@ Corrects melee attacks that stall while targeting a distant boss despite a nearb
 
 Sign in to your game account, then open the extension to see the most recently used game tab’s owned Pokémon in **global rank order**, with tier badges, Korean names, and animated GIFs. Static images are used when a GIF is unavailable.
 
-When a game tab is open, the popup shows settings and your collection. Otherwise it shows the header and **Open game**.
+When a game tab is open, the popup shows your collection. Otherwise it shows the header and **Open game**.
 
 Ranks come from the stat-based [PokéSurvivor Guide tier list](https://pokesurvivor.net/tier-list/). Rankings are cached for one day; **새로고침** (Refresh) reloads both your collection and the rankings. If an update fails, the last saved rankings are shown with a notice. Your game save is not sent to an external service. Guest play is not supported.
 
@@ -65,6 +66,8 @@ Ranks come from the stat-based [PokéSurvivor Guide tier list](https://pokesurvi
 </details>
 
 ## LAN direct connection
+
+Turn it on or off under **Settings → Network → Direct LAN connection** in the game.
 
 If LAN multiplayer uses TURN because Windows blocks inbound Chrome UDP, an optional [Windows LAN helper](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-lan-helper.zip) can allow a trusted CIDR after confirmation. Read the [scope and undo instructions](tools/windows-lan/README.md) first.
 

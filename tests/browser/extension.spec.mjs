@@ -6,7 +6,12 @@ const extensionPath = path.resolve(process.env.PSKO_EXTENSION_PATH || 'extension
 const { moves: shopMoves } = JSON.parse(readFileSync(new URL('../fixtures/official-game-moves.json', import.meta.url), 'utf8'));
 const game = `<!doctype html><html lang="en"><body>
   <div id="tap-start">Press to start</div>
-  <section id="scr-settings"><h1>Settings</h1><div id="set-body">
+  <section id="scr-settings"><h1>Settings</h1>
+    <div id="set-tabs">
+      <button data-t="sound">Sound</button><button data-t="gfx" class="on">Graphics</button>
+      <button data-t="ctl">Controls</button><button data-t="a11y">Accessibility</button>
+      <button data-t="acc">Account</button><button data-t="about">About</button>
+    </div><div id="set-body">
     <div translate="no"><button data-lang="es">Español</button><button data-lang="en" class="on">English</button></div>
   </div></section>
   <p id="pokemon">Bulbasaur</p><p id="dynamic">Fire</p>
@@ -17,6 +22,16 @@ const game = `<!doctype html><html lang="en"><body>
   <script>
     window.englishClicks = 0;
     document.querySelector('[data-lang="en"]').onclick = () => { window.englishClicks++; };
+    const graphicsMarkup = document.querySelector('#set-body').innerHTML;
+    document.querySelectorAll('#set-tabs [data-t]').forEach(button => {
+      button.onclick = () => {
+        document.querySelectorAll('#set-tabs [data-t]').forEach(tab => tab.classList.toggle('on', tab === button));
+        document.querySelector('#set-body').innerHTML = button.dataset.t === 'gfx'
+          ? graphicsMarkup : '<h3>' + button.textContent + '</h3>';
+        const english = document.querySelector('[data-lang="en"]');
+        if (english) english.onclick = () => { window.englishClicks++; };
+      };
+    });
   </script>
 </body></html>`;
 
@@ -59,9 +74,9 @@ test.beforeEach(async () => {
   await frame.locator('body').evaluate(() => document.fonts.ready);
 });
 
-test('popup only offers the LAN switch and ignores the retired debug preference', async ({}, testInfo) => {
-  await expect(popup.locator('#enabled, #debug, #debug-status, #status')).toHaveCount(0);
-  await expect(popup.getByRole('switch', { name: 'LAN 직접 연결' })).toBeEnabled();
+test('popup omits game settings and ignores the retired debug preference', async ({}, testInfo) => {
+  await expect(popup.locator('#enabled, #debug, #debug-status, #status, #lan-direct, #lan-status')).toHaveCount(0);
+  await expect(popup.getByRole('switch')).toHaveCount(0);
   await popup.evaluate(() => chrome.storage.local.set({ debug: true }));
   await page.reload();
   const network = await frame.locator('body').evaluate(() => new Promise(resolve => {
@@ -70,21 +85,59 @@ test('popup only offers the LAN switch and ignores the retired debug preference'
   }));
   expect(network.debug).toBe(false);
   await expect(frame.locator('#psko-debug')).toHaveCount(0);
-  await popup.locator('body').screenshot({ path: testInfo.outputPath('lan-popup.png') });
+  await popup.locator('body').screenshot({ path: testInfo.outputPath('collection-popup.png') });
+});
+
+test('network settings preserve native tab order and persist across rendering and reload', async () => {
+  const networkTab = frame.locator('#set-tabs [data-t="network"]');
+  const lan = frame.locator('#psko-lan-direct');
+  await expect(networkTab).toHaveText('네트워크');
+  expect(await frame.locator('#set-tabs [data-t]').evaluateAll(tabs => tabs.map(tab => tab.dataset.t)))
+    .toEqual(['sound', 'gfx', 'ctl', 'a11y', 'network', 'acc', 'about']);
+  await networkTab.click();
+  await expect(lan).toHaveAttribute('role', 'switch');
+  await expect(lan).toHaveAttribute('aria-checked', 'false');
+  await expect(lan).toHaveText('아니요');
+  try {
+    await lan.click();
+    await expect(lan).toHaveAttribute('aria-checked', 'true');
+    await expect(lan).toHaveText('예');
+    expect((await popup.evaluate(() => chrome.storage.local.get('lanDirect'))).lanDirect).toBe(true);
+    await frame.locator('#set-tabs [data-t="acc"]').click();
+    await expect(lan).toHaveCount(0);
+    await networkTab.click();
+    await expect(lan).toHaveCount(1);
+    await expect(lan).toHaveAttribute('aria-checked', 'true');
+    await page.reload();
+    await networkTab.click();
+    await expect(lan).toHaveAttribute('aria-checked', 'true');
+    await expect(networkTab).toHaveCount(1);
+    await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
+    await expect(networkTab).toHaveText('Network');
+    await expect(lan).toHaveText('Yes');
+    await lan.click();
+    await expect(lan).toHaveAttribute('aria-checked', 'false');
+    await expect(lan).toHaveText('No');
+    expect((await popup.evaluate(() => chrome.storage.local.get('lanDirect'))).lanDirect).toBe(false);
+  } finally {
+    await popup.evaluate(() => chrome.storage.local.set({ enabled: true, lanDirect: false }));
+  }
 });
 
 test('LAN switch persists, preserves existing peers and allows a direct data channel', async ({}, testInfo) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.locator('iframe').evaluate(node => { node.style.cssText = 'width:1100px;height:800px'; });
-  const lan = popup.locator('#lan-direct');
+  await frame.locator('#set-tabs [data-t="network"]').click();
+  const lan = frame.locator('#psko-lan-direct');
   await expect(lan).toBeEnabled();
-  await expect(lan).not.toBeChecked();
+  await expect(lan).toHaveAttribute('aria-checked', 'false');
   await frame.locator('body').evaluate(() => {
     window.oldPeer = new RTCPeerConnection({ iceServers: [], iceTransportPolicy: 'relay' });
   });
   try {
-    await lan.check();
-    await expect(popup.locator('#lan-status')).toBeHidden();
+    await lan.click();
+    await expect(lan).toHaveAttribute('aria-checked', 'true');
+    await expect(frame.locator('#psko-network-status')).toBeHidden();
     await expect.poll(() => frame.locator('body').evaluate(() => {
       const pc = new RTCPeerConnection({ iceServers: [], iceTransportPolicy: 'relay' });
       const policy = pc.getConfiguration().iceTransportPolicy;
@@ -93,8 +146,9 @@ test('LAN switch persists, preserves existing peers and allows a direct data cha
     })).toBe('all');
     expect(await frame.locator('body').evaluate(() => oldPeer.getConfiguration().iceTransportPolicy)).toBe('relay');
     await frame.locator('body').evaluate(() => oldPeer.close());
-    await popup.reload();
-    await expect(lan).toBeChecked();
+    await frame.locator('#set-tabs [data-t="acc"]').click();
+    await frame.locator('#set-tabs [data-t="network"]').click();
+    await expect(lan).toHaveAttribute('aria-checked', 'true');
     // The non-game host document must retain the browser's original policy.
     expect(await page.evaluate(() => {
       const pc = new RTCPeerConnection({ iceTransportPolicy: 'relay' });
@@ -145,7 +199,8 @@ test('LAN switch persists, preserves existing peers and allows a direct data cha
       }
     });
     await expect.poll(() => frame.locator('body').evaluate(() => echoes)).toBe(8);
-    await lan.uncheck();
+    await lan.click();
+    await expect(lan).toHaveAttribute('aria-checked', 'false');
     expect(await frame.locator('body').evaluate(() => lanTestPeers[0].getConfiguration().iceTransportPolicy)).toBe('all');
     await frame.locator('body').evaluate(() => lanTestPeers.forEach(pc => pc.close()));
   } finally {

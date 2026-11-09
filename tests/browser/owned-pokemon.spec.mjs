@@ -82,10 +82,11 @@ test.beforeEach(async () => {
   await gameFrame.evaluate(() => { window.testUser = { uid: 'active' }; });
 });
 
-test('popup keeps its header and shows game controls or the launch button according to open tabs', async ({}, testInfo) => {
+test('popup keeps its header and shows the collection or launch button according to open tabs', async ({}, testInfo) => {
   await openPopup();
   await expect(popup.locator('.play')).toBeHidden();
-  await expect(popup.locator('.setting')).toBeVisible();
+  await expect(popup.locator('.collection')).toBeVisible();
+  await expect(popup.locator('#lan-direct, #lan-status')).toHaveCount(0);
   await expect(popup.locator('.help, footer')).toHaveCount(0);
   await popup.bringToFront();
   await popup.reload();
@@ -96,7 +97,6 @@ test('popup keeps its header and shows game controls or the launch button accord
   await popup.reload();
   await expect(popup.locator('.play')).toBeVisible();
   await expect(popup.locator('header')).toBeVisible();
-  await expect(popup.locator('.setting')).toBeHidden();
   await expect(popup.locator('.collection')).toBeHidden();
   expect((await popup.locator('body').innerText()).replace(/\s+/g, ' ').trim()).toBe('POKÉSURVIVOR 한국어 모드 게임 열기 ↗');
   await popup.locator('body').screenshot({ path: testInfo.outputPath('game-closed.png') });
@@ -169,9 +169,9 @@ test('popup remains visible and usable while the guide is slow', async () => {
     await expect.poll(() => requests).toBe(2);
     await expect(popup.locator('#collection-status')).toHaveText('티어 불러오는 중…');
     await expect(popup.getByRole('heading', { name: '한국어 모드' })).toBeVisible();
-    await expect(popup.locator('#lan-direct')).toBeEnabled();
-    await popup.locator('#lan-direct').check();
-    await expect(popup.locator('#lan-status')).toBeHidden();
+    await expect(popup.locator('.collection')).toBeVisible();
+    await expect(popup.locator('#refresh-collection')).toBeDisabled();
+    await expect(popup.locator('#lan-direct, #lan-status')).toHaveCount(0);
     release();
     await expect(popup.locator('#collection-count')).toHaveText('3마리');
   } finally {

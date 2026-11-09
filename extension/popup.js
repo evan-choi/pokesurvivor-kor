@@ -2,33 +2,6 @@
 
 import { TIER_SOURCE, DEX_SOURCE, readOwnedPokemon, parseRankings, validateRankings, rankOwnedPokemon } from './owned-pokemon.mjs';
 
-const lanToggle = document.getElementById('lan-direct');
-const lanStatus = document.getElementById('lan-status');
-
-chrome.storage.local.get({ lanDirect: false }).then(({ lanDirect }) => {
-  lanToggle.checked = lanDirect === true;
-  lanToggle.disabled = false;
-}).catch(() => {
-  lanStatus.textContent = '설정을 불러오지 못했습니다. 팝업을 다시 열어 주세요.';
-});
-
-lanToggle.addEventListener('change', async () => {
-  lanToggle.disabled = true;
-  try {
-    await chrome.storage.local.set({ lanDirect: lanToggle.checked });
-    lanStatus.textContent = '';
-  } catch {
-    lanToggle.checked = !lanToggle.checked;
-    lanStatus.textContent = '설정을 저장하지 못했습니다. 다시 시도해 주세요.';
-  } finally {
-    lanToggle.disabled = false;
-  }
-});
-
-chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === 'local' && changes.lanDirect) lanToggle.checked = changes.lanDirect.newValue === true;
-});
-
 const collectionStatus = document.getElementById('collection-status');
 const collectionCount = document.getElementById('collection-count');
 const pokemonList = document.getElementById('pokemon-list');

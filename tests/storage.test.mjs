@@ -4,7 +4,7 @@ import test from 'node:test';
 import vm from 'node:vm';
 
 test('network preferences survive a stale initial read without publishing premature language changes', async () => {
-  const document = new EventTarget();
+  const document = Object.assign(new EventTarget(), { querySelector: () => null });
   class CustomEvent extends Event {
     constructor(name, { detail } = {}) { super(name); this.detail = detail; }
   }

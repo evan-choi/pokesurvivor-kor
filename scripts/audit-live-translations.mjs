@@ -25,7 +25,7 @@ const allowedNames = [
   'Google', 'Gmail', 'GitHub', 'YouTube', 'Ko-fi', 'Discord', 'Firebase', 'CREDITS.md', 'MIT',
   'Xbox', 'PlayStation', 'Switch', 'USB', 'Bluetooth',
   'iPhone', 'Safari', 'Chrome', 'Android', 'iOS', 'Windows', 'macOS',
-  'PMD', 'OFL', 'NFT', 'FPS', 'PC', 'HP',
+  'PMD', 'OFL', 'NFT', 'FPS', 'PC', 'HP', 'LAN',
 ];
 const escape = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const namesPattern = new RegExp(`(?<![A-Za-z0-9])(?:${allowedNames.sort((a, b) => b.length - a.length).map(escape).join('|')})(?![A-Za-z0-9])`, 'gi');
@@ -59,7 +59,8 @@ const context = await chromium.launchPersistentContext('', {
 const page = await context.newPage();
 page.setDefaultTimeout(20_000);
 page.on('pageerror', (error) => errors.push(error.message));
-await page.addLocatorHandler(page.locator('#scr-video:not(.hidden)'), () => page.locator('#video-close').click());
+await page.addLocatorHandler(page.locator('#scr-video:not(.hidden)'), () =>
+  page.locator('#video-close').evaluate(button => button.click()));
 await context.addInitScript((lang) => localStorage.setItem('ps.lang', lang), language);
 let frame;
 
@@ -280,6 +281,20 @@ try {
     await openPanel('SettingsUI', tab);
     await capture(`settings-${tab}`);
   }
+  const settingsTabs = await frame.locator('#set-tabs [data-t]').evaluateAll(tabs => tabs.map(tab => tab.dataset.t));
+  if (JSON.stringify(settingsTabs) !== JSON.stringify(['sound', 'gfx', 'ctl', 'a11y', 'network', 'acc', 'about'])) {
+    throw new Error(`Unexpected settings tab order: ${JSON.stringify(settingsTabs)}`);
+  }
+  await frame.locator('#set-tabs [data-t="network"]').click();
+  await capture('settings-network');
+  await frame.locator('#psko-lan-direct').waitFor();
+  await page.screenshot({ path: path.join(root, 'test-results', `network-settings-${language}.png`) });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await frame.locator('#psko-lan-direct').scrollIntoViewIfNeeded();
+  const networkOverflow = await frame.locator('#set-body').evaluate(body => body.scrollWidth > body.clientWidth + 1);
+  if (networkOverflow) throw new Error('The network settings overflow at 390px.');
+  await page.setViewportSize({ width: 1400, height: 1000 });
+  await frame.locator('#set-tabs [data-t="ctl"]').click();
   await run(() => {
     Object.defineProperty(navigator, 'getGamepads', { configurable: true, value: () => [{
       id: 'Local test controller', index: 0, connected: true, mapping: 'standard',
