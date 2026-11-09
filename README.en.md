@@ -53,6 +53,12 @@ Hover over the held-item slot to see the item's name and effect.
 
 Under **Settings → Graphics**, adjust **My effects** and **Party effects** independently: Default, Slightly transparent, Very transparent, or Hidden. Choices are saved in this browser. Enemy attacks and warnings, damage numbers, and effects without an identifiable owner remain visible. Damage calculations are unchanged.
 
+| Before — Default | After — Very transparent |
+| --- | --- |
+| ![Player effects at default opacity](docs/assets/effects-default.png) | ![The same battle with player effects at 20% opacity](docs/assets/effects-transparent.png) |
+
+A demonstration scene rendered by the actual game. Both images show the same battle frame; only **My effects** changes from Default (100%) to Very transparent (20%). Click an image to view it full size.
+
 ## Temporary melee targeting fix
 
 Corrects melee attacks that stall while targeting a distant boss despite a nearby enemy. Disable **Settings → Controls → Melee targeting fix (temporary)** to immediately restore the original behavior. Manual aiming is unchanged. [Removal after an official fix](docs/temporary-melee-fix.md)
