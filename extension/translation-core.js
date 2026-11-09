@@ -10,11 +10,11 @@
 
   function add(source, target) {
     source = normalize(source);
-    if (!source || source === target) return;
-    if (source.includes('{x}')) {
+    if (!source || (source === target && !source.includes('{name}'))) return;
+    if (/\{(?:x|name)\}/u.test(source)) {
       patterns.push({
-        regex: new RegExp(`^${source.split('{x}').map(escape).join('(.+?)')}$`, 'iu'),
-        specificity: source.replaceAll('{x}', '').length,
+        regex: new RegExp(`^${source.split(/\{(?:x|name)\}/u).map(escape).join('(.+?)')}$`, 'iu'),
+        specificity: source.replace(/\{(?:x|name)\}/gu, '').length,
         target,
       });
     } else {
@@ -26,6 +26,7 @@
   for (const [spanish, english, korean] of globalThis.PSKO_MESSAGES || []) {
     add(spanish, korean);
     add(english, korean);
+    if (korean.includes('{name}')) add(korean, korean);
   }
   for (const [name, korean] of Object.entries(globalThis.PSKO_POKEMON || {})) add(name, korean);
   patterns.sort((a, b) => b.specificity - a.specificity);
@@ -49,7 +50,10 @@
         const match = regex.exec(text);
         if (!match) continue;
         let index = 1;
-        return target.replace(/\{x\}/g, () => translateBody(match[index++], depth + 1, moveName));
+        return target.replace(/\{(x|name)\}/g, (_, slot) => {
+          const value = match[index++];
+          return slot === 'name' ? value : translateBody(value, depth + 1, moveName);
+        });
       }
     }
     const translated = termPattern ? text.replace(termPattern, (term) => lookup(term, moveName)) : text;

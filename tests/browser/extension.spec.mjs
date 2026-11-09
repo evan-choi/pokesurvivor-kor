@@ -328,6 +328,7 @@ test('translates authored protected notices without translating player names or 
       <span translate="no" id="player-name" title="Ver su Profile">Pikachu</span>
       <b translate="no" id="room-code">FIRE012345</b>
       <div id="user-pill"><span translate="no">Guest</span><i class="sync guest"></i></div>
+      <div id="menu-banner"><span class="mb-count" translate="no">4d 11:19:51</span></div>
     `);
   });
   await expect(frame.locator('#news-body h3')).toHaveText('Gmail로 계정 복구');
@@ -335,9 +336,13 @@ test('translates authored protected notices without translating player names or 
   await expect(frame.locator('#player-name')).toHaveAttribute('title', '프로필 보기');
   await expect(frame.locator('#room-code')).toHaveText('FIRE012345');
   await expect(frame.locator('#user-pill span')).toHaveText('게스트');
+  await expect(frame.locator('#menu-banner .mb-count')).toHaveText('4일 11:19:51');
+  await frame.locator('#menu-banner .mb-count').evaluate(element => { element.textContent = '4d 11:19:50'; });
+  await expect(frame.locator('#menu-banner .mb-count')).toHaveText('4일 11:19:50');
   await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
   await expect(frame.locator('#news-body h3')).toHaveText('Recover your account with Gmail');
   await expect(frame.locator('#player-name')).toHaveAttribute('title', 'Ver su Profile');
+  await expect(frame.locator('#menu-banner .mb-count')).toHaveText('4d 11:19:50');
 });
 
 test('resolves ambiguous action labels and keeps keyboard hints intact', async () => {

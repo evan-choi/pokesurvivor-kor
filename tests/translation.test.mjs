@@ -44,6 +44,58 @@ test('orb pickup messages translate the name, current control and effect togethe
   assert.equal(translate(`Focosfera (tecla 6): ${es}`), `집중의 구슬 (6번 키): ${effect}`);
 });
 
+test('multiplayer notices preserve player names before and after native translation', () => {
+  for (const name of ['Fire', 'Ash Pokémon', 'Psychic']) {
+    for (const [sources, expected] of [
+      [[`Watching ${name}`, `Viendo a ${name}`], `${name} 관전 중`],
+      [[`${name} is back`, `${name} ha vuelto`], `${name} 복귀`],
+      [[`${name}: reconnecting…`, `${name}: reconectando…`], `${name} 재연결 중…`],
+      [[`${name} is the new host`, `${name} es el nuevo anfitrión`], `${name} 님이 새 방장이 되었습니다`],
+    ]) {
+      for (const source of sources) assert.equal(translate(source), expected);
+      assert.equal(translate(expected), expected);
+    }
+  }
+  assert.equal(translate('4d 11:19:51'), '4일 11:19:51');
+});
+
+test('starting move notices distinguish Psychic from its type in both native output forms', () => {
+  for (const [sources, expected] of [
+    [['Bulbasaur empezará con Psíquico', 'Bulbasaur will start with Psychic',
+      '이상해씨의 시작 기술: Psíquico', '이상해씨의 시작 기술: Psychic'], '이상해씨의 시작 기술: 사이코키네시스'],
+    [['Bulbasaur empezará también con Psíquico', 'Bulbasaur will also start with Psychic',
+      'Bulbasaur의 두 번째 시작 기술: Psíquico', 'Bulbasaur의 두 번째 시작 기술: Psychic'],
+    '이상해씨의 두 번째 시작 기술: 사이코키네시스'],
+  ]) {
+    for (const source of sources) assert.equal(translate(source), expected);
+  }
+});
+
+test('native Korean canvas notices keep player names and still translate source text', () => {
+  const document = Object.assign(new EventTarget(), { readyState: 'complete', querySelector: () => true });
+  class Canvas {
+    font = '600 11px sans-serif';
+    fillText(text) { return text; }
+    strokeText(text) { return text; }
+    measureText(text) { return text; }
+  }
+  const sandbox = vm.createContext({
+    PSKO: context.PSKO, PSKO_NATIVE_LOCALE: { active: true }, CanvasRenderingContext2D: Canvas,
+    document, window: {}, Event,
+  });
+  evaluate(sandbox, 'canvas.js');
+  document.dispatchEvent(Object.assign(new Event('psko:settings'), { detail: true }));
+  for (const method of ['fillText', 'strokeText', 'measureText']) {
+    const canvas = new Canvas();
+    assert.equal(canvas[method]('Fire 관전 중 · 교체'), 'Fire 관전 중 · 교체');
+    assert.equal(canvas[method]('Ash Pokémon 관전 중 · 교체'), 'Ash Pokémon 관전 중 · 교체');
+    assert.equal(canvas[method]('Watching Fire'), 'Fire 관전 중');
+    assert.equal(canvas[method]('Psychic'), '사이코키네시스');
+    const value = Symbol('canvas argument');
+    assert.equal(canvas[method](value), value);
+  }
+});
+
 test('all orb tooltips measure and draw the complete translation after word wrapping', () => {
   const document = Object.assign(new EventTarget(), { readyState: 'complete', querySelector: () => true });
   class Canvas {
@@ -151,7 +203,7 @@ test('all 1,188 game messages have complete translations and matching placeholde
 test('audited interface, shop and changelog text resolves as a complete phrase in both input forms', () => {
   for (const file of ['extra', 'gameplay', 'interface', 'shop', 'pokedex', 'changelog']) {
     for (const [source, intermediate, korean] of readMessages(file)) {
-      const count = (text) => (text.match(/\{x\}/g) || []).length;
+      const count = (text) => (text.match(/\{(?:x|name)\}/g) || []).length;
       assert.equal(count(source), count(korean), source);
       assert.equal(count(intermediate), count(korean), intermediate);
       if (count(source)) continue;

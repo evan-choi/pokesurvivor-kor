@@ -12,6 +12,8 @@
   const animatedHeadings = new Set(['THE JUDGMENT', 'OF ARCEUS', 'LA SENTENCIA', 'DE ARCEUS']);
   const translate = (text) => {
     if (!enabled || !gameDocument || animatedHeadings.has(text)) return text;
+    // Native Korean output may contain player names that must not be translated again.
+    if (globalThis.PSKO_NATIVE_LOCALE?.active && typeof text === 'string' && /[가-힣]/u.test(text)) return text;
     // The canvas uses standalone names for moves; type alerts include their full sentence.
     return typeof text === 'string' && /^(?:Psychic|Psíquico)$/iu.test(text.trim())
       ? globalThis.PSKO.translateMove(text)

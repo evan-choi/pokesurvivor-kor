@@ -21,9 +21,11 @@ const allowedNames = [
   'PokéSurvivor', 'PokeSurvivor', 'The Pokémon Company', 'Pokémon', 'Creatures Inc.',
   'Nintendo', 'Creatures', 'GAME FREAK', 'PolyForm Noncommercial 1.0.0',
   'CC BY-NC 4.0', 'Pixelify Sans', 'SpriteCollab', 'PokéAPI', 'PokeAPI',
-  'JPTER78', 'Copyright', 'Google', 'Gmail', 'GitHub', 'YouTube', 'Ko-fi',
+  'JPTER78', 'TheAdro7', 'Folagor', 'Sekiam', 'PokeAlex', 'Copyright',
+  'Google', 'Gmail', 'GitHub', 'YouTube', 'Ko-fi', 'Discord', 'Firebase', 'CREDITS.md', 'MIT',
+  'Xbox', 'PlayStation', 'Switch', 'USB', 'Bluetooth',
   'iPhone', 'Safari', 'Chrome', 'Android', 'iOS', 'Windows', 'macOS',
-  'PMD', 'OFL', 'NFT', 'FPS', 'PC',
+  'PMD', 'OFL', 'NFT', 'FPS', 'PC', 'HP',
 ];
 const escape = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const namesPattern = new RegExp(`(?<![A-Za-z0-9])(?:${allowedNames.sort((a, b) => b.length - a.length).map(escape).join('|')})(?![A-Za-z0-9])`, 'gi');
@@ -31,11 +33,15 @@ const foreignCharacters = /[\p{Script=Latin}\p{Script=Han}\p{Script=Hiragana}\p{
 
 function unexplainedText(entry) {
   if (entry.tag === 'KBD' && /^(?:[WASDQERPF]|Esc|Enter|Space|Tab|Shift|Ctrl|Alt|1[0-2]?|[2-9])$/i.test(entry.text)) return '';
+  if (entry.class.split(/\s+/).includes('padkey') && /^(?:[ABXY]|LB|RB|LT|RT|Start|Select)$/u.test(entry.text)) return '';
   return entry.text
     .replace(namesPattern, '')
     .replace(/\bNo\.\s*\d+\b/gi, '')
     .replace(/\b(?:Lv|Nv)\.\s*\d+\b/gi, '')
     .replace(/\b\d+(?:[.,]\d+)?\s*(?:ms|s|m|h|HP|XP|EXP)\b/gi, '')
+    .replace(/\b\d+(?:[.,]\d+)?\s*\/s\b/g, '')
+    .replace(/\b(?:LB|RB|A|B|X|Y|Q|E|Esc)(?:·(?:LB|RB|A|B|X|Y|Q|E|Esc))*\s*(?=버튼|키|로)/g, '')
+    .replace(/\b[XY](?=\([가-힣])/g, '')
     .replace(/\b(?:WASD|Q\/E|Esc\/P)\b/g, '');
 }
 
@@ -53,6 +59,7 @@ const context = await chromium.launchPersistentContext('', {
 const page = await context.newPage();
 page.setDefaultTimeout(20_000);
 page.on('pageerror', (error) => errors.push(error.message));
+await page.addLocatorHandler(page.locator('#scr-video:not(.hidden)'), () => page.locator('#video-close').click());
 await context.addInitScript((lang) => localStorage.setItem('ps.lang', lang), language);
 let frame;
 
@@ -63,6 +70,7 @@ async function capture(label) {
     const seen = new Set();
     let skippedUserText = 0;
     let skippedLanguagePicker = 0;
+    let skippedExternalText = 0;
     const userText = [
       '#user-pill [translate="no"]', '#fr-me [translate="no"]',
       '.fr-row > b[translate="no"]', '#lobby-members b[translate="no"]',
@@ -79,6 +87,11 @@ async function capture(label) {
       if (element.closest('script, style, noscript') || !visibleControl.checkVisibility({ checkVisibilityCSS: true })) return;
       if (element.closest('[data-lang], [data-psko-language]')) {
         skippedLanguagePicker++;
+        return;
+      }
+      // The game preserves external video titles and hardware-provided device names.
+      if (attribute === 'text' && element.matches('#menu-banner > .mb-slide.yt > .mb-txt > b[translate="no"], #set-body > p.sub > b[translate="no"]')) {
+        skippedExternalText++;
         return;
       }
       // Inspect protected fixed copy, particularly #news-body and ranking explanations.
@@ -106,7 +119,7 @@ async function capture(label) {
         if (element.hasAttribute(attribute)) add(element, element.getAttribute(attribute), attribute);
       }
     }
-    return { entries, skippedUserText, skippedLanguagePicker };
+    return { entries, skippedUserText, skippedLanguagePicker, skippedExternalText };
   });
   const unexpected = capture.entries.filter((entry) => foreignCharacters.test(unexplainedText(entry)));
   screens.push({ label, ...capture });
@@ -138,14 +151,14 @@ try {
     try {
       const response = await route.fetch();
       const source = await response.text();
-      const prefix = source.match(/var (_0x[\da-f]+)=Object\[_0x[\da-f]+\(0x[\da-f]+\)\]\(null\);/);
+      const prefix = source.match(/var (_0x[\da-f]+)=Object\[(?:'create'|_0x[\da-f]+\(0x[\da-f]+\))\]\(null\);/);
       if (!prefix) throw new Error('UI audit hook no longer matches the official game bundle.');
-      if (!source.includes('_0x40206e=[')) throw new Error('Account notice fixture no longer matches the game bundle.');
-      const register = /function _0x558057\([^)]*\)\{/;
+      if (!source.includes('_0x310a73=[')) throw new Error('Account notice fixture no longer matches the game bundle.');
+      const register = /function _0x245df5\([^)]*\)\{/;
       if (!register.test(source)) throw new Error('Locale registry audit hook no longer matches the game bundle.');
       const fixtureSource = source
-        .replace('_0x40206e=[', '_0x40206e=window.__PSKO_TEST_NOTICES__=[')
-        .replace(register, match => match + "if(_0x47d983==='en'&&!_0x32c404)Object.assign(window.__PSKO_TEST_LOCALES__??={},_0x1db72b);");
+        .replace('_0x310a73=[', '_0x310a73=window.__PSKO_TEST_NOTICES__=[')
+        .replace(register, match => match + "if(_0x1339c1==='en'&&!_0x4f0c9a)Object.assign(window.__PSKO_TEST_LOCALES__??={},_0x3af59a);");
       await route.fulfill({ response, body: fixtureSource.replace(prefix[0], `${prefix[0]}window.__PSKO_TEST_GAME__=${prefix[1]};`) });
     } catch (error) {
       errors.push(error.stack || error.message);
@@ -160,10 +173,10 @@ try {
     const game = window.__PSKO_TEST_GAME__;
     // The official bundle hashes module names; fail explicitly when a release changes them.
     const names = {
-      U: '_18c81e9', DB: '_fa16ae6', MenuUI: '_3568e77', SettingsUI: '_aa22d55',
-      NewsUI: '_8ae4145', SupportUI: '_091716d', NickUI: '_f7271e2', GoalsUI: '_fdfa3bd',
-      GachaUI: '_8efd3b3', Moves: '_c96d2a4', RunUI: '_7a7fb51',
-      ShopUI: '_5373696',
+      U: '_04b31d9', DB: '_98c1010', MenuUI: '_e2de144', SettingsUI: '_90b8405',
+      NewsUI: '_d678271', SupportUI: '_b9c902a', NickUI: '_660aa4c', GoalsUI: '_7bc534a',
+      GachaUI: '_0fed362', Moves: '_3deb117', RunUI: '_4373dbf',
+      ShopUI: '_ce06d52',
     };
     const components = Object.fromEntries(Object.entries(names).map(([name, key]) => {
       if (!game?.[key]) throw new Error(`UI audit module changed: ${name}`);
@@ -207,23 +220,31 @@ try {
         .map(row => row[2]).filter(text => game.T(text) !== text),
       untranslated: Object.entries(window.__PSKO_TEST_LOCALES__).filter(([source]) => source !== 'Google' &&
         !/[가-힣]/u.test(game.T(source.replace(/\{(?:x|name)\}/g, '17')))),
+      playerNames: ['Fire', 'Ash Pokémon'].flatMap(name => [
+        game._30d1664.f('Viendo a {x}', name),
+        game._30d1664.f('{name} es el nuevo anfitrión', name),
+      ]),
     };
   });
   if (JSON.stringify(nativeChecks.aliases) !== JSON.stringify(['컨트롤러 연결됨', '컨트롤러 연결됨:', '뒤로 / 닫기', '뽑기 ×100']) ||
       JSON.stringify(nativeChecks.products) !== JSON.stringify(['Switch', 'The Pokémon Company', 'CREDITS.md', 'Authentication > Settings > Authorized domains']) ||
-      nativeChecks.rewritten.length) {
+      nativeChecks.rewritten.length ||
+      JSON.stringify(nativeChecks.playerNames) !== JSON.stringify([
+        'Fire 관전 중', 'Fire 님이 새 방장이 되었습니다',
+        'Ash Pokémon 관전 중', 'Ash Pokémon 님이 새 방장이 되었습니다',
+      ])) {
     throw new Error(`Native translation mismatch: ${JSON.stringify(nativeChecks)}`);
   }
   for (const [source, english] of nativeChecks.untranslated) findings.push({ screen: 'native-locale-registry', source, english });
   const traitCatalog = await run(() => {
     const game = window.__PSKO_TEST_GAME__;
     return [
-      ...game._4a05b3f.map(nature => {
-        const source = game._9ab1d5d.name(nature.n);
+      ...game._06cb786.map(nature => {
+        const source = game._f62b694.name(nature.n);
         return { kind: 'nature', source, translated: window.PSKO_NATURES[source] || source };
       }),
-      ...Object.keys(game._9876366).map(id => {
-        const source = game._9ab1d5d.abilityName(id);
+      ...Object.keys(game._9a39d9c).map(id => {
+        const source = game._f62b694.abilityName(id);
         return { kind: 'ability', source, translated: window.PSKO_ABILITIES[source] || source };
       }),
     ];
@@ -247,7 +268,7 @@ try {
       notice.when = () => true;
       localStorage.removeItem(notice.key);
     }
-    window.__PSKO_TEST_GAME__._0d718df.updateNotices();
+    window.__PSKO_TEST_GAME__._5d93a86.updateNotices();
   });
   await capture('account-update-notice');
   if (/[a-z]/i.test(await frame.locator('#scr-savenote').innerText())) {
@@ -264,15 +285,15 @@ try {
       id: 'Local test controller', index: 0, connected: true, mapping: 'standard',
       buttons: Array.from({ length: 17 }, () => ({ pressed: false, value: 0 })), axes: [0, 0, 0, 0],
     }] });
-    window.__PSKO_TEST_GAME__._fb26fef.poll(performance.now());
+    window.__PSKO_TEST_GAME__._52f25e4.poll(performance.now());
   });
   await openPanel('SettingsUI', 'ctl');
   await capture('settings-connected-controller');
   await run(() => { delete navigator.getGamepads; });
   await resetScreens();
-  await run(() => window.__PSKO_TEST_GAME__._b09ca2a.open());
+  await run(() => window.__PSKO_TEST_GAME__._8a3edd0.open());
   await capture('touch-layout');
-  await run(() => window.__PSKO_TEST_GAME__._b09ca2a.close());
+  await run(() => window.__PSKO_TEST_GAME__._8a3edd0.close());
   await openPanel('NewsUI');
   await capture('news');
   await openPanel('SupportUI');
@@ -384,7 +405,7 @@ try {
   await run(() => {
     const save = window.__PSKO_TEST_GAME__.DB.save;
     save.bag = { mint: 5, cap: 5, caph: 5, candy: 70 };
-    save.tms = Object.fromEntries(Object.keys(window.__PSKO_TEST_GAME__._db51ce7).map(id => [id, 1]));
+    save.tms = Object.fromEntries(Object.keys(window.__PSKO_TEST_GAME__._d1b6145).map(id => [id, 1]));
   });
   await resetScreens(true);
   await frame.locator('[data-go="dex"]').click();
@@ -513,17 +534,17 @@ try {
   await resetScreens();
   await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    game._81f8e29.showData({ name: 'Local player', title: 'Brillante', favs: [{ dex: 1, shiny: true }],
+    game._9d6a83d.showData({ name: 'Local player', title: 'Brillante', favs: [{ dex: 1, shiny: true }],
       best: { solo: 200, group: 300, level: 40, bosses: 8, legends: 2, kills: 700, medals: 0 } });
     game.UI.show('scr-profile');
   });
   await capture('public-profile');
   await resetScreens(true);
-  await run(() => window.__PSKO_TEST_GAME__._10e3d69.play());
-  await frame.waitForFunction(() => !!window.__PSKO_TEST_GAME__._526b783.player);
+  await run(() => window.__PSKO_TEST_GAME__._5205be5.play());
+  await frame.waitForFunction(() => !!window.__PSKO_TEST_GAME__._ae681d5.player);
   await frame.keyboard.press('Escape');
   await run(() => {
-    const game = window.__PSKO_TEST_GAME__, player = game._526b783.player;
+    const game = window.__PSKO_TEST_GAME__, player = game._ae681d5.player;
     player.orbs = ['slumber', 'slow', 'blowback', 'focus'].map(id => ({ id, n: 3 }));
     player.orbBuff = { focus: 12, luminous: 13, quick: 8 };
     player.statsTaken = { hp: 3, magnet: 2 };

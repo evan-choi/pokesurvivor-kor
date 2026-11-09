@@ -18,7 +18,7 @@
     if (owner.matches('#over-sum > p.sub')) return false;
     if (owner.matches('#dex-detail .mon-extra > .mx-row:nth-child(-n+2) > b')) return false;
     if (owner.matches('#pull-results .pcard > .pmon, #mx-picker .chip > b')) return false;
-    if (owner.matches('.mb-txt > b')) return false;
+    if (owner.matches('.mb-txt > b, #menu-banner .mb-count')) return false;
     if (owner.matches('#user-pill > span') && owner.parentElement.querySelector('.sync.guest')) return false;
     return true;
   }
