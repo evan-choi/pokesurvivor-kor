@@ -126,8 +126,8 @@
     }
     section.querySelector('#psko-lan-label').textContent = ko ? 'LAN 직접 연결' : 'Direct LAN connection';
     section.querySelector('#psko-lan-description').textContent = ko
-      ? '새로 시작하는 멀티플레이 연결에서 직접 연결을 허용합니다.'
-      : 'Allow direct connections for new multiplayer connections.';
+      ? '멀티플레이에서 다른 플레이어와 직접 연결할 수 있습니다. 다음 연결부터 적용됩니다.'
+      : 'Allow direct multiplayer connections with other players. Changes apply to new connections.';
     const toggle = section.querySelector('#psko-lan-direct');
     toggle.setAttribute('aria-checked', String(network.lanDirect));
     toggle.textContent = ko ? (network.lanDirect ? '예' : '아니요') : (network.lanDirect ? 'Yes' : 'No');
