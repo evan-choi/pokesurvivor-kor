@@ -2,11 +2,15 @@
 
 한국어 번역부터 전투 HUD, 기술·도구 설명과 이펙트 조절까지 담은 Chrome 확장 프로그램입니다.
 
-[**설치하기**](https://evan-choi.github.io/pokesurvivor-kor/#install) · [게임 열기](https://pokesurvivor.com/) · [English](README.en.md)
+[**Chrome 웹 스토어에서 설치**](https://chromewebstore.google.com/detail/onfhhekmpdnbgpklcghiejdmgnbmjhci) · [설치 안내](https://evan-choi.github.io/pokesurvivor-kor/#install) · [게임 열기](https://pokesurvivor.com/) · [English](README.en.md)
 
 ## 설치
 
-설치 페이지에서 현재 제공되는 설치 방법과 스토어 공개 여부를 확인하세요. 스토어 설치본은 Chrome이 승인된 업데이트를 자동으로 설치합니다. ZIP 직접 설치도 지원합니다.
+1. [Chrome 웹 스토어](https://chromewebstore.google.com/detail/onfhhekmpdnbgpklcghiejdmgnbmjhci)에서 **Chrome에 추가**를 누릅니다.
+2. [게임](https://pokesurvivor.com/)을 열거나 새로고침합니다.
+3. 게임의 **설정 → 그래픽 → 언어**에서 **한국어**를 선택합니다.
+
+스토어 설치본은 Chrome이 승인된 업데이트를 자동으로 설치합니다. ZIP 직접 설치도 지원합니다.
 
 <details>
 <summary>ZIP으로 직접 설치하기</summary>
@@ -26,9 +30,10 @@ ZIP 설치본에서 스토어 설치본으로 옮길 때는 기존 확장을 끄
 
 | 기능 | 사용 위치 |
 | --- | --- |
-| 한국어와 공식 포켓몬 명칭 | 게임 설정 → 그래픽 → 언어 |
+| 도감·상점·가방·미션 등 한국어 번역과 공식 포켓몬 명칭 | 게임 설정 → 그래픽 → 언어 |
 | 1.5배 전투 HUD, 기술·도구 툴팁 | 게임 전투 화면 |
 | 내 이펙트·파티원 이펙트 투명도 | 게임 설정 → 그래픽 |
+| 근접 자동 조준 임시 보정 | 게임 설정 → 조작 |
 | 보유 포켓몬 티어 | 확장 프로그램 팝업 |
 | LAN 직접 연결 | 게임 설정 → 네트워크 |
 
@@ -67,15 +72,19 @@ ZIP 설치본에서 스토어 설치본으로 옮길 때는 기존 확장을 끄
 
 ## LAN 직접 연결
 
-게임 **설정 → 네트워크 → LAN 직접 연결**에서 켜고 끌 수 있습니다.
+게임 **설정 → 네트워크 → LAN 직접 연결**에서 켜고 끌 수 있습니다. 기본값은 꺼짐이며, 켜면 멀티플레이에서 다른 플레이어와 직접 연결할 수 있습니다.
+
+게임이 제공하는 중계 연결(TURN)도 사용될 수 있으므로 직결이나 지연 시간 감소를 보장하지는 않습니다. VPN·방화벽·공유기 설정에 따라 직접 연결이 제한될 수 있습니다.
 
 같은 LAN에서 멀티플레이가 TURN으로 연결된다면 선택적으로 [Windows LAN 도구](https://evan-choi.github.io/pokesurvivor-kor/downloads/pokesurvivor-lan-helper.zip)를 사용할 수 있습니다. 신뢰하는 CIDR을 입력하고 범위를 확인한 뒤 Chrome UDP 수신을 허용합니다. [사용법과 되돌리기](tools/windows-lan/README.md)를 먼저 확인하세요.
 
 ## 업데이트
 
-스토어 설치본은 자동 업데이트됩니다. ZIP 설치본은 새 ZIP으로 기존 폴더의 파일을 교체한 뒤, `chrome://extensions`에서 확장 프로그램을 새로고침하세요. 열려 있는 게임도 새로고침하면 적용됩니다.
+스토어 설치본은 심사 승인 후 자동 업데이트됩니다. 웹사이트의 ZIP은 별도로 배포되므로 스토어 버전보다 최신일 수 있습니다.
 
-개발자는 버전을 올려 `main`에 푸시하면 CI에서 스토어 심사에 제출할 수 있습니다. 웹사이트는 `main` 변경 시 바로 배포됩니다. [최초 등록과 CI 연결](docs/store-publishing.md) · [개발 안내](docs/development.md)
+ZIP 설치본은 새 ZIP으로 기존 폴더의 파일을 교체한 뒤, `chrome://extensions`에서 확장 프로그램을 새로고침하세요. 열려 있는 게임도 새로고침하면 적용됩니다.
+
+개발자는 버전을 올려 `main`에 푸시하면 CI에서 스토어 심사에 제출할 수 있습니다. 다른 버전의 심사가 진행 중이면 제출이 중단되므로, 기존 심사가 끝난 뒤 제출 작업을 다시 실행해야 합니다. 웹사이트는 스토어 심사와 별개로 `main` 변경 시 배포됩니다. [최초 등록과 CI 연결](docs/store-publishing.md) · [개발 안내](docs/development.md)
 
 [설치 도움말](docs/install.md) · [번역 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml)
 
