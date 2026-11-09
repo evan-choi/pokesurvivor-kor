@@ -65,11 +65,11 @@ Corrects melee attacks that stall while targeting a distant boss despite a nearb
 
 ## Owned Pokémon tiers
 
-Sign in to your game account, then open the extension to see the most recently used game tab’s owned Pokémon in **global rank order**, with tier badges, Korean names, and animated GIFs. Static images are used when a GIF is unavailable.
+Start playing the game, then open the extension to see the most recently used game tab’s owned Pokémon in **global rank order**, with tier badges, Korean names, and animated GIFs. Static images are used when a GIF is unavailable.
 
 When a game tab is open, the popup shows your collection. Otherwise it shows the header and **Open game**.
 
-Ranks come from the stat-based [PokéSurvivor Guide tier list](https://pokesurvivor.net/tier-list/). Rankings are cached for one day; **새로고침** (Refresh) reloads both your collection and the rankings. If an update fails, the last saved rankings are shown with a notice. Your game save is not sent to an external service. Guest play is not supported.
+Ranks come from the stat-based [PokéSurvivor Guide tier list](https://pokesurvivor.net/tier-list/). Rankings are cached for one day; **새로고침** (Refresh) reloads both your collection and the rankings. If an update fails, the last saved rankings are shown with a notice. Only owned species numbers currently loaded by the game are read; account IDs and login information are not queried. Guests can also view their current collection. Your game save is not sent to an external service.
 
 <details>
 <summary>View the shop and graphics settings</summary>

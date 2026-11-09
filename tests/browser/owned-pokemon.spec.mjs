@@ -11,7 +11,7 @@ const tierHtml = species.map(([, name, tier], index) => `<div data-tier-block>
   <td>${index + 1}</td><td><a href="/pokedex/${name.toLowerCase()}/">${name}</a></td>
   </tr></tbody></table></div>`).join('');
 const dexHtml = '<table>' + species.map(([dex, name]) => `<tr><td><a href="/pokedex/${name.toLowerCase()}/"><span class="no">#${dex}</span>${name}</a></td></tr>`).join('') + '</table>';
-const game = '<!doctype html><html><body><div id="tap-start">Press to start</div><div id="dex-grid"></div></body></html>';
+const game = '<!doctype html><html><body><div id="tap-start">Press to start</div><div id="dex-grid"></div><script src="/js/app.min.js"></script></body></html>';
 const tinyGif = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64');
 
 let context, page, popup, gameFrame, popupUrl;
@@ -27,6 +27,19 @@ test.beforeAll(async () => {
   });
   await context.route('https://pokesurvivor.com/**', (route) => route.fulfill({
     contentType: 'text/html', body: game,
+  }));
+  await context.route('https://pokesurvivor.com/js/app.min.js', route => route.fulfill({
+    contentType: 'text/javascript', body: `
+      var registry = Object.create(null);
+      window.testSave = null;
+      registry.Collection = { owns(){}, upgradesOf(){}, get save(){return window.testSave;} };
+      Object.defineProperty(window, 'firebase', { get(){throw Error('Authentication must not be read');} });
+      const getItem = Storage.prototype.getItem;
+      Storage.prototype.getItem = function(key) {
+        if (/^ps\\.(session|cloud|save)/.test(key)) throw Error('Stored accounts must not be read');
+        return getItem.call(this, key);
+      };
+    `,
   }));
   await context.route('https://pokesurvivor.net/**', (route) => {
     guideRequests++;
@@ -70,16 +83,13 @@ test.beforeEach(async () => {
   await gameFrame.locator('#dex-grid').waitFor({ state: 'attached' });
   await gameFrame.evaluate(() => {
     localStorage.clear();
-    window.testUser = null;
-    window.firebase = { apps: [{}], auth: () => ({ currentUser: window.testUser }) };
-    localStorage.setItem('ps.cloud.active', JSON.stringify({ owned: { 243: {}, 890: {}, 25: {} } }));
-    localStorage.setItem('ps.cloud.another', JSON.stringify({ owned: { 150: {} } }));
+    window.testSave = null;
   });
   await page.bringToFront();
   await popup.goto(popupUrl);
-  await expect(popup.locator('#collection-status')).toContainText('로그인하세요');
+  await expect(popup.locator('#collection-status')).toContainText('플레이를 시작');
   await popup.evaluate(() => chrome.storage.local.clear());
-  await gameFrame.evaluate(() => { window.testUser = { uid: 'active' }; });
+  await gameFrame.evaluate(() => { window.testSave = { owned: { 243: {}, 890: {}, 25: {} } }; });
 });
 
 test('popup keeps its header and shows the collection or launch button according to open tabs', async ({}, testInfo) => {
@@ -113,7 +123,7 @@ test('renders only owned Pokémon in tier order with Korean names and runtime im
   await expect(popup.locator('.pokemon-image img').nth(2)).toHaveAttribute('src', /\/25\.png$/);
   expect(imageRequests.some((url) => url.endsWith('/243.gif'))).toBe(true);
   expect(guideRequests).toBe(2);
-  expect(await gameFrame.evaluate(() => JSON.parse(localStorage.getItem('ps.cloud.active')))).toEqual({ owned: { 243: {}, 890: {}, 25: {} } });
+  expect(await gameFrame.evaluate(() => window.testSave)).toEqual({ owned: { 243: {}, 890: {}, 25: {} } });
   expect(await popup.evaluate(() => chrome.storage.local.get(null))).not.toHaveProperty('owned');
   await popup.setViewportSize({ width: 380, height: 600 });
   await popup.locator('#pokemon-list').evaluate(list => {
@@ -187,7 +197,7 @@ test('refresh reads account changes, uses cached ranks on reopen and labels stal
   await openPopup();
   await expect(popup.locator('#collection-count')).toHaveText('3마리');
   expect(guideRequests).toBe(0);
-  await gameFrame.evaluate(() => { window.testUser = { uid: 'another' }; });
+  await gameFrame.evaluate(() => { window.testSave = { owned: { 150: {} } }; });
   failGuide = true;
   await popup.locator('#refresh-collection').click();
   await expect(popup.locator('.pokemon-name a')).toHaveText(['뮤츠']);
@@ -201,13 +211,13 @@ test('shows actionable errors without cached ranks and handles empty or logged-o
   await openPopup();
   await expect(popup.locator('#collection-status')).toContainText('티어를 불러오지 못했습니다');
   await expect(popup.locator('.pokemon-row')).toHaveCount(0);
-  await gameFrame.evaluate(() => localStorage.setItem('ps.cloud.active', '{"owned":{}}'));
+  await gameFrame.evaluate(() => { window.testSave = { owned: {} }; });
   await popup.locator('#refresh-collection').click();
   await expect(popup.locator('#collection-count')).toHaveText('0마리');
   await expect(popup.locator('#collection-status')).toContainText('아직 보유한 포켓몬이 없습니다');
-  await gameFrame.evaluate(() => { window.testUser = null; });
+  await gameFrame.evaluate(() => { window.testSave = null; });
   await popup.locator('#refresh-collection').click();
-  await expect(popup.locator('#collection-status')).toContainText('로그인하세요');
+  await expect(popup.locator('#collection-status')).toContainText('플레이를 시작');
   await page.goto('about:blank');
   await openPopup();
   await expect(popup.locator('.collection')).toBeHidden();
@@ -215,7 +225,7 @@ test('shows actionable errors without cached ranks and handles empty or logged-o
 });
 
 test('keeps species absent from the ranking and handles missing images', async () => {
-  await gameFrame.evaluate(() => localStorage.setItem('ps.cloud.active', '{"owned":{"9999":true,"243":true}}'));
+  await gameFrame.evaluate(() => { window.testSave = { owned: { 9999: true, 243: true } }; });
   await openPopup();
   await expect(popup.locator('#collection-count')).toHaveText('2마리');
   await expect(popup.locator('.pokemon-rank')).toHaveText(['3위', '순위 없음']);

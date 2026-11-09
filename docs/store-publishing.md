@@ -35,6 +35,8 @@
 
 ## 이후 업데이트
 
+0.2.23의 개인정보 항목과 권한 설명 수정안은 [개인정보 신고 변경안](privacy-disclosure.md)을 따릅니다. 코드·처리방침·신고 항목을 같은 버전 기준으로 제출합니다.
+
 1. `extension/manifest.json`, `package.json`, `package-lock.json`의 버전을 함께 올립니다.
 2. 변경에 맞는 로컬 검사를 마친 뒤 `main`에 푸시합니다.
 3. **Publish Chrome extension** 작업이 패키지를 업로드하고 처리가 끝나면 심사에 제출합니다. `PENDING_REVIEW`는 심사 대기이며 공개 완료가 아닙니다.

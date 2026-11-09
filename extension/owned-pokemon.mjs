@@ -5,24 +5,13 @@ export const DEX_SOURCE = 'https://pokesurvivor.net/pokedex/';
 export function readOwnedPokemon() {
   if (!document.querySelector('#dex-grid')) return null;
   try {
-    let key;
-    if (window.firebase?.apps?.length) {
-      const uid = window.firebase.auth().currentUser?.uid;
-      if (typeof uid !== 'string' || !uid) return { error: '보유 목록을 보려면 게임 계정에 로그인하세요.' };
-      key = 'ps.cloud.' + uid;
-    } else {
-      const session = JSON.parse(localStorage.getItem('ps.session') || 'null');
-      if (typeof session !== 'string' || !session) {
-        return { error: '보유 목록을 보려면 게임 계정에 로그인하세요.' };
-      }
-      key = 'ps.save.' + session;
+    if (typeof globalThis.PSKO_READ_OWNED_POKEMON !== 'function') {
+      return { error: '보유 목록을 읽을 준비가 되지 않았습니다. 게임을 새로고침해 주세요.' };
     }
-    const save = JSON.parse(localStorage.getItem(key) || 'null');
-    if (!save?.owned || typeof save.owned !== 'object' || Array.isArray(save.owned)) {
-      return { error: '보유 목록을 읽지 못했습니다. 게임 로딩 후 다시 시도하세요.' };
-    }
-    const owned = Object.keys(save.owned).filter((dex) => save.owned[dex]);
-    if (owned.some((dex) => !/^[1-9]\d*$/.test(dex) || !Number.isSafeInteger(Number(dex)))) {
+    const owned = globalThis.PSKO_READ_OWNED_POKEMON();
+    if (owned === null) return { error: '게임에서 플레이를 시작한 뒤 다시 시도하세요.' };
+    if (!Array.isArray(owned) || owned.some((dex) => typeof dex !== 'string'
+      || !/^[1-9]\d*$/.test(dex) || !Number.isSafeInteger(Number(dex)))) {
       return { error: '게임의 보유 목록 형식을 확인할 수 없습니다.' };
     }
     return { owned: owned.map(Number) };

@@ -1,49 +1,65 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import vm from 'node:vm';
+import { readFileSync } from 'node:fs';
 import { readOwnedPokemon, rankOwnedPokemon, validateRankings } from '../extension/owned-pokemon.mjs';
 
-function readCollection({ storage = {}, user = { uid: 'current-user' }, cloud = true, game = true } = {}) {
-  const reads = [];
-  const result = vm.runInNewContext(`(${readOwnedPokemon.toString()})()`, {
-    document: { querySelector: () => game },
-    window: { firebase: cloud ? { apps: [{}], auth: () => ({ currentUser: user }) } : undefined },
-    localStorage: { getItem: (key) => { reads.push(key); return storage[key] ?? null; } },
+function collectionReader(save = { owned: {} }, supported = true) {
+  const forbidden = [];
+  const deny = name => { forbidden.push(name); throw new Error(`Unexpected private-data access: ${name}`); };
+  const context = vm.createContext({
+    document: { querySelector: () => true },
     console: { error() {} },
+    get localStorage() { return deny('localStorage'); },
+    get firebase() { return deny('firebase'); },
   });
-  return { result: JSON.parse(JSON.stringify(result)), reads };
+  const store = { save, owns() {}, upgradesOf() {},
+    get user() { return deny('user'); }, get loggedIn() { return deny('loggedIn'); },
+    get guest() { return deny('guest'); }, get fb() { return deny('fb'); },
+  };
+  vm.runInContext(readFileSync(new URL('../extension/collection.js', import.meta.url), 'utf8'), context);
+  context.PSKO_INSTALL_COLLECTION_READER(supported ? { store } : {});
+  const read = () => JSON.parse(JSON.stringify(vm.runInContext(`(${readOwnedPokemon.toString()})()`, context)));
+  return { read, store, context, forbidden };
 }
 
-test('reads only the active Firebase account and returns species numbers without save details', () => {
-  const { result, reads } = readCollection({ storage: {
-    'ps.cloud.current-user': JSON.stringify({ owned: { 243: { at: 1 }, 25: { at: 2 }, 150: false }, coins: 999, name: 'Private' }),
-    'ps.cloud.other-user': JSON.stringify({ owned: { 890: { at: 3 } } }),
-  } });
-  assert.deepEqual(result, { owned: [25, 243] });
-  assert.deepEqual(reads, ['ps.cloud.current-user']);
-  assert.deepEqual(readCollection({ user: null, storage: {
-    'ps.session': '"previous-user"',
-    'ps.save.previous-user': '{"owned":{"243":true}}',
-  } }).reads, []);
+test('reads only the loaded collection without account, authentication or stored-save access', () => {
+  const save = { owned: { 243: { at: 1 }, 25: { at: 2 }, 150: false },
+    get name() { throw new Error('Name must not be read'); },
+    get coins() { throw new Error('Unrelated save data must not be read'); },
+  };
+  const { read, forbidden } = collectionReader(save);
+  assert.deepEqual(read(), { owned: [25, 243] });
+  assert.deepEqual(forbidden, []);
+  assert.deepEqual(Object.keys(save.owned), ['25', '150', '243']);
 });
 
-test('legacy accounts follow ps.session and never combine accounts', () => {
-  const { result, reads } = readCollection({ cloud: false, storage: {
-    'ps.session': '"player"',
-    'ps.save.player': '{"owned":{"150":true}}',
-    'ps.save.another': '{"owned":{"243":true}}',
-  } });
-  assert.deepEqual(result, { owned: [150] });
-  assert.deepEqual(reads, ['ps.session', 'ps.save.player']);
+test('uses the current loaded save on every read and drops the old collection on logout', () => {
+  const { read, store, forbidden } = collectionReader({ owned: { 150: true } });
+  assert.deepEqual(read(), { owned: [150] });
+  store.save = null;
+  assert.match(read().error, /플레이를 시작/);
+  store.save = { owned: { 243: true } };
+  assert.deepEqual(read(), { owned: [243] });
+  assert.deepEqual(forbidden, []);
 });
 
-test('ignores the host page and distinguishes logged-out, empty, missing and malformed saves', () => {
-  assert.deepEqual(readCollection({ game: false }), { result: null, reads: [] });
-  assert.match(readCollection({ user: null }).result.error, /로그인/);
-  assert.match(readCollection().result.error, /읽지 못했습니다/);
-  assert.deepEqual(readCollection({ storage: { 'ps.cloud.current-user': '{"owned":{}}' } }).result, { owned: [] });
-  for (const invalid of ['{', 'null', '{"owned":[]}', '{"owned":{"invalid":true}}']) {
-    assert.ok(readCollection({ storage: { 'ps.cloud.current-user': invalid } }).result.error, invalid);
+test('handles unsupported games, empty collections and invalid data without reading private storage', () => {
+  const { read, context } = collectionReader();
+  assert.deepEqual(read(), { owned: [] });
+  context.document.querySelector = () => false;
+  assert.equal(read(), null);
+  assert.match(collectionReader(undefined, false).read().error, /새로고침/);
+  for (const save of [{}, { owned: [] }, { owned: { invalid: true } }, { owned: { 0: true } },
+    { owned: { '9007199254740992': true } }]) {
+    const reader = collectionReader(save);
+    assert.ok(reader.read().error);
+    assert.deepEqual(reader.forbidden, []);
+  }
+  context.document.querySelector = () => true;
+  for (const result of [{ owned: [25] }, ['bad'], [25]]) {
+    context.PSKO_READ_OWNED_POKEMON = () => result;
+    assert.match(read().error, /형식/);
   }
 });
 

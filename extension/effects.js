@@ -11,6 +11,7 @@
   } catch { /* Invalid or unavailable storage keeps the default rendering. */ }
 
   function install(root) {
+    globalThis.PSKO_INSTALL_COLLECTION_READER?.(root);
     globalThis.PSKO_INSTALL_TEMP_MELEE_FIX?.(root);
     const modules = Object.values(root);
     const game = modules.find(m => m?.startRun && 'player' in m);
