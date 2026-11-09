@@ -44,7 +44,8 @@ let errors;
 test.beforeAll(async () => {
   context = await chromium.launchPersistentContext('', {
     channel: 'chromium', headless: true,
-    args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`],
+    args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`,
+      '--allow-loopback-in-peer-connection'],
   });
   await context.route('https://pokesurvivor.com/**', (route) => route.fulfill({
     contentType: 'text/html; charset=utf-8',
@@ -125,16 +126,19 @@ test('network settings preserve native tab order and persist across rendering an
 });
 
 test('LAN switch persists, preserves existing peers and allows a direct data channel', async ({}, testInfo) => {
-  await page.setViewportSize({ width: 1280, height: 900 });
-  await page.locator('iframe').evaluate(node => { node.style.cssText = 'width:1100px;height:800px'; });
-  await frame.locator('#set-tabs [data-t="network"]').click();
-  const lan = frame.locator('#psko-lan-direct');
-  await expect(lan).toBeEnabled();
-  await expect(lan).toHaveAttribute('aria-checked', 'false');
-  await frame.locator('body').evaluate(() => {
-    window.oldPeer = new RTCPeerConnection({ iceServers: [], iceTransportPolicy: 'relay' });
-  });
   try {
+    // Expose loopback to this same-machine test even with a VPN; no media is captured.
+    await context.grantPermissions(['microphone'], { origin: 'https://pokesurvivor.com' });
+    await page.reload();
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.locator('iframe').evaluate(node => { node.style.cssText = 'width:1100px;height:800px'; });
+    await frame.locator('#set-tabs [data-t="network"]').click();
+    const lan = frame.locator('#psko-lan-direct');
+    await expect(lan).toBeEnabled();
+    await expect(lan).toHaveAttribute('aria-checked', 'false');
+    await frame.locator('body').evaluate(() => {
+      window.oldPeer = new RTCPeerConnection({ iceServers: [], iceTransportPolicy: 'relay' });
+    });
     await lan.click();
     await expect(lan).toHaveAttribute('aria-checked', 'true');
     await expect(frame.locator('#psko-network-status')).toBeHidden();
@@ -204,6 +208,7 @@ test('LAN switch persists, preserves existing peers and allows a direct data cha
     expect(await frame.locator('body').evaluate(() => lanTestPeers[0].getConfiguration().iceTransportPolicy)).toBe('all');
     await frame.locator('body').evaluate(() => lanTestPeers.forEach(pc => pc.close()));
   } finally {
+    await context.clearPermissions();
     await frame.locator('body').evaluate(() => {
       window.oldPeer?.close();
       window.lanTestPeers?.forEach(pc => pc.close());
