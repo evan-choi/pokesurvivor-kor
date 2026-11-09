@@ -37,7 +37,7 @@ async function fixture(page) {
 
 test('network settings wait for storage and expose read errors until a saved change arrives', async ({ page }) => {
   await fixture(page);
-  const toggle = page.getByRole('switch', { name: 'LAN 직접 연결' });
+  const toggle = page.getByRole('switch', { name: 'P2P 직접 연결' });
   const status = page.getByRole('status');
   await expect(toggle).toBeDisabled();
   await expect(status).toBeHidden();
@@ -56,7 +56,7 @@ test('network settings wait for storage and expose read errors until a saved cha
 
 test('network settings retain the saved value on write failure and permit a successful retry', async ({ page }) => {
   await fixture(page);
-  const toggle = page.getByRole('switch', { name: 'LAN 직접 연결' });
+  const toggle = page.getByRole('switch', { name: 'P2P 직접 연결' });
   const status = page.getByRole('status');
   await page.evaluate(() => testNetworkStorage.finishRead({ enabled: true, lanDirect: false }));
   await expect(toggle).toBeEnabled();

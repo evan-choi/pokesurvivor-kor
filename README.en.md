@@ -37,7 +37,7 @@ When moving to the store version, disable the old unpacked extension. Do not run
 | Separate player and party effect opacity | Settings → Graphics |
 | Temporary melee targeting fix | Settings → Controls |
 | Owned Pokémon tiers | Extension popup |
-| LAN direct connection | Settings → Network |
+| P2P direct connection | Settings → Network |
 
 ## Change language
 
@@ -78,11 +78,11 @@ Choose the language and adjust player and party effects in the game's graphics s
 
 </details>
 
-## LAN direct connection
+## P2P direct connection
 
-Turn it on or off under **Settings → Network → Direct LAN connection** in the game. It is off by default. Enabling it allows direct connections to other players in multiplayer.
+Turn it on or off under **Settings → Network → Direct P2P connection** in the game. It is off by default. Enabling it allows direct connections to other players in multiplayer.
 
-<img src="docs/assets/network-korean.png" width="640" alt="Network settings with the LAN direct connection switch">
+<img src="docs/assets/network-korean.png" width="640" alt="Network settings with the P2P direct connection switch">
 
 The game may still use its relay connections (TURN), so this does not guarantee a direct connection or lower latency. VPNs, firewalls, and router settings can prevent direct connections.
 
