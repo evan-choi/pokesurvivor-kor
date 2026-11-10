@@ -103,7 +103,7 @@
             <b id="psko-lan-label"></b>
             <small id="psko-lan-description"></small>
           </div>
-          <button type="button" class="btn small" id="psko-lan-direct" role="switch"
+          <button type="button" class="btn small switch" id="psko-lan-direct" role="switch"
             aria-labelledby="psko-lan-label" aria-describedby="psko-lan-description psko-network-status"></button>
         </div>
         <p class="sub" id="psko-network-status" role="status"></p>`;
@@ -129,6 +129,7 @@
       ? '다른 플레이어와 직접 연결을 시도합니다.'
       : 'Try connecting directly to other players.';
     const toggle = section.querySelector('#psko-lan-direct');
+    toggle.classList.toggle('gold', network.lanDirect);
     toggle.setAttribute('aria-checked', String(network.lanDirect));
     toggle.textContent = ko ? (network.lanDirect ? '예' : '아니요') : (network.lanDirect ? 'Yes' : 'No');
     toggle.disabled = !networkInitialized || networkSaving || networkError === 'read';
