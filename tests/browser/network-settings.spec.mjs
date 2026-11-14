@@ -87,3 +87,36 @@ test('network settings retain the saved value on write failure and permit a succ
   await expect(toggle).toBeEnabled();
   await expect(toggle).toHaveAttribute('aria-checked', 'true');
 });
+
+test('network guides open the matching instructions and keep the setting intact', async ({ page }) => {
+  await fixture(page);
+  await page.context().route('https://github.com/evan-choi/pokesurvivor-kor/**', route => route.fulfill({
+    contentType: 'text/html', body: '<h1>Connection guide</h1>',
+  }));
+  await page.evaluate(() => testNetworkStorage.finishRead({ enabled: true, lanDirect: false }));
+  const toggle = page.getByRole('switch', { name: 'P2P 직접 연결' });
+  for (const [name, fragment] of [
+    ['같은 공유기 연결', '같은-공유기에서-연결하기'],
+    ['Radmin VPN 연결', 'radmin-vpn으로-연결하기-windows'],
+  ]) {
+    const guide = page.getByRole('link', { name, exact: true });
+    const url = `https://github.com/evan-choi/pokesurvivor-kor/blob/main/docs/install.md#${fragment}`;
+    await expect(guide).toHaveAttribute('href', url);
+    await expect(guide).toHaveAttribute('target', '_blank');
+    await expect(guide).toHaveAttribute('rel', 'noopener noreferrer');
+    await guide.focus();
+    const opened = page.waitForEvent('popup');
+    await page.keyboard.press('Enter');
+    const instructions = await opened;
+    await expect(instructions).toHaveURL(new URL(url).href);
+    expect(await instructions.evaluate(() => window.opener)).toBeNull();
+    await instructions.close();
+    await expect(toggle).toHaveAttribute('aria-checked', 'false');
+  }
+  expect(await page.evaluate(() => testNetworkStorage.writes)).toEqual([]);
+  await page.evaluate(() => {
+    document.documentElement.lang = 'en';
+    testNetworkStorage.changed({ enabled: { newValue: false } }, 'local');
+  });
+  await expect(page.locator('#psko-network-guides a')).toHaveText(['Same router', 'Radmin VPN']);
+});

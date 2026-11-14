@@ -39,6 +39,17 @@ html.psko-enabled .sub {
   line-height: 1.6;
 }
 
+#psko-network-guides {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 8px 0 0;
+}
+
+#psko-network-guides a {
+  white-space: nowrap;
+}
+
 html.psko-enabled .menu-item {
   line-height: 1.3;
   word-break: keep-all;

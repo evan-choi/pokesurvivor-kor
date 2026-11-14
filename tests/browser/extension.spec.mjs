@@ -97,6 +97,7 @@ test('network settings preserve native tab order and persist across rendering an
     .toEqual(['sound', 'gfx', 'ctl', 'a11y', 'network', 'acc', 'about']);
   await networkTab.click();
   await expect(lan).toHaveAttribute('role', 'switch');
+  await expect(frame.locator('#psko-network-guides a')).toHaveText(['같은 공유기 연결', 'Radmin VPN 연결']);
   await expect(lan).toHaveAttribute('aria-checked', 'false');
   await expect(lan).toHaveText('아니요');
   try {
@@ -115,6 +116,7 @@ test('network settings preserve native tab order and persist across rendering an
     await expect(networkTab).toHaveCount(1);
     await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
     await expect(networkTab).toHaveText('Network');
+    await expect(frame.locator('#psko-network-guides a')).toHaveText(['Same router', 'Radmin VPN']);
     await expect(lan).toHaveText('Yes');
     await lan.click();
     await expect(lan).toHaveAttribute('aria-checked', 'false');

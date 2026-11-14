@@ -106,7 +106,11 @@
           <button type="button" class="btn small switch" id="psko-lan-direct" role="switch"
             aria-labelledby="psko-lan-label" aria-describedby="psko-lan-description psko-network-status"></button>
         </div>
-        <p class="sub" id="psko-network-status" role="status"></p>`;
+        <p class="sub" id="psko-network-status" role="status"></p>
+        <p class="sub" id="psko-network-guides">
+          <a id="psko-lan-guide" class="plink" href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/docs/install.md#같은-공유기에서-연결하기" target="_blank" rel="noopener noreferrer"></a>
+          <a id="psko-radmin-guide" class="plink" href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/docs/install.md#radmin-vpn으로-연결하기-windows" target="_blank" rel="noopener noreferrer"></a>
+        </p>`;
       section.querySelector('#psko-lan-direct').addEventListener('click', async () => {
         networkSaving = true;
         networkError = '';
@@ -128,6 +132,8 @@
     section.querySelector('#psko-lan-description').textContent = ko
       ? '다른 플레이어와 직접 연결을 시도합니다.'
       : 'Try connecting directly to other players.';
+    section.querySelector('#psko-lan-guide').textContent = ko ? '같은 공유기 연결' : 'Same router';
+    section.querySelector('#psko-radmin-guide').textContent = ko ? 'Radmin VPN 연결' : 'Radmin VPN';
     const toggle = section.querySelector('#psko-lan-direct');
     toggle.classList.toggle('gold', network.lanDirect);
     toggle.setAttribute('aria-checked', String(network.lanDirect));
