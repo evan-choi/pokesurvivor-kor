@@ -52,7 +52,7 @@ An example collection filtered by the Korean initial consonant `ㄹ`.
 
 ## Multiplayer
 
-Multiplayer traffic routed from Korea through a server in France can have high latency. The **P2P connection option** lets PCs communicate directly. Choose a guide for step-by-step Windows firewall setup and joining the game.
+Routing traffic from Korea through the European TURN relay (`turn.pokesurvivor.com`) can add latency. The **P2P connection option** lets PCs attempt a direct connection. [Server location](https://ipinfo.io/159.195.201.139)
 
 [Connect through the same router (Korean)](docs/install.md#같은-공유기에서-연결하기) · [Connect with Radmin VPN on Windows (Korean)](docs/install.md#radmin-vpn으로-연결하기-windows)
 
@@ -60,6 +60,6 @@ Multiplayer traffic routed from Korea through a server in France can have high l
 
 ---
 
-[Usage, ZIP installation, and updates (Korean)](docs/install.md) · [Report an issue](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [Privacy](https://evan-choi.github.io/pokesurvivor-kor/privacy.html)
+[Installation and connection guide (Korean)](docs/install.md) · [Report an issue](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [Privacy](https://evan-choi.github.io/pokesurvivor-kor/privacy.html)
 
 [Development (Korean)](docs/development.md) · [License](LICENSE) · [Credits](THIRD_PARTY_NOTICES.md)

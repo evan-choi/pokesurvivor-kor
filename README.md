@@ -52,7 +52,7 @@ PokéSurvivor를 한국어로 플레이할 수 있는 Chrome 확장 프로그램
 
 ## 멀티 플레이
 
-한국에서 프랑스 서버를 거쳐 멀티플레이하면 지연이 커질 수 있습니다. PC끼리 직접 통신하는 **P2P 연결 옵션**을 제공하며, 아래 가이드에서 Windows 방화벽 설정부터 게임 입장까지 따라 할 수 있습니다.
+한국에서 유럽의 TURN 중계 서버(`turn.pokesurvivor.com`)를 거치면 지연이 커질 수 있습니다. **P2P 연결 옵션**으로 PC끼리 직접 연결을 시도할 수 있습니다. [서버 위치](https://ipinfo.io/159.195.201.139)
 
 [같은 공유기에서 연결하기](docs/install.md#같은-공유기에서-연결하기) · [Radmin VPN으로 연결하기](docs/install.md#radmin-vpn으로-연결하기-windows)
 
@@ -60,6 +60,6 @@ PokéSurvivor를 한국어로 플레이할 수 있는 Chrome 확장 프로그램
 
 ---
 
-[기능별 사용법·ZIP 설치·업데이트](docs/install.md) · [오류 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [개인정보 안내](https://evan-choi.github.io/pokesurvivor-kor/privacy.html)
+[설치·연결 가이드](docs/install.md) · [오류 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [개인정보 안내](https://evan-choi.github.io/pokesurvivor-kor/privacy.html)
 
 [개발 안내](docs/development.md) · [라이선스](LICENSE) · [출처](THIRD_PARTY_NOTICES.md)
