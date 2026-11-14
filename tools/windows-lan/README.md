@@ -1,15 +1,15 @@
 # Windows LAN 직접 연결 도구
 
-같은 공유기의 PC끼리 플레이하는데 Windows 방화벽이 Chrome의 UDP 수신을 막아 TURN을 사용하는 경우에 쓰는 선택 도구입니다. 확장 프로그램이 자동 실행하지 않습니다. 별도 다운로드나 설치는 하지 않습니다.
+같은 공유기나 Radmin VPN으로 연결한 PC 사이에서 Chrome의 UDP 수신을 허용하는 Windows 방화벽 도구입니다. 받은 ZIP의 파일을 사용하며, 실행 중 추가 프로그램을 내려받지 않습니다.
 
 ## 사용
 
 1. ZIP을 모두 압축 해제합니다. 양쪽 PC에서 Chrome을 실행합니다.
 2. `run-as-administrator.cmd`를 우클릭 → **관리자 권한으로 실행**합니다.
 3. `1`을 입력합니다. 현재 연결에서 찾은 IP 대역을 확인합니다.
-4. 추천 대역이 맞으면 Enter, 다르면 `192.168.0.0/24`처럼 **허용할 CIDR**을 입력합니다. 예시는 자신의 대역으로 바꾸세요. `192.168.0.123/24`를 입력해도 `192.168.0.0/24`로 정리됩니다. 한 PC만 허용하려면 `/32`를 사용합니다.
+4. 같은 공유기라면 현재 Wi-Fi·이더넷 대역과 추천값이 맞으면 Enter, 다르면 목록의 해당 대역을 입력합니다. Radmin이라면 **상대 PC의 주소 뒤에 `/32`를 붙여 입력**합니다. 예를 들어 상대 주소가 `26.120.3.5`이면 `26.120.3.5/32`입니다. 상대가 여러 명이면 한 명씩 도구를 다시 실행합니다.
 5. Chrome 경로, 허용 주소 범위, UDP 포트를 확인하고 **`YES`**를 입력합니다. 다른 입력은 취소합니다.
-6. 양쪽 PC에서 필요한 설정을 완료한 뒤, 확장 팝업의 **LAN 직접 연결**을 켜고 방에 재접속합니다. **debug → 통신**에서 실제로 `직결`인지 확인합니다.
+6. 모든 PC의 게임에서 **설정 → 네트워크 → P2P 직접 연결**을 **예**로 바꾼 뒤 친구를 초대해 방에 입장합니다. 이미 같은 방에 있다면 나갔다 다시 참가합니다.
 
 ## 변경 범위
 
@@ -26,7 +26,7 @@
 
 ## English
 
-Optional Windows firewall helper; the extension never runs it automatically. Extract all files, right-click `run-as-administrator.cmd` and run as administrator. Choose `1`, enter a trusted LAN IPv4 CIDR (Enter accepts the suggested range), review the Chrome path, address range and UDP ports, then type `YES`. On both PCs enable **LAN 직접 연결** in the extension and rejoin the room; check **debug** for `직결` (direct).
+Windows firewall helper for PCs on the same router or Radmin VPN. Extract all files, right-click `run-as-administrator.cmd` and run as administrator. Choose `1`. For the same router, verify the suggested Wi-Fi/Ethernet range and press Enter. For Radmin, enter the other PC's Radmin address followed by `/32`, such as `26.120.3.5/32`, and repeat for each peer. Review the Chrome path, address range and UDP ports, then type `YES`. On every PC enable **Settings → Network → Direct P2P connection** in the game and join or rejoin the room.
 
 The persistent inbound rule allows signed Google Chrome, the system's dynamic UDP port range, and the entered source CIDR on **all network profiles**. It applies to Chrome, not just the game, and is not tied to a Wi-Fi name. Prefer a small trusted range. Radmin `26.0.0.0/8` is not restricted to your Radmin group; use individual peer addresses with `/32` where possible. IPv6 is unsupported. No router forwarding or global firewall setting is changed. Direct connectivity still depends on both peers and the network.
 

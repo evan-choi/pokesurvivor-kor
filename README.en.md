@@ -50,9 +50,11 @@ Rankings follow PokéSurvivor Guide's stat-based assessment. [Tier rating criter
 
 An example collection filtered by the Korean initial consonant `ㄹ`.
 
-## Direct P2P connection
+## Multiplayer
 
-Enable **Settings → Network → Direct P2P connection** to allow direct connections in multiplayer. It is off by default. Enable it on both PCs, then rejoin the room.
+Multiplayer traffic routed from Korea through a server in France can have high latency. The **P2P connection option** lets PCs communicate directly. Choose a guide for step-by-step Windows firewall setup and joining the game.
+
+[Connect through the same router (Korean)](docs/install.md#같은-공유기에서-연결하기) · [Connect with Radmin VPN on Windows (Korean)](docs/install.md#radmin-vpn으로-연결하기-windows)
 
 <img src="docs/assets/network-korean.png" width="640" alt="Direct P2P connection settings">
 

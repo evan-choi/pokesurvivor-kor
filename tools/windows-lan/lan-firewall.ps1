@@ -114,7 +114,7 @@ try {
   Write-Host '방화벽 전체와 공유기 포트포워딩은 변경하지 않습니다.'
   if ((Read-Host '위 범위를 허용하려면 YES 입력 (그 외 취소)') -cne 'YES') { Write-Host '취소했습니다.'; return }
   Add-PskoLanRule $range.Cidr $program $ports | Out-Null
-  Write-Host '허용 규칙을 검증했습니다. 양쪽 PC에서 설정 후 방에 재접속하고 debug의 직결 표시를 확인하세요.'
+  Write-Host '허용 규칙을 검증했습니다. 모든 PC에서 게임 설정 → 네트워크 → P2P 직접 연결을 켠 뒤 방에 다시 참가하세요.'
 } catch {
   Write-Host ("오류: " + $_.Exception.Message) -ForegroundColor Red
   exit 1
