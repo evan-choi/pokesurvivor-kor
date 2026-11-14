@@ -33,7 +33,7 @@ const translate = context.PSKO.translate;
 
 test('all added form labels preserve their complete Korean names', () => {
   const forms = readMessages('pokemon');
-  assert.equal(forms.length, 589);
+  assert.equal(forms.length, 623);
   for (const [spanish, english, korean] of forms) {
     assert.equal(translate(spanish), korean, spanish);
     assert.equal(translate(english), korean, english);
@@ -47,6 +47,12 @@ test('all added form labels preserve their complete Korean names', () => {
     ['Ice Calyrex', '버드렉스 (백마 탄 모습)'],
     ['Blade Aegislash', '킬가르도 (블레이드폼)'],
     ['Stellar Form Terapagos', '테라파고스 (스텔라폼)'],
+    ['Pikachu Libre', '마스크드 피카츄'],
+    ['Pikachu Rock Star', '하드록 피카츄'],
+    ['Unown B', '안농 B'],
+    ['Unown !', '안농 !'],
+    ['Furioseta', '사나운버섯'],
+    ['Ferrotesta', '무쇠감투'],
   ]) assert.equal(translate(source), expected, source);
 });
 
@@ -68,6 +74,9 @@ test('updated controls, reward placeholders and primal names keep their contexts
   assert.equal(context.PSKO.translateMove('Elegir: Pulso Primigenio'), '선택: 근원의파동');
   assert.equal(context.PSKO.translateMove('Choose: Origin Pulse'), '선택: 근원의파동');
   assert.equal(translate(' Estás como invitado: '), ' 게스트로 플레이 중: ');
+  assert.equal(translate('16 h 49 min 후 변경'), '16시간 49분 후 변경');
+  assert.equal(translate('16 h 후 변경'), '16시간 후 변경');
+  assert.equal(translate('49 min 후 변경'), '49분 후 변경');
 });
 
 test('orb pickup messages translate the name, current control and effect together', () => {

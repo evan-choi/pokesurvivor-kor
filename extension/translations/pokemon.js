@@ -1060,7 +1060,14 @@ globalThis.PSKO_POKEMON = {
   "Ondulagua": "굽이치는물결",
   "Ferroverdor": "무쇠잎새",
   "Farfetch'd": "파오리",
-  "Sirfetch'd": "창파나이트"
+  "Sirfetch'd": "창파나이트",
+  "Furioseta": "사나운버섯",
+  "Ferrodada": "무쇠바퀴",
+  "Ferrocuello": "무쇠머리",
+  "Flamariete": "꿰뚫는화염",
+  "Electrofuria": "날뛰는우레",
+  "Ferromole": "무쇠암석",
+  "Ferrotesta": "무쇠감투"
 };
 
 // Form names use PokéAPI Korean form/item names and the Pokémon Korea Pokédex.
@@ -1658,4 +1665,42 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ["Lucario Z", "Lucario Z", "루카리오Z"],
   ["Mega Lucario Z", "Mega Lucario Z", "메가루카리오Z"],
   ["메가루카리오 Z", "메가루카리오 Z", "메가루카리오Z"]
+]);
+
+// Some built-in form names are absent from the game's locale table.
+globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
+  ["Unown A", "Unown A", "안농 A"],
+  ["Unown B", "Unown B", "안농 B"],
+  ["Unown C", "Unown C", "안농 C"],
+  ["Unown D", "Unown D", "안농 D"],
+  ["Unown E", "Unown E", "안농 E"],
+  ["Unown F", "Unown F", "안농 F"],
+  ["Unown G", "Unown G", "안농 G"],
+  ["Unown H", "Unown H", "안농 H"],
+  ["Unown I", "Unown I", "안농 I"],
+  ["Unown J", "Unown J", "안농 J"],
+  ["Unown K", "Unown K", "안농 K"],
+  ["Unown L", "Unown L", "안농 L"],
+  ["Unown M", "Unown M", "안농 M"],
+  ["Unown N", "Unown N", "안농 N"],
+  ["Unown O", "Unown O", "안농 O"],
+  ["Unown P", "Unown P", "안농 P"],
+  ["Unown Q", "Unown Q", "안농 Q"],
+  ["Unown R", "Unown R", "안농 R"],
+  ["Unown S", "Unown S", "안농 S"],
+  ["Unown T", "Unown T", "안농 T"],
+  ["Unown U", "Unown U", "안농 U"],
+  ["Unown V", "Unown V", "안농 V"],
+  ["Unown W", "Unown W", "안농 W"],
+  ["Unown X", "Unown X", "안농 X"],
+  ["Unown Y", "Unown Y", "안농 Y"],
+  ["Unown Z", "Unown Z", "안농 Z"],
+  ["Unown !", "Unown !", "안농 !"],
+  ["Unown ?", "Unown ?", "안농 ?"],
+  ["Pikachu Belle", "Pikachu Belle", "마담 피카츄"],
+  ["Cosplay Pikachu", "Cosplay Pikachu", "옷갈아입기 피카츄"],
+  ["Pikachu Libre", "Pikachu Libre", "마스크드 피카츄"],
+  ["Pikachu Ph.D.", "Pikachu Ph.D.", "닥터 피카츄"],
+  ["Pikachu Pop Star", "Pikachu Pop Star", "아이돌 피카츄"],
+  ["Pikachu Rock Star", "Pikachu Rock Star", "하드록 피카츄"],
 ]);

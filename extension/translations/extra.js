@@ -407,3 +407,9 @@ globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
   ["Buscar por nombre", "Search by name", "이름으로 검색"],
   ["Shinies", "Shinies", "색이 다른 포켓몬"]
 ]);
+
+globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
+  ["{x} h {x} min 후 변경", "{x} h {x} min 후 변경", "{x}시간 {x}분 후 변경"],
+  ["{x} h 후 변경", "{x} h 후 변경", "{x}시간 후 변경"],
+  ["{x} min 후 변경", "{x} min 후 변경", "{x}분 후 변경"]
+]);
