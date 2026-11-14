@@ -76,7 +76,7 @@ try {
   await ownEffects.selectOption('0.2');
   assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('psko.effect-opacity')).own), 0.2);
   await frame.locator('#set-tabs [data-t="ctl"]').click();
-  assert.equal(await frame.locator('[data-psko-melee-fix] button').isEnabled(), true);
+  assert.equal(await frame.locator('[data-psko-melee-fix]').count(), 0);
   await frame.locator('#set-tabs [data-t="network"]').click();
   const direct = frame.locator('#psko-lan-direct');
   assert.equal(await direct.getAttribute('aria-checked'), 'false');

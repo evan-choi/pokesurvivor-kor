@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/test';
 import path from 'node:path';
 
 async function fixture(page, supported = true) {
-  await page.addInitScript({ path: path.resolve('extension/temp-melee-target.js') });
   await page.addInitScript({ path: path.resolve('extension/effects.js') });
   await page.route('https://pokesurvivor.com/', route => route.fulfill({ contentType: 'text/html', body: `
     <meta charset="utf-8"><style>.chips{display:flex;flex-wrap:wrap;gap:4px}button{padding:8px}</style>
@@ -65,19 +64,4 @@ test('expanded effect choices have an opaque background and readable text', asyn
   }
   await select.selectOption({ label: '매우 투명' });
   await expect(select).toHaveValue('0.2');
-});
-
-test('temporary targeting fix can be disabled and the choice survives reload', async ({ page }) => {
-  await fixture(page);
-  await page.getByRole('button', { name: '조작', exact: true }).click();
-  const toggle = page.getByRole('button', { name: '근접 자동 조준 보정 (임시)', exact: true });
-  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
-  await toggle.click();
-  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
-  expect(await page.evaluate(() => localStorage.getItem('psko.temp-melee-target'))).toBe('false');
-  await page.reload();
-  await page.getByRole('button', { name: '조작', exact: true }).click();
-  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
-  await toggle.click();
-  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
 });
