@@ -48,12 +48,12 @@ PokéSurvivor를 한국어로 플레이할 수 있는 Chrome 확장 프로그램
 
 유럽 TURN 서버(`turn.pokesurvivor.com`) 경유로 느릴 때 **P2P 직접 연결**을 사용할 수 있습니다. [서버 위치](https://ipinfo.io/159.195.201.139)
 
-[같은 공유기 연결](docs/install.md#같은-공유기에서-연결하기) · [Radmin VPN 연결](docs/install.md#radmin-vpn으로-연결하기-windows)
+[같은 공유기 연결](docs/same-router-connection.md) · [Radmin VPN 연결](docs/radmin-vpn-connection.md)
 
 <img src="docs/assets/network-korean.png" width="640" alt="P2P 직접 연결 설정">
 
 ---
 
-[설치·연결 가이드](docs/install.md) · [오류 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [개인정보 안내](https://evan-choi.github.io/pokesurvivor-kor/privacy.html)
+[설치 안내](docs/install.md) · [오류 제보](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [개인정보 안내](https://evan-choi.github.io/pokesurvivor-kor/privacy.html)
 
 [개발 안내](docs/development.md) · [라이선스](LICENSE) · [출처](THIRD_PARTY_NOTICES.md)

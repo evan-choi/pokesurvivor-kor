@@ -108,8 +108,8 @@
         </div>
         <p class="sub" id="psko-network-status" role="status"></p>
         <p class="sub" id="psko-network-guides">
-          <a id="psko-lan-guide" class="plink" href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/docs/install.md#같은-공유기에서-연결하기" target="_blank" rel="noopener noreferrer"></a>
-          <a id="psko-radmin-guide" class="plink" href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/docs/install.md#radmin-vpn으로-연결하기-windows" target="_blank" rel="noopener noreferrer"></a>
+          <a id="psko-lan-guide" class="plink" href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/docs/same-router-connection.md" target="_blank" rel="noopener noreferrer"></a>
+          <a id="psko-radmin-guide" class="plink" href="https://github.com/evan-choi/pokesurvivor-kor/blob/main/docs/radmin-vpn-connection.md" target="_blank" rel="noopener noreferrer"></a>
         </p>`;
       section.querySelector('#psko-lan-direct').addEventListener('click', async () => {
         networkSaving = true;

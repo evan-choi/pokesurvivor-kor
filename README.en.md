@@ -48,12 +48,12 @@ Tiers follow PokéSurvivor Guide. [Rating criteria](https://pokesurvivor.net/tie
 
 Try **direct P2P** when the European TURN relay (`turn.pokesurvivor.com`) adds latency. [Server location](https://ipinfo.io/159.195.201.139)
 
-[Same router (Korean)](docs/install.md#같은-공유기에서-연결하기) · [Radmin VPN (Korean)](docs/install.md#radmin-vpn으로-연결하기-windows)
+[Same router (Korean)](docs/same-router-connection.md) · [Radmin VPN (Korean)](docs/radmin-vpn-connection.md)
 
 <img src="docs/assets/network-korean.png" width="640" alt="Direct P2P connection settings">
 
 ---
 
-[Installation and connection guide (Korean)](docs/install.md) · [Report an issue](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [Privacy](https://evan-choi.github.io/pokesurvivor-kor/privacy.html)
+[Installation guide (Korean)](docs/install.md) · [Report an issue](https://github.com/evan-choi/pokesurvivor-kor/issues/new?template=translation.yml) · [Privacy](https://evan-choi.github.io/pokesurvivor-kor/privacy.html)
 
 [Development (Korean)](docs/development.md) · [License](LICENSE) · [Credits](THIRD_PARTY_NOTICES.md)

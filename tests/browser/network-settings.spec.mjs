@@ -95,12 +95,12 @@ test('network guides open the matching instructions and keep the setting intact'
   }));
   await page.evaluate(() => testNetworkStorage.finishRead({ enabled: true, lanDirect: false }));
   const toggle = page.getByRole('switch', { name: 'P2P 직접 연결' });
-  for (const [name, fragment] of [
-    ['같은 공유기 연결', '같은-공유기에서-연결하기'],
-    ['Radmin VPN 연결', 'radmin-vpn으로-연결하기-windows'],
+  for (const [name, filename] of [
+    ['같은 공유기 연결', 'same-router-connection.md'],
+    ['Radmin VPN 연결', 'radmin-vpn-connection.md'],
   ]) {
     const guide = page.getByRole('link', { name, exact: true });
-    const url = `https://github.com/evan-choi/pokesurvivor-kor/blob/main/docs/install.md#${fragment}`;
+    const url = `https://github.com/evan-choi/pokesurvivor-kor/blob/main/docs/${filename}`;
     await expect(guide).toHaveAttribute('href', url);
     await expect(guide).toHaveAttribute('target', '_blank');
     await expect(guide).toHaveAttribute('rel', 'noopener noreferrer');

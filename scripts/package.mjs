@@ -19,6 +19,9 @@ for (const file of ['LICENSE', 'THIRD_PARTY_NOTICES.md']) {
 await cp(path.join(root, 'tools/windows-lan'), path.join(staging, 'windows-lan'), { recursive: true });
 await copyFile(path.join(root, 'LICENSE'), path.join(staging, 'windows-lan/LICENSE'));
 await copyFile(path.join(root, 'docs/install.md'), path.join(staging, 'README.md'));
+for (const file of ['same-router-connection.md', 'radmin-vpn-connection.md']) {
+  await copyFile(path.join(root, 'docs', file), path.join(staging, file));
+}
 for (const file of ['LICENSE', 'THIRD_PARTY_NOTICES.md']) {
   await copyFile(path.join(root, file), path.join(staging, file));
 }
