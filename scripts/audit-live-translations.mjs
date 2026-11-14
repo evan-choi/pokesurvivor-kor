@@ -12,7 +12,7 @@ if (!['en', 'es'].includes(language) || process.argv.length > 3) {
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = path.join(root, 'test-results', `translation-audit-${language}.json`);
 const extension = path.join(root, 'extension');
-const { moves: expectedMoves } = JSON.parse(await readFile(path.join(root, 'tests/fixtures/official-game-moves.json'), 'utf8'));
+const { moves: expectedMoves, evolvedMoveIds } = JSON.parse(await readFile(path.join(root, 'tests/fixtures/official-game-moves.json'), 'utf8'));
 await mkdir(path.dirname(output), { recursive: true });
 
 // Only these named products, rights holders and technical labels may remain in Latin script.
@@ -23,6 +23,7 @@ const allowedNames = [
   'Nintendo', 'Creatures', 'GAME FREAK', 'PolyForm Noncommercial 1.0.0',
   'CC BY-NC 4.0', 'Pixelify Sans', 'SpriteCollab', 'PokéAPI', 'PokeAPI',
   'JPTER78', 'TheAdro7', 'Folagor', 'Sekiam', 'PokeAlex', 'Copyright',
+  'Pokémon Edición Reloaded', 'F3R', 'Jhony_Ryu', 'SrYena', 'Frisma32', 'pokemon-reloaded.blogspot.com',
   'Google', 'Gmail', 'GitHub', 'YouTube', 'Ko-fi', 'Discord', 'Firebase', 'CREDITS.md', 'MIT',
   'Xbox', 'PlayStation', 'Switch', 'USB', 'Bluetooth',
   'iPhone', 'Safari', 'Chrome', 'Android', 'iOS', 'Windows', 'macOS',
@@ -33,24 +34,35 @@ const namesPattern = new RegExp(`(?<![A-Za-z0-9])(?:${allowedNames.sort((a, b) =
 const foreignCharacters = /[\p{Script=Latin}\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u;
 
 function unexplainedText(entry) {
-  if (entry.tag === 'KBD' && /^(?:[WASDQERPF]|Esc|Enter|Space|Tab|Shift|Ctrl|Alt|1[0-2]?|[2-9])$/i.test(entry.text)) return '';
+  if (entry.tag === 'KBD' && /^(?:[WASDQERPF]|Esc|Enter|Space|Tab|Shift|Ctrl|Alt|Delete|Home|End|PageUp|PageDown|CapsLock|Num [0-9]|1[0-2]?|[2-9])$/i.test(entry.text)) return '';
   if (entry.class.split(/\s+/).includes('padkey') && /^(?:[ABXY]|LB|RB|LT|RT|Start|Select)$/u.test(entry.text)) return '';
   return entry.text
     .replace(namesPattern, '')
+    .replace(/DD(?=래리어트)/g, '')
+    .replace(/[XYZ](?=[가-힣])/g, '')
+    .replace(/(메가[가-힣]+)\s?[XYZ](?=[\s,.!?()]|$)/g, '$1')
     .replace(/\bNo\.\s*\d+\b/gi, '')
     .replace(/\b(?:Lv|Nv)\.\s*\d+\b/gi, '')
-    .replace(/\b\d+(?:[.,]\d+)?\s*(?:ms|s|m|h|HP|XP|EXP)\b/gi, '')
+    .replace(/\b\d+(?:[.,]\d+)?\s*(?:ms|min|s|m|h|HP|XP|EXP)\b/gi, '')
     .replace(/\b\d+(?:[.,]\d+)?\s*\/s\b/g, '')
-    .replace(/\b(?:LB|RB|A|B|X|Y|Q|E|Esc)(?:·(?:LB|RB|A|B|X|Y|Q|E|Esc))*\s*(?=버튼|키|로)/g, '')
+    .replace(/\b(?:LB|RB|A|B|X|Y|Q|E|F|Esc)(?:·(?:LB|RB|A|B|X|Y|Q|E|F|Esc))*\s*(?=버튼|키|로)/g, '')
     .replace(/\b[XY](?=\([가-힣])/g, '')
     .replace(/\b(?:WASD|Q\/E|Esc\/P)\b/g, '');
 }
 
+const preservedLabels = {
+  Google: 'Google', 'En PC': 'PC', 'On PC': 'PC',
+  Espacio: 'Space', Space: 'Space', Intro: 'Enter', Enter: 'Enter', Esc: 'Esc',
+  Supr: 'Delete', Delete: 'Delete', Inicio: 'Home', Home: 'Home', Fin: 'End', End: 'End',
+  'Re Pág': 'Page Up', 'Page Up': 'Page Up', 'Av Pág': 'Page Down', 'Page Down': 'Page Down',
+  'Bloq Mayús': 'Caps Lock', 'Caps Lock': 'Caps Lock',
+};
 const errors = [];
 const screens = [];
 const findings = [];
 let localeEntriesChecked = 0;
 let traitNamesChecked = 0;
+let formNamesChecked = 0;
 let moveLabelsChecked = 0;
 let moveNameFindings = [];
 const context = await chromium.launchPersistentContext('', {
@@ -79,7 +91,7 @@ async function capture(label) {
       '#user-pill [translate="no"]', '#fr-me [translate="no"]',
       '.fr-row > b[translate="no"]', '#lobby-members b[translate="no"]',
       '#inv-text [translate="no"]', '.rk-row .who > b[translate="no"]',
-      '#prof-body .prof-head h2[translate="no"]',
+      '#prof-body .prof-head h2[translate="no"]', '#goals-body .pe-side > b[translate="no"]',
       '#set-body .set-row > span[translate="no"]', '#lobby-room-code',
     ].join(',');
 
@@ -150,11 +162,19 @@ async function openPanel(component, argument) {
 async function auditMoveNames() {
   // Exercise the native game's translator and the extension together, not just
   // whether the output contains Korean. These are the game's actual label structures.
-  const cases = await run((body, moves) => {
+  const cases = await run((body, { moves, evolvedMoveIds }) => {
     const live = window.__PSKO_TEST_GAME__.Moves.ALL;
     if (live.length !== moves.length || live.some(move => !moves.some(expected => expected.id === move.id && expected.name.includes(move.name)))) {
       throw new Error('Refresh the expected move names: the live move list has changed.');
     }
+    const liveEvolved = Object.keys(window.__PSKO_TEST_GAME__.Moves.EVO);
+    if (liveEvolved.length !== evolvedMoveIds.length || liveEvolved.some(id => !evolvedMoveIds.includes(id))) {
+      throw new Error('Refresh the expected evolved moves: the live evolution list has changed.');
+    }
+    const allMoves = moves.concat(evolvedMoveIds.map(id => {
+      const move = moves.find(move => move.id === id);
+      return { id: `${id}+`, name: move.name.map(name => `${name} +`) };
+    }));
     const root = document.createElement('section');
     root.id = 'psko-move-name-audit';
     const cases = [];
@@ -169,7 +189,7 @@ async function auditMoveNames() {
       root.append(entry);
       cases.push({ id, move, language, surface, attribute, expected });
     }
-    for (const { id, name: [spanish, english, korean] } of moves) {
+    for (const { id, name: [spanish, english, korean] } of allMoves) {
       for (const [language, name, choose, tm, suffix] of [
         ['es', spanish, 'Elegir', 'MT', '(de serie)'], ['en', english, 'Choose', 'TM', '(default)'],
       ]) {
@@ -204,7 +224,7 @@ async function auditMoveNames() {
     }
     document.body.append(root);
     return cases;
-  }, expectedMoves);
+  }, { moves: expectedMoves, evolvedMoveIds });
   try {
     await run(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
     moveNameFindings = await run((body, cases) => cases.flatMap(entry => {
@@ -230,12 +250,12 @@ try {
       const source = await response.text();
       const prefix = source.match(/var (_0x[\da-f]+)=Object\[(?:'create'|_0x[\da-f]+\(0x[\da-f]+\))\]\(null\);/);
       if (!prefix) throw new Error('UI audit hook no longer matches the official game bundle.');
-      if (!source.includes('_0x310a73=[')) throw new Error('Account notice fixture no longer matches the game bundle.');
-      const register = /function _0x245df5\([^)]*\)\{/;
+      if (!source.includes('_0x584ee7=[')) throw new Error('Account notice fixture no longer matches the game bundle.');
+      const register = /function _0xa9b228\([^)]*\)\{/;
       if (!register.test(source)) throw new Error('Locale registry audit hook no longer matches the game bundle.');
       const fixtureSource = source
-        .replace('_0x310a73=[', '_0x310a73=window.__PSKO_TEST_NOTICES__=[')
-        .replace(register, match => match + "if(_0x1339c1==='en'&&!_0x4f0c9a)Object.assign(window.__PSKO_TEST_LOCALES__??={},_0x3af59a);");
+        .replace('_0x584ee7=[', '_0x584ee7=window.__PSKO_TEST_NOTICES__=[')
+        .replace(register, match => match + "if(_0x1b5615==='en'&&!_0x4f4efd)Object.assign(window.__PSKO_TEST_LOCALES__??={},_0x5bbaaa);");
       await route.fulfill({ response, body: fixtureSource.replace(prefix[0], `${prefix[0]}window.__PSKO_TEST_GAME__=${prefix[1]};`) });
     } catch (error) {
       errors.push(error.stack || error.message);
@@ -250,10 +270,10 @@ try {
     const game = window.__PSKO_TEST_GAME__;
     // The official bundle hashes module names; fail explicitly when a release changes them.
     const names = {
-      U: '_04b31d9', DB: '_98c1010', MenuUI: '_e2de144', SettingsUI: '_90b8405',
-      NewsUI: '_d678271', SupportUI: '_b9c902a', NickUI: '_660aa4c', GoalsUI: '_7bc534a',
-      GachaUI: '_0fed362', Moves: '_3deb117', RunUI: '_4373dbf',
-      ShopUI: '_ce06d52',
+      U: 'U', DB: '_2252540', MenuUI: '_4d38f99', SettingsUI: '_206af67',
+      NewsUI: '_14eba4c', SupportUI: '_9efc9e4', NickUI: '_9b84f1d', GoalsUI: '_8d6009b',
+      GachaUI: '_92c1272', Moves: '_5d2ab74', RunUI: '_1fc60c9',
+      ShopUI: '_9049cbe', ClosetUI: '_2a47dd0', MasteryUI: '_ddc84a1',
     };
     const components = Object.fromEntries(Object.entries(names).map(([name, key]) => {
       if (!game?.[key]) throw new Error(`UI audit module changed: ${name}`);
@@ -278,16 +298,22 @@ try {
       nativeLocale.psychicType !== '에스퍼' || nativeLocale.psychicMove !== '사이코키네시스') {
     throw new Error(`The native Korean locale was not registered: ${JSON.stringify(nativeLocale)}`);
   }
-  const locale = await run(() => {
+  const locale = await run((body, preservedLabels) => {
     const entries = Object.entries(window.__PSKO_TEST_LOCALES__ || {});
     const untranslated = entries.filter(([spanish, english]) =>
-      [spanish, english].some(text => text !== 'Google' && !/[가-힣]/u.test(window.PSKO.translate(text))));
+      [spanish, english].some(text => {
+        if (['{x} Primigenio', 'Primal {x}'].includes(text)) {
+          return window.__PSKO_TEST_GAME__.T(text) !== '원시{x}';
+        }
+        const translated = window.PSKO.translate(text);
+        return !/[가-힣]/u.test(translated) && preservedLabels[text] !== translated;
+      }));
     return { count: entries.length, untranslated };
-  });
+  }, preservedLabels);
   localeEntriesChecked = locale.count;
   if (!locale.count) throw new Error('The locale registry was empty.');
   for (const [spanish, english] of locale.untranslated) findings.push({ screen: 'locale-registry', spanish, english });
-  const nativeChecks = await run(() => {
+  const nativeChecks = await run((body, preservedLabels) => {
     const game = window.__PSKO_TEST_GAME__;
     return {
       aliases: ['Mando conectado', 'Mando conectado:', 'atrás / cerrar', 'TIRADA ×100'].map(text => game.T(text)),
@@ -295,17 +321,21 @@ try {
         .map(text => game.T(game.T(text))),
       rewritten: Object.values(window.PSKO_MESSAGES).filter(row => /[가-힣]/u.test(row[2]) && !/\{(?:x|name)\}/u.test(row[2]))
         .map(row => row[2]).filter(text => game.T(text) !== text),
-      untranslated: Object.entries(window.__PSKO_TEST_LOCALES__).filter(([source]) => source !== 'Google' &&
-        !/[가-힣]/u.test(game.T(source.replace(/\{(?:x|name)\}/g, '17')))),
+      untranslated: Object.entries(window.__PSKO_TEST_LOCALES__).filter(([source]) => {
+        const translated = game.T(source.replace(/\{(?:x|name)\}/g, '17'));
+        return !/[가-힣]/u.test(translated) && preservedLabels[source] !== translated;
+      }),
+      primalNames: ['Groudon Primigenio', 'Kyogre Primigenio', 'Primal Groudon', 'Primal Kyogre'].map(name => game.T(name)),
       playerNames: ['Fire', 'Ash Pokémon'].flatMap(name => [
-        game._30d1664.f('Viendo a {x}', name),
-        game._30d1664.f('{name} es el nuevo anfitrión', name),
+        game._78cdb75.f('Viendo a {x}', name),
+        game._78cdb75.f('{name} es el nuevo anfitrión', name),
       ]),
     };
-  });
+  }, preservedLabels);
   if (JSON.stringify(nativeChecks.aliases) !== JSON.stringify(['컨트롤러 연결됨', '컨트롤러 연결됨:', '뒤로 / 닫기', '뽑기 ×100']) ||
       JSON.stringify(nativeChecks.products) !== JSON.stringify(['Switch', 'The Pokémon Company', 'CREDITS.md', 'Authentication > Settings > Authorized domains']) ||
       nativeChecks.rewritten.length ||
+      JSON.stringify(nativeChecks.primalNames) !== JSON.stringify(['원시그란돈', '원시가이오가', '원시그란돈', '원시가이오가']) ||
       JSON.stringify(nativeChecks.playerNames) !== JSON.stringify([
         'Fire 관전 중', 'Fire 님이 새 방장이 되었습니다',
         'Ash Pokémon 관전 중', 'Ash Pokémon 님이 새 방장이 되었습니다',
@@ -316,12 +346,12 @@ try {
   const traitCatalog = await run(() => {
     const game = window.__PSKO_TEST_GAME__;
     return [
-      ...game._06cb786.map(nature => {
-        const source = game._f62b694.name(nature.n);
+      ...game._b3c0c92.map(nature => {
+        const source = game._0a82600.name(nature.n);
         return { kind: 'nature', source, translated: window.PSKO_NATURES[source] || source };
       }),
-      ...Object.keys(game._9a39d9c).map(id => {
-        const source = game._f62b694.abilityName(id);
+      ...Object.keys(game._c542b1f).map(id => {
+        const source = game._0a82600.abilityName(id);
         return { kind: 'ability', source, translated: window.PSKO_ABILITIES[source] || source };
       }),
     ];
@@ -332,6 +362,33 @@ try {
       findings.push({ screen: 'trait-name-registry', ...trait });
     }
   }
+  const formCatalog = await run(() => {
+    const game = window.__PSKO_TEST_GAME__;
+    const definitions = game._ba7078c;
+    if (!definitions?.list?.length || !game._d7a83e9 || !game._b568ae5) {
+      throw new Error('The live Pokémon/form catalog changed.');
+    }
+    const labels = new Set([
+      ...Object.values(game._b568ae5).map(pokemon => pokemon.name),
+      ...Object.values(game._d7a83e9).flatMap(form => [form.name, form.fn]),
+      ...Object.entries(definitions.names.en).flat(),
+      ...Object.entries(definitions.fnames.en).flat(),
+    ].filter(name => typeof name === 'string' && name));
+    const expected = Object.fromEntries(window.PSKO_MESSAGES.flatMap(([spanish, english, korean]) =>
+      [[spanish, korean], [english, korean]]));
+    Object.assign(expected, window.PSKO_POKEMON);
+    return [...labels].map(source => ({
+      source, expected: expected[source] || (/^[A-Z!?]$/.test(source) ? source : undefined),
+      native: game.T(source), fallback: window.PSKO.translate(source),
+    }));
+  });
+  formNamesChecked = formCatalog.length;
+  for (const form of formCatalog) {
+    if (!form.expected || form.native !== form.expected || form.fallback !== form.expected) {
+      findings.push({ screen: 'pokemon-form-name-registry', ...form });
+    }
+  }
+  console.log(`Pokémon/form names: ${formNamesChecked} labels, ${findings.filter(entry => entry.screen === 'pokemon-form-name-registry').length} mismatches`);
   await frame.locator('#btn-guest').click();
   for (let index = 0; index < 8; index++) {
     await capture(`quiz-${index + 1}`);
@@ -345,7 +402,7 @@ try {
       notice.when = () => true;
       localStorage.removeItem(notice.key);
     }
-    window.__PSKO_TEST_GAME__._5d93a86.updateNotices();
+    window.__PSKO_TEST_GAME__._4f91bef.updateNotices();
   });
   await capture('account-update-notice');
   if (/[a-z]/i.test(await frame.locator('#scr-savenote').innerText())) {
@@ -353,12 +410,12 @@ try {
   }
   await frame.locator('#savenote-ok').click();
 
-  for (const tab of ['sound', 'gfx', 'ctl', 'a11y', 'acc', 'about']) {
+  for (const tab of ['sound', 'gfx', 'ctl', 'a11y', 'acc', 'guides', 'about']) {
     await openPanel('SettingsUI', tab);
     await capture(`settings-${tab}`);
   }
   const settingsTabs = await frame.locator('#set-tabs [data-t]').evaluateAll(tabs => tabs.map(tab => tab.dataset.t));
-  if (JSON.stringify(settingsTabs) !== JSON.stringify(['sound', 'gfx', 'ctl', 'a11y', 'network', 'acc', 'about'])) {
+  if (JSON.stringify(settingsTabs) !== JSON.stringify(['sound', 'gfx', 'ctl', 'a11y', 'network', 'acc', 'guides', 'about'])) {
     throw new Error(`Unexpected settings tab order: ${JSON.stringify(settingsTabs)}`);
   }
   await frame.locator('#set-tabs [data-t="network"]').click();
@@ -377,15 +434,15 @@ try {
       id: 'Local test controller', index: 0, connected: true, mapping: 'standard',
       buttons: Array.from({ length: 17 }, () => ({ pressed: false, value: 0 })), axes: [0, 0, 0, 0],
     }] });
-    window.__PSKO_TEST_GAME__._52f25e4.poll(performance.now());
+    window.__PSKO_TEST_GAME__._6315985.poll(performance.now());
   });
   await openPanel('SettingsUI', 'ctl');
   await capture('settings-connected-controller');
   await run(() => { delete navigator.getGamepads; });
   await resetScreens();
-  await run(() => window.__PSKO_TEST_GAME__._8a3edd0.open());
+  await run(() => window.__PSKO_TEST_GAME__._7b7cfdc.open());
   await capture('touch-layout');
-  await run(() => window.__PSKO_TEST_GAME__._8a3edd0.close());
+  await run(() => window.__PSKO_TEST_GAME__._7b7cfdc.close());
   await openPanel('NewsUI');
   await capture('news');
   await openPanel('SupportUI');
@@ -407,12 +464,25 @@ try {
     await capture(`goals-${tab}`);
   }
 
+  await resetScreens(true);
+  await run(() => window.__PSKO_TEST_GAME__.MenuUI.openChallenge());
+  await capture('weekly-challenge');
+  await resetScreens(true);
+  await run(() => window.__PSKO_TEST_GAME__.MenuUI.openMode());
+  await capture('difficulty');
+
   // Owned/shiny fixtures live only in this browser's game object; nothing is committed.
   await run(() => {
     const game = window.__PSKO_TEST_GAME__;
     game.DB.save.owned = { ...game.DB.save.owned, 1: 1, 4: 1, 121: 1 };
     game.DB.save.shiny = { 1: 1 };
   });
+  await openPanel('ClosetUI', 1);
+  await capture('closet');
+  await openPanel('MasteryUI');
+  await capture('mastery-list');
+  await openPanel('MasteryUI', 1);
+  await capture('mastery-pokemon');
   await resetScreens(true);
   await frame.locator('[data-go="dex"]').click();
   await capture('dex');
@@ -428,21 +498,24 @@ try {
     await capture(`dex-sort-${index}`);
   }
   await frame.locator('#dex-q').fill('no-such-pokemon-99999');
+  await frame.waitForFunction(() => !document.querySelector('#dex-grid .cell'));
   await capture('dex-search-empty');
   await frame.locator('#dex-q').fill('');
+  await frame.waitForFunction(() => !!document.querySelector('#dex-grid .cell'));
   await frame.locator('#dex-type').selectOption('grass');
   await capture('dex-type-grass');
   await frame.locator('#dex-type').selectOption('');
   // Select the all-region tab to include every owned fixture.
   await frame.locator('#dex-gens .gen-tab').first().click();
   await frame.locator('#dex-filters .chip').nth(1).click();
+  await frame.waitForFunction(() => document.querySelectorAll('#dex-grid .cell:not(.locked)').length >= 3);
   await capture('dex-owned-list');
   const ownedCount = await frame.locator('#dex-grid .cell:not(.locked)').count();
   if (ownedCount < 3) throw new Error('The audit must inspect all owned Pokémon fixtures.');
   for (let index = 0; index < ownedCount; index++) {
     await frame.locator('#dex-grid .cell:not(.locked)').nth(index).click();
     await capture(`dex-owned-${index}`);
-    const favorite = frame.locator('#dex-detail button.chip').first();
+    const favorite = frame.locator('#dex-fav');
     await favorite.click();
     await capture(`dex-favorite-${index}`);
     await favorite.click();
@@ -456,7 +529,7 @@ try {
   });
   await frame.locator('[data-go="upgrades"]').click();
   await capture('upgrades');
-  for (const [id, expected] of [[492, '쉐이미 (파트너) · 강화 17레벨'], [387, '모부기 · 강화 9레벨'], [390, '불꽃숭이']]) {
+  for (const [id, expected] of [[492, '쉐이미 (파트너) · 17레벨'], [387, '모부기 · 9레벨'], [390, '불꽃숭이']]) {
     const label = await frame.locator(`#upg-mon option[value="${id}"]`).textContent();
     if (label !== expected) throw new Error(`Incorrect upgrade option: ${label}`);
   }
@@ -515,12 +588,19 @@ try {
   await run(() => {
     const save = window.__PSKO_TEST_GAME__.DB.save;
     save.bag = { mint: 5, cap: 5, caph: 5, candy: 70 };
-    save.tms = Object.fromEntries(Object.keys(window.__PSKO_TEST_GAME__._d1b6145).map(id => [id, 1]));
+    save.tms = Object.fromEntries(Object.keys(window.__PSKO_TEST_GAME__._b4c286c).map(id => [id, 1]));
+    window.__PSKO_TEST_GAME__._0a82600.setAbility(121, 0);
   });
   await resetScreens(true);
   await frame.locator('[data-go="dex"]').click();
   await frame.locator('#dex-q').fill('121');
-  await frame.locator('#dex-grid .cell:not(.locked)').first().click();
+  await frame.locator('#dex-grid .cell:not(.locked)').filter({
+    has: frame.locator('.no', { hasText: /^121$/ }),
+  }).click();
+  const selectedPokemon = await frame.locator('#dex-detail h3').textContent();
+  if (selectedPokemon !== '아쿠스타') {
+    throw new Error(`The ability picker fixture must select Starmie: ${selectedPokemon}`);
+  }
   await capture('dex-with-inventory');
   for (const mode of ['nat', 'cap', 'caph']) {
     const button = frame.locator(`#dex-detail [data-extra="${mode}"]`);
@@ -569,6 +649,10 @@ try {
   await frame.locator('#pull-close').click();
   await openPanel('ShopUI');
   await capture('shop');
+  for (const tab of ['held', 'tm', 'perfil', 'skins']) {
+    await frame.locator(`#shop-body [data-tab="${tab}"]`).click();
+    await capture(`shop-${tab}`);
+  }
   await resetScreens(true);
   await run(() => window.__PSKO_TEST_GAME__.ShopUI.openBag());
   await capture('bag');
@@ -616,7 +700,7 @@ try {
     await run((body, index) => {
       const game = window.__PSKO_TEST_GAME__;
       const items = game.Items.LIST;
-      game.RunUI.showItemChoice(items[index].id, items[(index + 1) % items.length].id, () => {});
+      game.RunUI.showItemChoice([items[(index + 1) % items.length].id], items[index].id, () => {});
     }, index);
     await capture(`items-${index}`);
   }
@@ -644,17 +728,17 @@ try {
   await resetScreens();
   await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    game._9d6a83d.showData({ name: 'Local player', title: 'Brillante', favs: [{ dex: 1, shiny: true }],
+    game._bf1511b.showData({ name: 'Local player', title: 'Brillante', favs: [{ dex: 1, shiny: true }],
       best: { solo: 200, group: 300, level: 40, bosses: 8, legends: 2, kills: 700, medals: 0 } });
     game.UI.show('scr-profile');
   });
   await capture('public-profile');
   await resetScreens(true);
-  await run(() => window.__PSKO_TEST_GAME__._5205be5.play());
-  await frame.waitForFunction(() => !!window.__PSKO_TEST_GAME__._ae681d5.player);
+  await run(() => window.__PSKO_TEST_GAME__._fab360e.play());
+  await frame.waitForFunction(() => !!window.__PSKO_TEST_GAME__._115d8ef.player);
   await frame.keyboard.press('Escape');
   await run(() => {
-    const game = window.__PSKO_TEST_GAME__, player = game._ae681d5.player;
+    const game = window.__PSKO_TEST_GAME__, player = game._115d8ef.player;
     player.orbs = ['slumber', 'slow', 'blowback', 'focus'].map(id => ({ id, n: 3 }));
     player.orbBuff = { focus: 12, luminous: 13, quick: 8 };
     player.statsTaken = { hp: 3, magnet: 2 };
@@ -667,7 +751,7 @@ try {
   errors.push(error.stack || error.message);
   console.error(error);
 } finally {
-  await writeFile(output, JSON.stringify({ language, localeEntriesChecked, traitNamesChecked, moveLabelsChecked, moveNameFindings, errors, findings, screens }, null, 2));
+  await writeFile(output, JSON.stringify({ language, localeEntriesChecked, traitNamesChecked, formNamesChecked, moveLabelsChecked, moveNameFindings, errors, findings, screens }, null, 2));
   await context.close();
   console.log(`${screens.length} screens checked; ${findings.length} unexplained entries; ${errors.length} errors.`);
   console.log(output);

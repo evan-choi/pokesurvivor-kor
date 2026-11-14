@@ -279,7 +279,7 @@ test('audited interface, shop and changelog text resolves as a complete phrase i
   }
 });
 
-test('every current TM uses its Korean move name and a complete translated description', () => {
+test('every current move uses its Korean name and a complete translated description', () => {
   const { moves } = JSON.parse(readFileSync(new URL('./fixtures/official-game-moves.json', import.meta.url), 'utf8'));
   assert.equal(moves.length, 176);
   for (const { id, name: [spanish, english, korean], desc } of moves) {

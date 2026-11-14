@@ -59,16 +59,33 @@ try {
   const frame = page;
   await frame.locator('#tap-start:not(.hidden), #scr-login:not(.hidden) #btn-guest').first().waitFor();
   if (await frame.locator('#tap-start').isVisible()) await frame.locator('#tap-start').click();
+  await page.waitForFunction(() => typeof globalThis.PSKO_READ_OWNED_POKEMON === 'function');
+  assert.equal(await page.evaluate(() => globalThis.PSKO_READ_OWNED_POKEMON()), null);
   console.log('Live game loaded; entering guest setup.');
   await frame.locator('#btn-guest').click();
   for (let i = 0; i < 8; i++) await frame.locator('#test-a button').first().click();
   await frame.locator('#res-ok').click();
-  await frame.locator('[data-go="settings"]').click();
+  const owned = await page.evaluate(() => globalThis.PSKO_READ_OWNED_POKEMON());
+  assert.ok(Array.isArray(owned) && owned.length > 0 && owned.every(id => /^\d+$/.test(id)), 'The live collection reader must return the guest’s owned Pokémon IDs.');
+  await frame.locator('#btn-settings').click();
   await frame.locator('#set-tabs [data-t="gfx"]').click();
   await frame.locator('[data-lang="ko"].on').waitFor();
   assert.match(await frame.locator('#scr-settings').innerText(), /한국어/);
+  const ownEffects = frame.locator('[data-psko-effects] select').first();
+  assert.equal(await ownEffects.isEnabled(), true);
+  await ownEffects.selectOption('0.2');
+  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('psko.effect-opacity')).own), 0.2);
+  await frame.locator('#set-tabs [data-t="ctl"]').click();
+  assert.equal(await frame.locator('[data-psko-melee-fix] button').isEnabled(), true);
+  await frame.locator('#set-tabs [data-t="network"]').click();
+  const direct = frame.locator('#psko-lan-direct');
+  assert.equal(await direct.getAttribute('aria-checked'), 'false');
+  await direct.click();
+  await page.waitForFunction(() => document.querySelector('#psko-lan-direct').getAttribute('aria-checked') === 'true');
+  assert.equal(await direct.getAttribute('aria-checked'), 'true');
+  await frame.locator('#set-tabs [data-t="gfx"]').click();
   await page.screenshot({ path: path.join(output, 'settings-korean.png'), animations: 'disabled' });
-  const buttonSizes = await frame.locator('.set-row > .btn').evaluateAll((buttons) => buttons.map((button) => {
+  const buttonSizes = await frame.locator('.set-row > button.switch').evaluateAll((buttons) => buttons.map((button) => {
     const { width, height } = button.getBoundingClientRect();
     return { width, height };
   }));
@@ -77,13 +94,21 @@ try {
   console.log('Korean settings:', await frame.locator('#scr-settings').innerText());
   await Promise.all([page.waitForEvent('domcontentloaded'), frame.locator('[data-lang="en"]').click()]);
   await enterMenu('en');
-  await frame.locator('[data-go="settings"]').click();
+  await frame.locator('#btn-settings').click();
   await frame.locator('#set-tabs [data-t="gfx"]').click();
   await frame.locator('#scr-settings h2').filter({ hasText: /^Settings$/ }).waitFor();
+  assert.equal(await frame.locator('[data-psko-effects] select').first().inputValue(), '0.2');
+  await frame.locator('[data-psko-effects] select').first().selectOption('1');
+  await frame.locator('#set-tabs [data-t="network"]').click();
+  assert.equal(await frame.locator('#psko-lan-direct').getAttribute('aria-checked'), 'true');
+  await frame.locator('#psko-lan-direct').click();
+  await page.waitForFunction(() => document.querySelector('#psko-lan-direct').getAttribute('aria-checked') === 'false');
+  assert.equal(await frame.locator('#psko-lan-direct').getAttribute('aria-checked'), 'false');
+  await frame.locator('#set-tabs [data-t="gfx"]').click();
   assert.equal(await frame.locator('[data-lang="ko"]').count(), 1);
   await Promise.all([page.waitForEvent('domcontentloaded'), frame.locator('[data-lang="ko"]').click()]);
   await enterMenu('ko');
-  await frame.locator('[data-go="settings"]').click();
+  await frame.locator('#btn-settings').click();
   await frame.locator('#scr-settings h2').filter({ hasText: /^설정$/ }).waitFor();
   await frame.locator('#set-close').click();
   for (const viewport of [{ width: 1920, height: 1080 }, { width: 1365, height: 960 }, { width: 960, height: 600 }]) {
@@ -96,13 +121,30 @@ try {
   assert.match(menu, /켈리몬 상점/);
   assert.match(menu, /가방/);
   assert.equal(await frame.evaluate(async () => (await document.fonts.load('16px "NeoDunggeunmo"', '한글 ABC')).length), 1);
-  const iconOffsets = await frame.locator('.menu-item').evaluateAll((buttons) => buttons.map((button) => {
-    const bounds = button.getBoundingClientRect();
-    const icon = button.querySelector('.mi-ico').getBoundingClientRect();
-    return Math.abs(icon.y + icon.height / 2 - bounds.y - bounds.height / 2);
+  const menuIcons = await frame.locator('.menu-item').evaluateAll((buttons) => buttons.map((button) => {
+    const card = button.getBoundingClientRect();
+    const container = button.querySelector('.mi-ico');
+    const icon = container.getBoundingClientRect();
+    const image = container.querySelector('img').getBoundingClientRect();
+    const textRects = [];
+    const walker = document.createTreeWalker(button, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      if (!walker.currentNode.textContent.trim() || container.contains(walker.currentNode)) continue;
+      const range = document.createRange();
+      range.selectNodeContents(walker.currentNode);
+      textRects.push(...range.getClientRects());
+    }
+    return {
+      name: button.dataset.go,
+      contained: icon.left >= card.left && icon.right <= card.right && icon.top >= card.top && icon.bottom <= card.bottom,
+      xOffset: Math.abs(image.left + image.width / 2 - icon.left - icon.width / 2),
+      yOffset: Math.abs(image.top + image.height / 2 - icon.top - icon.height / 2),
+      overlapsText: textRects.some(text => text.width && text.height && text.left < icon.right && text.right > icon.left && text.top < icon.bottom && text.bottom > icon.top),
+    };
   }));
-  assert.equal(iconOffsets.length, 10);
-  assert.ok(iconOffsets.every((offset) => offset < 1), 'Menu icons must be centered across the title and description.');
+  assert.equal(menuIcons.length, 13);
+  assert.ok(menuIcons.every(icon => icon.contained && icon.xOffset < 1 && icon.yOffset < 1 && !icon.overlapsText),
+    `Menu icons must fit their cards, center their images and leave text clear: ${JSON.stringify(menuIcons)}`);
   console.log('Korean menu:', menu);
 
   await frame.locator('[data-go="dex"]').click();
@@ -128,6 +170,7 @@ try {
   await frame.locator('#scr-dex [data-back]').click();
   await frame.locator('[data-go="shop"]').click();
   const shop = frame.locator('#scr-shop');
+  await shop.locator('[data-tab="tm"]').click();
   await shop.getByRole('heading', { name: '오늘의 기술머신' }).waitFor();
   assert.match(await shop.innerText(), /특성캡슐/);
   assert.doesNotMatch(await shop.innerText(), /[\p{Script=Latin}\p{Script=Han}]/u);
@@ -141,7 +184,7 @@ try {
   await page.screenshot({ path: path.join(output, 'upgrades-korean.png'), animations: 'disabled' });
   await frame.locator('#scr-upgrades [data-back]').click();
   await page.setViewportSize({ width: 960, height: 600 });
-  await frame.locator('[data-go="settings"]').click();
+  await frame.locator('#btn-settings').click();
   await page.screenshot({ path: path.join(output, 'settings-compact.png'), animations: 'disabled' });
   const settingsFit = await frame.locator('#scr-settings .box').evaluate((box) => {
     const rect = box.getBoundingClientRect();
