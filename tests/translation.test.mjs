@@ -68,6 +68,33 @@ test('all power moves use their official Korean names in both game languages', (
   }
 });
 
+test('new game news translates the complete Spanish and English paragraphs', () => {
+  const { entries } = JSON.parse(readFileSync(new URL('fixtures/official-game-news.json', import.meta.url), 'utf8'));
+  assert.equal(entries.length, 7);
+  for (const { spanish, english, korean } of entries) {
+    assert.equal(translate(spanish), korean, spanish);
+    assert.equal(translate(english), korean, english);
+    assert.equal(translate(korean), korean);
+  }
+});
+
+test('updated controller actions and offline hatching keep their complete descriptions', () => {
+  for (const [spanish, english, korean] of [
+    ['atrás / cerrar · en la partida, tu poder (Mega, Dinamax, Z o Teracristal)',
+      'back / close · in a run, your power (Mega, Dynamax, Z or Terastal)',
+      '뒤로 / 닫기 · 전투 중에는 특수 능력 사용(메가진화, 다이맥스, Z기술, 테라스탈)'],
+    ['usar la esfera elegida', 'use the selected orb', '선택한 구슬 사용'],
+    ['cambiar de esfera · cambiar las cartas al subir de nivel',
+      'switch orb · reroll the cards when leveling up', '구슬 전환 · 레벨 업 카드 다시 뽑기'],
+    ['Sin conexión no se puede abrir el huevo. Inténtalo otra vez.',
+      "The egg can't be hatched without a connection. Try again.",
+      '인터넷 연결이 없어 알을 부화시킬 수 없습니다. 다시 시도하세요.'],
+  ]) {
+    assert.equal(translate(spanish), korean, spanish);
+    assert.equal(translate(english), korean, english);
+  }
+});
+
 test('all added form labels preserve their complete Korean names', () => {
   const forms = readMessages('pokemon');
   assert.equal(forms.length, 623);

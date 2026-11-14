@@ -788,3 +788,36 @@ test('leaves authentication pages untouched and preserves native registration fo
     await auth.close();
   }
 });
+
+test('translates ranking moderation controls while preserving protected player names', async () => {
+  await frame.locator('body').evaluate((body) => {
+    body.insertAdjacentHTML('beforeend', `<section id="scr-rank">
+      <button class="rk-rep rk-del" translate="no" title="Quitar marca (admin)"></button>
+      <span translate="no">Fire</span></section>
+      <section class="scr dim" translate="no"><div class="box"><h3>Quitar marca</h3>
+      <p class="sub">Fire, Water · 12:34</p><div>
+      <button data-a="one">Quitar de esta tabla</button>
+      <button data-a="all">Quitar de todas las tablas</button>
+      <button data-a="no">Cancelar</button></div></div></section>
+      <div id="moderation-notices"><p>Marca quitada de esta tabla</p>
+      <p>Marcas quitadas de todas las tablas</p><p>No se pudo quitar la marca (permission-denied)</p></div>
+      <section class="scr dim" translate="no" id="protected-other-modal"><div class="box">
+      <h3>Fire</h3><p>Water</p><div><button data-a="no">Fire</button></div></div></section>`);
+  });
+  const moderation = frame.locator('body > section.scr.dim').first();
+  await expect(frame.locator('#scr-rank .rk-del')).toHaveAttribute('title', '기록 삭제(관리자)');
+  await expect(moderation.locator('h3')).toHaveText('기록 삭제');
+  await expect(moderation.locator('button')).toHaveText(['이 순위표에서 삭제', '모든 순위표에서 삭제', '취소']);
+  await expect(moderation.locator('p')).toHaveText('Fire, Water · 12:34');
+  await expect(frame.locator('#scr-rank > span')).toHaveText('Fire');
+  await expect(frame.locator('#protected-other-modal h3')).toHaveText('Fire');
+  await expect(frame.locator('#protected-other-modal button')).toHaveText('Fire');
+  await expect(frame.locator('#moderation-notices p')).toHaveText([
+    '이 순위표에서 기록을 삭제했습니다', '모든 순위표에서 기록을 삭제했습니다',
+    '기록을 삭제하지 못했습니다(permission-denied)',
+  ]);
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
+  await expect(moderation.locator('h3')).toHaveText('Quitar marca');
+  await expect(moderation.locator('button')).toHaveText(['Quitar de esta tabla', 'Quitar de todas las tablas', 'Cancelar']);
+  await expect(frame.locator('#scr-rank .rk-del')).toHaveAttribute('title', 'Quitar marca (admin)');
+});

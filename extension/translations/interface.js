@@ -1333,3 +1333,25 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ['Primero compra {x}', 'Buy {x} first', '먼저 {x} 기능을 구매하세요'],
   ['No se pudo guardar el apodo (error).', "Couldn't save the nickname (error).", '닉네임을 저장하지 못했습니다(오류).'],
 ]);
+
+// Controls and connection notices from the 668b4b371f game build.
+globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
+  ["atrás / cerrar · en la partida, tu poder (Mega, Dinamax, Z o Teracristal)", "back / close · in a run, your power (Mega, Dynamax, Z or Terastal)", "뒤로 / 닫기 · 전투 중에는 특수 능력 사용(메가진화, 다이맥스, Z기술, 테라스탈)"],
+  ["usar la esfera elegida", "use the selected orb", "선택한 구슬 사용"],
+  ["cambiar de esfera · cambiar las cartas al subir de nivel", "switch orb · reroll the cards when leveling up", "구슬 전환 · 레벨 업 카드 다시 뽑기"],
+  ["Sin conexión no se puede jugar, miau. Inténtalo otra vez.", "No connection, no game, meow. Try again.", "인터넷 연결이 없어 플레이할 수 없다옹. 다시 시도해 줘라옹."],
+  ["Sin conexión no se ha podido apuntar la victoria, miau.", "No connection: the win couldn't be saved, meow.", "인터넷 연결이 없어 승리 기록을 저장하지 못했다옹."],
+  ["Sin conexión no se puede abrir el huevo. Inténtalo otra vez.", "The egg can't be hatched without a connection. Try again.", "인터넷 연결이 없어 알을 부화시킬 수 없습니다. 다시 시도하세요."],
+  ["Sólo puedes llevar cuatro", "You can only hold four", "최대 네 개까지 지닐 수 있습니다"],
+]);
+
+// Ranking moderation controls from the 668b4b371f game build.
+globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
+  ["Quitar marca (admin)", "Remove score (admin)", "기록 삭제(관리자)"],
+  ["Quitar marca", "Remove score", "기록 삭제"],
+  ["Quitar de esta tabla", "Remove from this leaderboard", "이 순위표에서 삭제"],
+  ["Quitar de todas las tablas", "Remove from all leaderboards", "모든 순위표에서 삭제"],
+  ["Marca quitada de esta tabla", "Score removed from this leaderboard", "이 순위표에서 기록을 삭제했습니다"],
+  ["Marcas quitadas de todas las tablas", "Scores removed from all leaderboards", "모든 순위표에서 기록을 삭제했습니다"],
+  ["No se pudo quitar la marca ({x})", "Could not remove the score ({x})", "기록을 삭제하지 못했습니다({x})"],
+]);

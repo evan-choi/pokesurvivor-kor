@@ -20,6 +20,12 @@
     if (owner.matches('#pull-results .pcard > .pmon, #mx-picker .chip > b')) return false;
     if (owner.matches('.mb-txt > b, #menu-banner .mb-count')) return false;
     if (owner.matches('#user-pill > span') && owner.parentElement.querySelector('.sync.guest')) return false;
+    if (owner.matches('#scr-rank .rk-rep.rk-del')) return false;
+    // The moderation modal includes fixed controls alongside protected player names.
+    if (owner.matches('body > section.scr.dim') &&
+        owner.querySelector(':scope > .box > div > button[data-a="one"]') &&
+        owner.querySelector(':scope > .box > div > button[data-a="all"]') &&
+        element.matches('.box > h3, .box > div > button[data-a="one"], .box > div > button[data-a="all"], .box > div > button[data-a="no"]')) return false;
     return true;
   }
 
