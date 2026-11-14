@@ -1,3 +1,5 @@
+import { REGIONAL_POKEMON } from './regional-pokemon.mjs';
+
 export const TIER_SOURCE = 'https://pokesurvivor.net/tier-list/';
 export const DEX_SOURCE = 'https://pokesurvivor.net/pokedex/';
 
@@ -87,6 +89,9 @@ export function rankOwnedPokemon(owned, rankings) {
     throw new Error('보유 목록 형식을 확인할 수 없습니다.');
   }
   const byDex = new Map(rankings.map((entry) => [entry.dex, entry]));
-  return [...new Set(owned)].map((dex) => byDex.get(dex) || { dex })
+  return [...new Set(owned)].map((dex) => {
+    const entry = byDex.get(dex) || { dex };
+    return REGIONAL_POKEMON[dex] ? { ...entry, ...REGIONAL_POKEMON[dex] } : entry;
+  })
     .sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity) || a.dex - b.dex);
 }

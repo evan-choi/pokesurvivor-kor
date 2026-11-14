@@ -49,8 +49,8 @@ test.beforeAll(async () => {
   });
   await context.route('https://raw.githubusercontent.com/PokeAPI/sprites/**', (route) => {
     imageRequests.push(route.request().url());
-    if (route.request().url().endsWith('/25.gif')) return route.fulfill({ status: 404, body: '' });
-    if (route.request().url().includes('/9999.')) return route.fulfill({ status: 404, body: '' });
+    if (/\/(25|10091)\.gif$/.test(route.request().url())) return route.fulfill({ status: 404, body: '' });
+    if (/\/(9999|10250)\./.test(route.request().url())) return route.fulfill({ status: 404, body: '' });
     return route.fulfill({ contentType: 'image/gif', body: tinyGif });
   });
   page = await context.newPage();
@@ -231,6 +231,23 @@ test('keeps species absent from the ranking and handles missing images', async (
   await expect(popup.locator('.pokemon-rank')).toHaveText(['3위', '순위 없음']);
   await expect(popup.locator('.pokemon-name strong')).toHaveText('도감 #9999');
   await expect(popup.locator('.pokemon-image span')).toHaveText('이미지 없음');
+});
+
+test('shows regional forms with their own names and sprites while keeping them unranked', async () => {
+  await gameFrame.evaluate(() => { window.testSave = { owned: { 243: true, 500019: true, 510052: true, 520128: true } }; });
+  await openPopup();
+  await expect(popup.locator('#collection-count')).toHaveText('4마리');
+  await expect(popup.locator('.pokemon-name strong')).toHaveText([
+    '꼬렛 (알로라의 모습)', '나옹 (가라르의 모습)', '켄타로스 (팔데아의 모습·컴뱃종)',
+  ]);
+  await expect(popup.locator('.pokemon-name small')).toHaveText(['No. 243', 'No. 019', 'No. 052', 'No. 128']);
+  await expect(popup.locator('.pokemon-rank')).toHaveText(['3위', '순위 없음', '순위 없음', '순위 없음']);
+  await expect(popup.locator('.tier')).toHaveText(['B', '—', '—', '—']);
+  await expect(popup.locator('.pokemon-row').nth(1).locator('img')).toHaveAttribute('src', /\/10091\.png$/);
+  await expect(popup.locator('.pokemon-row').nth(2).locator('img')).toHaveAttribute('src', /\/10161\.gif$/);
+  await expect(popup.locator('.pokemon-row').nth(3).locator('.pokemon-image span')).toHaveText('이미지 없음');
+  expect(imageRequests.some(url => /\/(500019|510052|520128)\./.test(url))).toBe(false);
+  expect(await gameFrame.evaluate(() => window.testSave)).toEqual({ owned: { 243: true, 500019: true, 510052: true, 520128: true } });
 });
 
 test('uses still images when reduced motion is requested', async () => {

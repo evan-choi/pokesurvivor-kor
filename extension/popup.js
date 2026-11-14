@@ -10,6 +10,7 @@ const refreshCollection = document.getElementById('refresh-collection');
 const gameControls = document.getElementById('game-controls');
 const play = document.querySelector('.play');
 const cacheDuration = 24 * 60 * 60 * 1000;
+const formNames = new Map((globalThis.PSKO_MESSAGES || []).map(([source, , korean]) => [source, korean]));
 
 async function loadRankings(refresh) {
   const { tierCache } = await chrome.storage.local.get('tierCache');
@@ -59,12 +60,13 @@ function renderPokemon(entries) {
     image.loading = 'lazy';
     image.referrerPolicy = 'no-referrer';
     const spriteBase = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
+    const spriteId = entry.spriteId || entry.dex;
     let fallback = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    image.src = fallback ? `${spriteBase}${entry.dex}.png` : `${spriteBase}other/showdown/${entry.dex}.gif`;
+    image.src = fallback ? `${spriteBase}${spriteId}.png` : `${spriteBase}other/showdown/${spriteId}.gif`;
     image.addEventListener('error', () => {
       if (!fallback) {
         fallback = true;
-        image.src = `${spriteBase}${entry.dex}.png`;
+        image.src = `${spriteBase}${spriteId}.png`;
       } else {
         const placeholder = document.createElement('span');
         placeholder.textContent = '이미지 없음';
@@ -75,14 +77,14 @@ function renderPokemon(entries) {
     const name = document.createElement('div');
     name.className = 'pokemon-name';
     const label = document.createElement(entry.path ? 'a' : 'strong');
-    label.textContent = globalThis.PSKO_POKEMON[entry.name] || entry.name || `도감 #${entry.dex}`;
+    label.textContent = globalThis.PSKO_POKEMON[entry.name] || formNames.get(entry.name) || entry.name || `도감 #${entry.dex}`;
     if (entry.path) {
       label.href = new URL(entry.path, DEX_SOURCE).href;
       label.target = '_blank';
       label.rel = 'noreferrer';
     }
     const number = document.createElement('small');
-    number.textContent = `No. ${String(entry.dex).padStart(3, '0')}`;
+    number.textContent = `No. ${String(entry.nationalDex || entry.dex).padStart(3, '0')}`;
     name.append(label, number);
     const rank = document.createElement('span');
     rank.className = 'pokemon-rank';

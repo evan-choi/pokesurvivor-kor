@@ -3,6 +3,7 @@ import test from 'node:test';
 import vm from 'node:vm';
 import { readFileSync } from 'node:fs';
 import { readOwnedPokemon, rankOwnedPokemon, validateRankings } from '../extension/owned-pokemon.mjs';
+import { REGIONAL_POKEMON } from '../extension/regional-pokemon.mjs';
 
 function collectionReader(save = { owned: {} }, supported = true) {
   const forbidden = [];
@@ -75,6 +76,36 @@ test('orders owned species by global rank and keeps unranked species last', () =
   ]);
   assert.deepEqual(rankOwnedPokemon([], rankings), []);
   for (const invalid of [null, {}, ['243'], [-1], [1.5]]) assert.throws(() => rankOwnedPokemon(invalid, rankings));
+});
+
+test('regional species keep their own identity and do not inherit the base species rank', () => {
+  const base = { dex: 19, name: 'Rattata', rank: 1, tier: 'S', path: '/pokedex/rattata/' };
+  assert.deepEqual(rankOwnedPokemon([500019, 19], [base]), [
+    base, { dex: 500019, name: 'Rattata de Alola', nationalDex: 19, spriteId: 10091 },
+  ]);
+});
+
+test('ranked regional species retain their exact rank alongside form metadata', () => {
+  const ranking = { dex: 500019, name: 'Alolan Rattata', rank: 1, tier: 'S', path: '/pokedex/rattata-alola/' };
+  assert.deepEqual(rankOwnedPokemon([500019], validateRankings([ranking])), [
+    { ...ranking, name: 'Rattata de Alola', nationalDex: 19, spriteId: 10091 },
+  ]);
+  assert.equal(ranking.name, 'Alolan Rattata');
+  assert.equal(rankOwnedPokemon([890], rankings)[0], rankings[0]);
+});
+
+test('regional metadata has exact form sprites and translated names for all current species', () => {
+  const context = vm.createContext({});
+  vm.runInContext(readFileSync(new URL('../extension/translations/pokemon.js', import.meta.url), 'utf8'), context);
+  const names = new Map(context.PSKO_MESSAGES.map(([source, , korean]) => [source, korean]));
+  assert.equal(Object.keys(REGIONAL_POKEMON).length, 57);
+  for (const [id, entry] of Object.entries(REGIONAL_POKEMON)) {
+    assert.ok(Number(id) >= 500000);
+    assert.ok(Number.isInteger(entry.nationalDex) && entry.nationalDex > 0 && entry.nationalDex <= 1025);
+    assert.ok(Number.isInteger(entry.spriteId) && entry.spriteId > 10000);
+    assert.match(names.get(entry.name), /[가-힣]/u);
+  }
+  assert.equal(new Set(Object.values(REGIONAL_POKEMON).map(entry => entry.spriteId)).size, 57);
 });
 
 test('rejects incomplete, duplicate or unsafe ranking data rather than showing invented tiers', () => {
