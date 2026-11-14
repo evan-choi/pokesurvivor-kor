@@ -30,6 +30,7 @@ The same demonstration frame, with only player effect opacity changed from 100% 
 | Feature | Location |
 | --- | --- |
 | Language · effect opacity | Settings → Graphics |
+| Melee targeting fix (temporary) | Settings → Controls |
 | Direct P2P connection | Settings → Network |
 | Owned Pokémon tiers | Chrome extension icon |
 
