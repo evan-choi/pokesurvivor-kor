@@ -1,6 +1,7 @@
 'use strict';
 
 import { TIER_SOURCE, DEX_SOURCE, readOwnedPokemon, parseRankings, validateRankings, rankOwnedPokemon } from './owned-pokemon.mjs';
+import { createPokemonSearch } from './pokemon-search.mjs';
 
 const collectionStatus = document.getElementById('collection-status');
 const collectionCount = document.getElementById('collection-count');
@@ -14,6 +15,7 @@ const cacheDuration = 24 * 60 * 60 * 1000;
 const formNames = new Map((globalThis.PSKO_MESSAGES || []).map(([source, , korean]) => [source, korean]));
 const formEnglishNames = new Map((globalThis.PSKO_MESSAGES || []).map(([source, english]) => [source, english]));
 let ownedPokemon = [];
+let searchPokemon = createPokemonSearch([], () => []);
 let rankingNotice = '';
 
 function pokemonName(entry) {
@@ -108,11 +110,8 @@ function renderPokemon(entries) {
 }
 
 function filterPokemon() {
-  const query = pokemonSearch.value.trim().toLowerCase();
-  const entries = ownedPokemon.filter(entry => [
-    pokemonName(entry), entry.name, formEnglishNames.get(entry.name),
-    String(entry.dex), String(entry.nationalDex || entry.dex).padStart(3, '0'),
-  ].some(value => value?.toLowerCase().includes(query)));
+  const query = pokemonSearch.value.trim();
+  const entries = searchPokemon(query);
   renderPokemon(entries);
   collectionCount.textContent = query ? `${entries.length} / ${ownedPokemon.length}마리` : `${ownedPokemon.length}마리`;
   collectionStatus.textContent = [entries.length ? '' : '검색 결과가 없습니다.', rankingNotice].filter(Boolean).join(' ');
@@ -123,6 +122,7 @@ async function loadCollection(refresh = false) {
   refreshCollection.disabled = true;
   pokemonSearch.disabled = true;
   ownedPokemon = [];
+  searchPokemon = createPokemonSearch([], () => []);
   rankingNotice = '';
   collectionStatus.hidden = false;
   collectionStatus.textContent = '보유 목록 불러오는 중…';
@@ -153,6 +153,9 @@ async function loadCollection(refresh = false) {
     collectionStatus.textContent = '티어 불러오는 중…';
     const rankings = await loadRankings(refresh);
     ownedPokemon = rankOwnedPokemon(collection.owned, rankings.entries);
+    searchPokemon = createPokemonSearch(ownedPokemon, entry => [
+      pokemonName(entry), entry.name, formEnglishNames.get(entry.name),
+    ]);
     rankingNotice = rankings.notice || '';
     pokemonSearch.disabled = false;
     filterPokemon();

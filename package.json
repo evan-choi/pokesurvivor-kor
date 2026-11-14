@@ -1,6 +1,6 @@
 {
   "name": "pokesurvivor-kor",
-  "version": "0.2.30",
+  "version": "0.2.31",
   "private": true,
   "description": "PokéSurvivor 한국어 모드 Chrome extension",
   "license": "PolyForm-Noncommercial-1.0.0",
@@ -20,10 +20,13 @@
     "test:live": "node scripts/verify-live.mjs",
     "check:names": "node scripts/check-pokemon-names.mjs --online",
     "audit:translations": "node scripts/audit-live-translations.mjs",
+    "vendor:search": "node scripts/vendor-search.mjs",
     "package": "node scripts/package.mjs",
     "build:site": "node scripts/build-site.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "^1.65.0"
+    "@playwright/test": "^1.65.0",
+    "es-hangul": "2.4.0",
+    "fuse.js": "7.5.0"
   }
 }

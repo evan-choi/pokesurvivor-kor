@@ -151,7 +151,10 @@ test('searches owned names and numbers, preserves the query on refresh and keeps
   const search = popup.getByRole('searchbox', { name: '보유 포켓몬 검색' });
   await expect(search).toBeEnabled();
   await expect(popup.locator('#collection-status')).toBeHidden();
-  for (const [query, name] of [['피카', '피카츄'], ['RAIKOU', '라이코'], ['890', '무한다이노']]) {
+  for (const [query, name] of [
+    ['피카', '피카츄'], ['ㅍㅋㅊ', '피카츄'], ['피카추', '피카츄'],
+    ['RAIKOU', '라이코'], ['raikouu', '라이코'], ['890', '무한다이노'],
+  ]) {
     await search.fill(query);
     await expect(popup.locator('.pokemon-name a')).toHaveText([name]);
     await expect(popup.locator('#collection-count')).toHaveText('1 / 3마리');
@@ -160,6 +163,8 @@ test('searches owned names and numbers, preserves the query on refresh and keeps
   await expect(popup.locator('.pokemon-row')).toHaveCount(0);
   await expect(popup.locator('#collection-status')).toHaveText('검색 결과가 없습니다.');
   await expect(popup.locator('#collection-count')).toHaveText('0 / 3마리');
+  await search.fill('024');
+  await expect(popup.locator('.pokemon-row')).toHaveCount(0);
   await search.fill('');
   await expect(popup.locator('.pokemon-name a')).toHaveText(['무한다이노', '라이코', '피카츄']);
   await expect(popup.locator('#collection-count')).toHaveText('3마리');

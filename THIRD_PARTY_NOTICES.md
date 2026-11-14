@@ -59,3 +59,10 @@ Pokémon 및 관련 명칭·캐릭터의 권리는 Nintendo, Creatures Inc., GAM
 ## Neo둥근모
 
 게임과 팝업에 사용하는 Neo둥근모는 Eunbin Jeong (Dalgona.)의 폰트이며 [SIL Open Font License 1.1](https://github.com/neodgm/neodgm/blob/main/LICENSE.txt)로 제공됩니다. 사용자가 제공한 `neodgm.woff2`를 변경 없이 포함했으며, 라이선스 전문은 `extension/fonts/neodgm/LICENSE.txt`에 보관합니다.
+
+## 검색 라이브러리
+
+보유 포켓몬 검색에 [es-hangul 2.4.0](https://github.com/toss/es-hangul)과 [Fuse.js 7.5.0](https://github.com/krisk/Fuse)을 사용합니다. npm 배포본의 ESM 파일을 변경 없이 `extension/vendor/`에 포함하며, `npm ci` 후 `npm run vendor:search`로 다시 복사할 수 있습니다.
+
+- es-hangul은 Viva Republica, Inc.의 MIT 라이선스로 제공됩니다. 전문은 `extension/vendor/es-hangul.LICENSE`에 있습니다.
+- Fuse.js는 Kiro Risk의 Apache License 2.0으로 제공됩니다. 전문은 `extension/vendor/fuse.LICENSE`에 있습니다.
