@@ -17,6 +17,7 @@
         return original.call(this, dt, player, ...rest);
       }
       const moves = player.activeGroup();
+      // shortcut: delayed punch fields re-read aim after tick; add them when field-specific aiming is available.
       const due = move => (move.kind === 'melee' || move.kind === 'scissor')
         && Number.isFinite(move.radius) && move.radius > 0 && move.t <= dt;
       if (!Array.isArray(moves) || !moves.some(due)) return original.call(this, dt, player, ...rest);
