@@ -326,6 +326,60 @@ test('starting move selections use move names after rerenders and preserve type 
   }
 });
 
+test('upgrade choices leave room for descriptions at desktop and mobile widths', async () => {
+  await page.locator('iframe').evaluate(iframe => {
+    iframe.style.width = '100%';
+    iframe.style.height = '1600px';
+    iframe.style.border = '0';
+    document.body.style.margin = '0';
+  });
+  await frame.locator('body').evaluate(body => {
+    // Match the game's upgrade grid and card structure, including its new item selector.
+    body.insertAdjacentHTML('beforeend', `
+      <style>
+        #upg-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; max-width: 760px; margin: 16px; }
+        #upg-list, #upg-list * { box-sizing: border-box; }
+        .upg-item { display: grid; grid-template-columns: 40px 1fr auto; gap: 10px; align-items: center; padding: 12px; border: 2px solid; }
+        .upg-btns { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        #upg-list .btn { padding: 7px 10px; font-size: 14px; }
+      </style>
+      <div id="upg-list">
+        ${['data-start', 'data-start2', 'data-ban', 'data-sitem'].map(attribute => `
+          <div class="panel upg-item">
+            <div class="ic">▶</div>
+            <div><b>시작 도구</b><span>선택한 도구를 지닌 채 시작합니다. 도구 1개를 소비합니다.</span><div>■</div></div>
+            <div class="upg-btns"><button class="btn" ${attribute}>선택: 없음</button><button class="btn" data-buy disabled>최대</button></div>
+          </div>`).join('')}
+        <div class="panel upg-item" id="ordinary-upgrade">
+          <div class="ic">▶</div><div><b>체력</b><span>최대 체력이 증가합니다.</span></div>
+          <div class="upg-btns"><button class="btn" data-buy>100</button></div>
+        </div>
+      </div>`);
+  });
+  for (const label of ['선택: 없음', '선택: 구애스카프 (99개)']) {
+    await frame.locator('#upg-list [data-sitem]').evaluate((button, label) => { button.textContent = label; }, label);
+    for (const width of [1400, 1024, 768, 390]) {
+      await page.setViewportSize({ width, height: 1000 });
+      const choices = await frame.locator('#upg-list .upg-item:not(#ordinary-upgrade)').evaluateAll(cards => cards.map(card => {
+        const description = card.children[1].getBoundingClientRect();
+        const actions = card.querySelector('.upg-btns').getBoundingClientRect();
+        const bounds = card.getBoundingClientRect();
+        return { width: description.width, below: actions.top >= description.bottom,
+          fits: card.scrollWidth <= card.clientWidth && actions.right <= bounds.right };
+      }));
+      expect(choices).toHaveLength(4);
+      expect(choices.every(card => card.width >= 120 && card.below && card.fits), JSON.stringify({ width, label, choices })).toBe(true);
+      const ordinary = await frame.locator('#ordinary-upgrade').evaluate(card => {
+        const text = card.children[1].getBoundingClientRect();
+        const actions = card.querySelector('.upg-btns').getBoundingClientRect();
+        return actions.left >= text.right && actions.top < text.bottom && actions.bottom > text.top;
+      });
+      expect(ordinary).toBe(true);
+    }
+  }
+  expect(errors).toEqual([]);
+});
+
 test('partner selection remains a complete sentence after the game updates the button', async () => {
   await frame.locator('#dex-detail').evaluate((detail) => {
     const button = document.createElement('button');

@@ -533,14 +533,21 @@ try {
     const label = await frame.locator(`#upg-mon option[value="${id}"]`).textContent();
     if (label !== expected) throw new Error(`Incorrect upgrade option: ${label}`);
   }
-  // Exercise the purchased starting-move controls that can squeeze the description.
+  // Exercise every purchased choice control that can squeeze the description.
   await run(() => {
     const game = window.__PSKO_TEST_GAME__, save = game.DB.save;
-    save.pupg[492].start = 1;
+    Object.assign(save.pupg[492], { start: 1, start2: 1, ban: 3, startitem: 1 });
+    save.bag = { ...save.bag, choicescarf: 99 };
+    save.pitem = { ...save.pitem, 492: 'choicescarf' };
     game.MenuUI.open();
     document.querySelector('[data-go="upgrades"]').click();
   });
-  await capture('upgrades-with-starting-move');
+  await capture('upgrades-with-choice-controls');
+  for (const attribute of ['data-start', 'data-start2', 'data-ban', 'data-sitem']) {
+    if (await frame.locator(`#upg-list [${attribute}]`).count() !== 1) {
+      throw new Error(`Missing upgrade choice fixture: ${attribute}`);
+    }
+  }
   for (const width of [1400, 1024, 768, 390]) {
     await page.setViewportSize({ width, height: 1000 });
     const ordinaryCards = await run(() => Array.from(document.querySelectorAll('#upg-list > .upg-item')).slice(0, 12).map(card => {
@@ -555,16 +562,19 @@ try {
     if (ordinaryCards.some(card => !card.alongside || card.overflow || !card.singleLinePrice)) {
       throw new Error(`Ordinary purchase buttons moved or wrapped at ${width}px: ${JSON.stringify(ordinaryCards)}`);
     }
-    const layout = await run(() => {
-      const card = document.querySelector('#upg-list [data-start]').closest('.upg-item');
-      const text = card.children[1], buttons = card.querySelector('.upg-btns');
-      const bounds = card.getBoundingClientRect(), description = text.getBoundingClientRect(), actions = buttons.getBoundingClientRect();
-      return { width: description.width, overlap: description.bottom > actions.top + 1,
-        overflow: card.scrollWidth > card.clientWidth + 1 || actions.right > bounds.right + 1 };
-    });
-    if (layout.width < 120 || layout.overlap || layout.overflow) {
-      throw new Error(`Cramped starting-move card at ${width}px: ${JSON.stringify(layout)}`);
+    const layouts = await run(() => [...document.querySelectorAll('#upg-list > .upg-item')]
+      .filter(card => card.querySelector('[data-start], [data-start2], [data-sitem], [data-ban], [data-buy][title]'))
+      .map(card => {
+        const text = card.children[1], buttons = card.querySelector('.upg-btns');
+        const bounds = card.getBoundingClientRect(), description = text.getBoundingClientRect(), actions = buttons.getBoundingClientRect();
+        return { name: text.querySelector('b').textContent, width: description.width, overlap: description.bottom > actions.top + 1,
+          overflow: card.scrollWidth > card.clientWidth + 1 || actions.right > bounds.right + 1 };
+      }));
+    if (layouts.some(layout => layout.width < 120 || layout.overlap || layout.overflow)) {
+      throw new Error(`Cramped upgrade choice card at ${width}px: ${JSON.stringify(layouts)}`);
     }
+    await frame.locator('#upg-list [data-sitem]').scrollIntoViewIfNeeded();
+    await page.screenshot({ path: path.join(root, 'test-results', `upgrade-choices-${language}-${width}.png`) });
   }
   await page.setViewportSize({ width: 1400, height: 1000 });
   await resetScreens(true);

@@ -194,19 +194,19 @@ html.psko-enabled #upg-list .upg-btns > [data-buy] {
 }
 
 /* Move long choices and locked prerequisites below the description. */
-html.psko-enabled #upg-list > .upg-item:has([data-start], [data-start2], [data-ban], [data-buy][title]) {
+html.psko-enabled #upg-list > .upg-item:has([data-start], [data-start2], [data-sitem], [data-ban], [data-buy][title]) {
   grid-template-columns: 40px minmax(0, 1fr);
   align-content: start;
   align-items: start;
 }
 
-html.psko-enabled #upg-list > .upg-item:has([data-start], [data-start2], [data-ban], [data-buy][title]) > .upg-btns {
+html.psko-enabled #upg-list > .upg-item:has([data-start], [data-start2], [data-sitem], [data-ban], [data-buy][title]) > .upg-btns {
   grid-column: 1 / -1;
   min-width: 0;
   margin-left: 0;
 }
 
-html.psko-enabled #upg-list .upg-btns > :is([data-start], [data-start2], [data-ban]) {
+html.psko-enabled #upg-list .upg-btns > :is([data-start], [data-start2], [data-sitem], [data-ban]) {
   max-width: 100%;
   white-space: normal;
   overflow-wrap: anywhere;
