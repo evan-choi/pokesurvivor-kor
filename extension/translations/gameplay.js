@@ -409,7 +409,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ["Borra una MT que le enseñaste a un Pokémon (la MT borrada se pierde). Luego se la puedes volver a enseñar.", "Deletes a TM you taught a Pokémon (the deleted TM is lost). You can teach it again later.", "포켓몬에게 가르친 기술머신 기술을 삭제합니다. 삭제한 기술머신은 사라지며, 나중에 다시 가르칠 수 있습니다."],
   ["Borrar MT", "Delete TM", "기술머신 삭제"],
   ["{x} ha olvidado {x}", "{x} forgot {x}", "{x}(은)는 {x}(을)를 잊었습니다"],
-  ["Viendo a {x}", "Watching {x}", "{x} 관전 중"],
+  ["Viendo a {x}", "Watching {x}", "{name} 관전 중"],
   ["Si olvidas la contraseña, pídele al administrador que te cree otra cuenta.", "If you forget your password, ask the admin to create a new account for you.", "비밀번호를 잊었다면 관리자에게 새 계정을 만들어 달라고 요청하세요."],
   ["Esta web no está en la lista de webs de esta copia del juego: la partida sólo se guarda en este navegador.", "This website is not on the list of websites for this copy of the game: your game is only saved in this browser.", "이 웹사이트는 이 게임의 허용 사이트 목록에 없습니다. 진행 상황은 이 브라우저에만 저장됩니다."],
   ["Si creas una cuenta, guardamos tu nombre de jugador y tu partida (colección, monedas, mejoras y estadísticas) en Google Firebase para que puedas seguir en cualquier ordenador. No usamos tus datos para nada más, ni los compartimos, ni hay publicidad ni seguimiento. Como invitado no se guarda nada fuera de tu navegador.", "If you create an account, we store your player name and your game (collection, coins, upgrades and stats) in Google Firebase so you can carry on from any computer. We do not use your data for anything else, we do not share it, and there are no ads or tracking. As a guest, nothing is stored outside your browser.", "계정을 만들면 다른 컴퓨터에서도 이어서 플레이할 수 있도록 플레이어 이름과 진행 상황(보유 목록, 코인, 강화, 통계)을 Google Firebase에 저장합니다. 데이터는 다른 목적으로 사용하거나 공유하지 않으며, 광고와 추적도 없습니다. 게스트는 브라우저 밖에 아무것도 저장하지 않습니다."],
@@ -635,7 +635,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ["Usa 25 veces tu poder (Mega, Dinamax, Z o Teracristal).", "Use your power 25 times (Mega, Dynamax, Z or Terastal).", "특수 능력을 25번 사용하세요(메가진화, 다이맥스, Z기술, 테라스탈)."],
   ["Gigarrayo Fulminante", "10,000,000 Volt Thunderbolt", "1000만볼트"],
   ["Novena Potencia", "Extreme Evoboost", "나인이볼부스트"],
-  ["Arrojo Intempestivo", "Catastropika", "필살피카슛"],
+  ["Arrojo Intempestivo", "Pulverizing Pancake", "진심의공격"],
   ["Supernova Original", "Genesis Supernova", "오리진즈슈퍼노바"],
   ["Aluvión de Flechas Sombrías", "Sinister Arrow Raid", "섀도애로우즈스트라이크"],
   ["Hiperplancha Oscura", "Malicious Moonsault", "하이퍼다크크러셔"],
@@ -701,7 +701,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ["Teracristal {x}", "Terastal {x}", "테라스탈 {x}"],
   ["{x} s con su mega: sus tipos, su habilidad y mucha más fuerza. Recarga {x} s.", "{x} s as its Mega: its types, its Ability and much more power. Recharge {x} s.", "{x}초 동안 메가진화합니다. 타입과 특성이 바뀌고 훨씬 강해집니다. 재사용 대기시간 {x}초."],
   ["Gigamax", "Gigantamax", "거다이맥스"],
-  ["{x} s gigante: ves más lejos, destrozas todo lo que pisas, doble de vida, +40 % de daño y golpes en área. Cada {x} s, {x} alrededor. Recarga {x} s.", "{x} s giant: you see further, smash everything you step on, double HP, +40% damage and area hits. Every {x} s, {x} around you. Cooldown {x} s.", "{x}초 동안 거대해집니다. 시야가 넓어지고 밟는 것을 부수며, 체력 2배, 피해 40% 증가와 범위 공격을 얻습니다. {x}초마다 주변에 {x}을 사용합니다. 재사용 대기시간 {x}초."],
+  ["{x} s gigante: ves más lejos, destrozas todo lo que pisas, doble de vida, +40 % de daño y golpes en área. Cada {x} s, {x} alrededor. Recarga {x} s.", "{x} s giant: you see further, smash everything you step on, double HP, +40% damage and area hits. Every {x} s, {x} around you. Cooldown {x} s.", "{x}초 동안 거대해집니다. 시야가 넓어지고 밟는 것을 부수며, 체력 2배, 피해 40% 증가와 범위 공격을 얻습니다. {x}초마다 주변에 {x} 공격을 합니다. 재사용 대기시간 {x}초."],
   ["Dinamax", "Dynamax", "다이맥스"],
   ["{x} s gigante: ves más lejos, destrozas todo lo que pisas, doble de vida, +40 % de daño y cada golpe salpica a los de alrededor. Recarga {x} s.", "{x} s giant: you see further, smash everything you step on, double HP, +40% damage and every hit splashes nearby foes. Cooldown {x} s.", "{x}초 동안 거대해집니다. 시야가 넓어지고 밟는 것을 부수며, 체력 2배, 피해 40% 증가와 모든 공격의 주변 타격 효과를 얻습니다. 재사용 대기시간 {x}초."],
   ["Pulsera Z", "Z-Ring", "Z링"],
@@ -763,4 +763,9 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ["Estrellas", "Stars", "별"],
   ["Monedas", "Coins", "코인"],
   ["Pétalos", "Petals", "꽃잎"],
+]);
+
+globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
+  ["-5% de recarga en todos los movimientos.", "-5% cooldown on every move.", "모든 기술의 재사용 대기시간이 5% 감소합니다."],
+  ["+30% duración", "+30% duration", "지속 시간이 30% 증가합니다."],
 ]);

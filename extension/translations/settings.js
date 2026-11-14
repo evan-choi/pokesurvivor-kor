@@ -297,12 +297,12 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Pausa: {x} está eligiendo…",
     "Paused: {x} is choosing…",
-    "일시정지: {x} 님이 선택 중…"
+    "일시정지: {name} 님이 선택 중…"
   ],
   [
     "Pausa: {x} están eligiendo…",
     "Paused: {x} are choosing…",
-    "일시정지: {x} 님이 선택 중…"
+    "일시정지: {name} 님이 선택 중…"
   ],
   [
     "Cuenta borrada",
@@ -1182,7 +1182,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Pausa: esperando a {x} (anfitrión)…",
     "Paused: waiting for {x} (host)…",
-    "일시정지: 방장 {x} 님을 기다리는 중…"
+    "일시정지: 방장 {name} 님을 기다리는 중…"
   ],
   [
     "Novedades",
@@ -1432,7 +1432,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "¿Reportar la marca de {x} como trampa?",
     "Report {x}'s record as cheating?",
-    "{x} 님의 기록을 부정행위로 신고할까요?"
+    "{name} 님의 기록을 부정행위로 신고할까요?"
   ],
   [
     "Gracias: la revisaremos",

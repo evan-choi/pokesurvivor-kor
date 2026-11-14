@@ -312,7 +312,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "{x} ha dejado la partida",
     "{x} left the game",
-    "{x} 님이 게임을 떠났습니다"
+    "{name} 님이 게임을 떠났습니다"
   ],
   [
     "+1 ticket",
@@ -342,7 +342,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "¡{x} necesita ayuda! · {x} m",
     "{x} needs help! · {x} m",
-    "{x} 님에게 도움이 필요합니다! · {x} m"
+    "{name} 님에게 도움이 필요합니다! · {x} m"
   ],
   [
     "CAÍDO",
@@ -1167,7 +1167,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Volver a tu sala ({x})",
     "Back to your room ({x})",
-    "내 방으로 돌아가기 ({x})"
+    "내 방으로 돌아가기 ({name})"
   ],
   [
     "{x} en línea",

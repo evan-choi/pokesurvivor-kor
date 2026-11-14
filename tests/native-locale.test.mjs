@@ -17,7 +17,8 @@ function boot(preferences = {}) {
     localStorage: { getItem: key => storage.get(key), setItem: (key, value) => storage.set(key, value) },
     location: { reload: () => reloads++ },
     PSKO_MESSAGES: [['Luminosfera', 'Luminous Orb', '빛의구슬'],
-      ['Tu apodo es {x}', 'Your nickname is {x}', '내 닉네임은 {x}입니다']],
+      ['Tu apodo es {x}', 'Your nickname is {x}', '내 닉네임은 {x}입니다'],
+      ['¡{x} necesita ayuda! · {x} m', '{x} needs help! · {x} m', '{name} 님에게 도움이 필요합니다! · {x} m']],
     PSKO_POKEMON: { Shaymin: '쉐이미' },
   });
   vm.runInContext(source, context);
@@ -44,6 +45,7 @@ test('Korean is registered before the game consumes its locales and dictionaries
   assert.equal(dictionary['빛의구슬'], '빛의구슬');
   assert.equal(dictionary['쉐이미'], '쉐이미');
   assert.equal(dictionary['내 닉네임은 {x}입니다'], undefined);
+  assert.equal(dictionary['{name} 님에게 도움이 필요합니다! · {x} m'], '{name} 님에게 도움이 필요합니다! · {x} m');
   for (const name of ['Switch', 'The Pokémon Company', 'CREDITS.md', 'Authentication > Settings > Authorized domains']) {
     assert.equal(dictionary[name], name);
   }

@@ -52,6 +52,13 @@
       translated = source.replace(/[^·]+/g, part => part.replace(/\S(?:[\s\S]*\S)?/, name =>
         globalThis.PSKO_NATURES?.[name] ?? globalThis.PSKO_ABILITIES?.[name] ?? name));
     }
+    if (enabled && key === 'text' && element.closest('#pow-cards .ds')) {
+      translated = source.split(/(·)/).map(part => {
+        const name = part.trim();
+        const ability = globalThis.PSKO_ABILITIES?.[name];
+        return ability ? part.replace(name, ability) : translate(part);
+      }).join('');
+    }
     if (enabled && key === 'text' && element.id === 'starter-info') {
       translated = source.split(/(\s*[·,]\s*)/).map((part, index) => (
         index === 0 ? globalThis.PSKO.translateMove(part) : globalThis.PSKO.translate(part)

@@ -24,7 +24,8 @@
   // The native DOM hook translates the output again. Match complete Korean
   // results before it can replace an English name next to a Korean particle.
   for (const translated of Object.values(messages)) {
-    if (/[가-힣]/u.test(translated) && !/\{(?:x|y|name)\}/u.test(translated)) messages[translated] = translated;
+    if (/[가-힣]/u.test(translated) &&
+        (translated.includes('{name}') || !/\{(?:x|y|name)\}/u.test(translated))) messages[translated] = translated;
   }
   // The game distinguishes move names from type names through this dictionary scope.
   const moveNames = { 'Psíquico': '사이코키네시스', 'Psychic': '사이코키네시스' };

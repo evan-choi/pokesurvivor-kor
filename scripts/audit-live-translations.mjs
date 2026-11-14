@@ -13,6 +13,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const output = path.join(root, 'test-results', `translation-audit-${language}.json`);
 const extension = path.join(root, 'extension');
 const { moves: expectedMoves, evolvedMoveIds } = JSON.parse(await readFile(path.join(root, 'tests/fixtures/official-game-moves.json'), 'utf8'));
+const { moves: expectedPowers } = JSON.parse(await readFile(path.join(root, 'tests/fixtures/official-game-powers.json'), 'utf8'));
 await mkdir(path.dirname(output), { recursive: true });
 
 // Only these named products, rights holders and technical labels may remain in Latin script.
@@ -65,6 +66,9 @@ let traitNamesChecked = 0;
 let formNamesChecked = 0;
 let moveLabelsChecked = 0;
 let moveNameFindings = [];
+let generatedChoiceChecks = [];
+let generatedChoiceCounts = {};
+let powerNameChecks = [];
 const context = await chromium.launchPersistentContext('', {
   channel: 'chromium',
   headless: true,
@@ -157,6 +161,123 @@ async function resetScreens(showMenu = false) {
 async function openPanel(component, argument) {
   await resetScreens(true);
   await run((body, { component, argument }) => window.__PSKO_TEST_GAME__[component].open(argument), { component, argument });
+}
+
+async function auditGeneratedChoices() {
+  await resetScreens();
+  const { records, counts } = await run(() => {
+    const game = window.__PSKO_TEST_GAME__;
+    const player = game._115d8ef.player;
+    const choices = game._c0e2c6b.STATS.map(stat => ({
+      type: 'stat', key: `stat:${stat.id}`, title: stat.title, desc: stat.desc,
+      icon: stat.icon, color: '#8fa3c4', tag: 'Mejora',
+    }));
+    const counts = { stats: choices.length, offered: 0, moveUpgrades: 0 };
+    // Force the two rare cards into the real offer without changing the run.
+    const random = Math.random;
+    try {
+      Math.random = () => 0;
+      const sample = Object.assign(Object.create(player), { itemSlots: 3, got4: false, gotWis: false });
+      const offered = game._c0e2c6b.offer(sample, 10000);
+      counts.offered = offered.length;
+      choices.push(...offered);
+    } finally { Math.random = random; }
+    for (const definition of game.Moves.ALL) {
+      const move = game.Moves.instance(definition.id);
+      for (let level = 1; level < definition.maxLvl; level++) {
+        counts.moveUpgrades++;
+        move.lvl = level;
+        choices.push({ type: 'up', key: `up:${definition.id}:${level}`, title: definition.name,
+          desc: game.Moves.nextUpText(move), icon: `move:${definition.id}`,
+          color: game.U.TYPE_COLOR[definition.type], tag: `Nv. ${level + 1}` });
+      }
+    }
+    const plain = (html, translate = text => text) => {
+      const node = document.createElement('div');
+      node.innerHTML = html;
+      const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+      while (walker.nextNode()) walker.currentNode.nodeValue = translate(walker.currentNode.nodeValue);
+      return node.textContent;
+    };
+    game.RunUI.showLevelUp(25, choices, () => {});
+    return { counts, records: choices.map(choice => {
+      const source = plain(choice.desc);
+      return { key: choice.key, type: choice.type, source,
+        native: plain(choice.desc, text => game.T(text)),
+        fallback: plain(choice.desc, text => window.PSKO.translate(text)) };
+    }) };
+  });
+  generatedChoiceCounts = counts;
+  await run(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  const rendered = await frame.locator('#cards .ds').allTextContents();
+  if (rendered.length !== records.length) throw new Error('The generated level-up cards were not all rendered.');
+  generatedChoiceChecks = records.map((record, index) => ({ ...record, rendered: rendered[index] }));
+  const numbers = text => (text.match(/\d+(?:[.,]\d+)?/g) || [])
+    .map(value => Number(value.replace(',', '.'))).sort((a, b) => a - b);
+  for (const record of generatedChoiceChecks) {
+    for (const field of ['native', 'fallback', 'rendered']) {
+      const text = record[field];
+      if (foreignCharacters.test(unexplainedText({ text, tag: 'DIV', class: '' })) ||
+          JSON.stringify(numbers(text)) !== JSON.stringify(numbers(record.source))) {
+        findings.push({ screen: 'generated-level-up-cards', field, ...record });
+      }
+    }
+  }
+  console.log(`Generated level-up choices: ${records.length} descriptions checked in native, fallback and rendered output`);
+  await capture('generated-level-up-cards');
+  await frame.locator('#cards .card').filter({ hasText: '반사신경' }).first()
+    .screenshot({ path: path.join(root, 'test-results', `reflexes-${language}.png`) });
+}
+
+async function auditPowerChoices() {
+  const records = await run(() => {
+    const game = window.__PSKO_TEST_GAME__;
+    const powers = game._bade424;
+    const config = game._0f57260;
+    const names = [
+      ...Object.entries(config.Z_BY_TYPE).map(([id, source]) => ({ kind: 'z', id, source })),
+      ...Object.entries(config.MAX_BY_TYPE).map(([id, source]) => ({ kind: 'max', id, source })),
+      ...Object.entries(config.Z_ONLY).map(([id, value]) => ({ kind: 'unique-z', id, source: value.name })),
+      ...Object.entries(config.GMAX).map(([id, value]) => ({ kind: 'gmax', id, source: value.name })),
+    ];
+    const entries = new Map();
+    for (const dex of Object.keys(game._b568ae5)) {
+      for (const option of powers.options(Number(dex))) {
+        entries.set(`${option.title}|${option.desc}`, option);
+      }
+      for (const kind of ['mega', 'z', 'tera']) {
+        for (const option of powers.typeOptions(kind, Number(dex))) {
+          entries.set(`${option.title}|${option.desc}`, option);
+        }
+      }
+    }
+    game.RunUI.showPower([...entries.values()], () => {});
+    return names.map(record => ({ ...record, native: game.T(record.source, 'move'),
+      fallback: window.PSKO.translateMove(record.source) }));
+  });
+  if (records.length !== expectedPowers.length) throw new Error('Refresh the expected power move names: the live list changed.');
+  powerNameChecks = records;
+  for (const record of records) {
+    const expected = expectedPowers.find(move => move.kind === record.kind && String(move.id) === record.id);
+    if (!expected || record.source !== expected.spanish) {
+      throw new Error(`Refresh the expected power move name: ${record.kind}:${record.id}`);
+    }
+    for (const field of ['native', 'fallback']) {
+      if (record[field] !== expected.korean) {
+        findings.push({ screen: 'power-move-names', field, expected: expected.korean, ...record });
+      }
+    }
+  }
+  const englishNames = await run((body, expectedPowers) => expectedPowers.map(move => ({
+    ...move, native: window.__PSKO_TEST_GAME__.T(move.english, 'move'),
+    fallback: window.PSKO.translateMove(move.english),
+  })), expectedPowers);
+  for (const record of englishNames) {
+    if (record.native !== record.korean || record.fallback !== record.korean) {
+      findings.push({ screen: 'power-move-names-english', ...record });
+    }
+  }
+  await capture('all-power-options-and-types');
 }
 
 async function auditMoveNames() {
@@ -315,6 +436,7 @@ try {
   for (const [spanish, english] of locale.untranslated) findings.push({ screen: 'locale-registry', spanish, english });
   const nativeChecks = await run((body, preservedLabels) => {
     const game = window.__PSKO_TEST_GAME__;
+    const notice = (template, ...values) => window.PSKO.translate(game.T(game._78cdb75.f(template, ...values)));
     return {
       aliases: ['Mando conectado', 'Mando conectado:', 'atrás / cerrar', 'TIRADA ×100'].map(text => game.T(text)),
       products: ['Switch', 'The Pokémon Company', 'CREDITS.md', 'Authentication > Settings > Authorized domains']
@@ -326,9 +448,12 @@ try {
         return !/[가-힣]/u.test(translated) && preservedLabels[source] !== translated;
       }),
       primalNames: ['Groudon Primigenio', 'Kyogre Primigenio', 'Primal Groudon', 'Primal Kyogre'].map(name => game.T(name)),
-      playerNames: ['Fire', 'Ash Pokémon'].flatMap(name => [
-        game._78cdb75.f('Viendo a {x}', name),
-        game._78cdb75.f('{name} es el nuevo anfitrión', name),
+      playerNames: ['Fire', 'Ash Pokémon', 'Psychic'].flatMap(name => [
+        notice('Viendo a {x}', name),
+        notice('{name} es el nuevo anfitrión', name),
+        notice('Le has regalado un ticket a {x}', name),
+        notice('¡{x} necesita ayuda! · {x} m', name, 17),
+        notice('¡Gengar le rompe a {x} su {x}!', name, 'Life Orb'),
       ]),
     };
   }, preservedLabels);
@@ -336,10 +461,11 @@ try {
       JSON.stringify(nativeChecks.products) !== JSON.stringify(['Switch', 'The Pokémon Company', 'CREDITS.md', 'Authentication > Settings > Authorized domains']) ||
       nativeChecks.rewritten.length ||
       JSON.stringify(nativeChecks.primalNames) !== JSON.stringify(['원시그란돈', '원시가이오가', '원시그란돈', '원시가이오가']) ||
-      JSON.stringify(nativeChecks.playerNames) !== JSON.stringify([
-        'Fire 관전 중', 'Fire 님이 새 방장이 되었습니다',
-        'Ash Pokémon 관전 중', 'Ash Pokémon 님이 새 방장이 되었습니다',
-      ])) {
+      JSON.stringify(nativeChecks.playerNames) !== JSON.stringify(['Fire', 'Ash Pokémon', 'Psychic'].flatMap(name => [
+        `${name} 관전 중`, `${name} 님이 새 방장이 되었습니다`,
+        `${name}에게 티켓을 선물했습니다`, `${name} 님에게 도움이 필요합니다! · 17 m`,
+        `팬텀의 도구 파괴 · ${name} · 생명의구슬!`,
+      ]))) {
     throw new Error(`Native translation mismatch: ${JSON.stringify(nativeChecks)}`);
   }
   for (const [source, english] of nativeChecks.untranslated) findings.push({ screen: 'native-locale-registry', source, english });
@@ -757,11 +883,55 @@ try {
   });
   await capture('pause-with-item-and-orbs');
   await auditMoveNames();
+  await auditGeneratedChoices();
+  await resetScreens();
+  await auditPowerChoices();
+
+  await resetScreens();
+  await run(() => {
+    const game = window.__PSKO_TEST_GAME__;
+    const moves = ['tackle', 'psychic', 'ember'].map(id => game.Moves.instance(id, 3));
+    game.RunUI.showForget({ moves, slots: [[moves[0], moves[1]], [moves[2]]],
+      forgetChoices: () => ['reflect', 'light-screen', 'double-team'], canEmpty: () => true }, () => {});
+  });
+  await capture('forget-linked-moves');
+  await frame.waitForTimeout(350);
+  await run(() => window.__PSKO_TEST_GAME__.RunUI.pickForget(0));
+  await capture('forget-replacements');
+
+  await resetScreens();
+  await run(() => {
+    const game = window.__PSKO_TEST_GAME__;
+    const player = game._115d8ef.player;
+    game.RunUI.showEvo({ ...player, dex: 1, mon: { ...game._b568ae5[1], nature: player.mon.nature } },
+      { opts: [2, 3], all: [2, 3], half: false }, () => {});
+  });
+  await capture('pokemon-evolution-choices');
+  await resetScreens();
+  await run(() => {
+    const game = window.__PSKO_TEST_GAME__;
+    const player = game._115d8ef.player;
+    game.RunUI.showForm({ ...player, dex: 479, form: 0, mon: { ...game._b568ae5[479], nature: player.mon.nature } },
+      { forms: game._88f0d17.of(479, 'stat') }, () => {});
+  });
+  await capture('pokemon-form-choices');
+  for (const gengar of [false, true]) {
+    await resetScreens();
+    await run((body, gengar) => {
+      const game = window.__PSKO_TEST_GAME__;
+      game.RunUI.showOver({ dead: !gengar, time: 600, level: 40, kills: 1500, coins: 200,
+        t1: 3, t10: 2, candy: 10, judge: { gengar, dmg: 20000, time: 120 },
+        chal: { cond: game._b736cc3.CONDS[0], prize: true },
+        mastery: { dex: 1, gained: 200, after: gengar ? 1e9 : 200, got: Object.keys(game._abc0315.BY) },
+        moves: [{ id: 'psychic', name: 'Psíquico', lvl: 5 }], caught: [{ dex: 1, isNew: true }], record: true }, () => {});
+    }, gengar);
+    await capture(gengar ? 'run-rewards-gengar-complete-mastery' : 'run-rewards-arceus-mastery');
+  }
 } catch (error) {
   errors.push(error.stack || error.message);
   console.error(error);
 } finally {
-  await writeFile(output, JSON.stringify({ language, localeEntriesChecked, traitNamesChecked, formNamesChecked, moveLabelsChecked, moveNameFindings, errors, findings, screens }, null, 2));
+  await writeFile(output, JSON.stringify({ language, localeEntriesChecked, traitNamesChecked, formNamesChecked, moveLabelsChecked, moveNameFindings, generatedChoiceCounts, generatedChoiceChecks, powerNameChecks, errors, findings, screens }, null, 2));
   await context.close();
   console.log(`${screens.length} screens checked; ${findings.length} unexplained entries; ${errors.length} errors.`);
   console.log(output);

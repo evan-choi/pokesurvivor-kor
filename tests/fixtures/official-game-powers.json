@@ -1,0 +1,642 @@
+{
+  "source": "https://raw.githubusercontent.com/PokeAPI/pokeapi/master/data/v2/csv/move_names.csv",
+  "gameSource": "https://pokesurvivor.com/js/app.min.js?v=c042c25b58",
+  "gmaxSources": [
+    "https://pokemondb.net/move/g-max-vine-lash",
+    "https://pokemondb.net/move/g-max-wildfire",
+    "https://pokemondb.net/move/g-max-cannonade",
+    "https://pokemondb.net/move/g-max-befuddle",
+    "https://pokemondb.net/move/g-max-volt-crash",
+    "https://pokemondb.net/move/g-max-gold-rush",
+    "https://pokemondb.net/move/g-max-chi-strike",
+    "https://pokemondb.net/move/g-max-terror",
+    "https://pokemondb.net/move/g-max-foam-burst",
+    "https://pokemondb.net/move/g-max-resonance",
+    "https://pokemondb.net/move/g-max-cuddle",
+    "https://pokemondb.net/move/g-max-replenish",
+    "https://pokemondb.net/move/g-max-malodor",
+    "https://pokemondb.net/move/g-max-meltdown",
+    "https://pokemondb.net/move/g-max-drum-solo",
+    "https://pokemondb.net/move/g-max-fireball",
+    "https://pokemondb.net/move/g-max-hydrosnipe",
+    "https://pokemondb.net/move/g-max-wind-rage",
+    "https://pokemondb.net/move/g-max-gravitas",
+    "https://pokemondb.net/move/g-max-stonesurge",
+    "https://pokemondb.net/move/g-max-volcalith",
+    "https://pokemondb.net/move/g-max-tartness",
+    "https://pokemondb.net/move/g-max-sweetness",
+    "https://pokemondb.net/move/g-max-sandblast",
+    "https://pokemondb.net/move/g-max-stun-shock",
+    "https://pokemondb.net/move/g-max-centiferno",
+    "https://pokemondb.net/move/g-max-smite",
+    "https://pokemondb.net/move/g-max-snooze",
+    "https://pokemondb.net/move/g-max-finale",
+    "https://pokemondb.net/move/g-max-steelsurge",
+    "https://pokemondb.net/move/g-max-depletion",
+    "https://pokemondb.net/move/g-max-one-blow"
+  ],
+  "moves": [
+    {
+      "kind": "z",
+      "id": "normal",
+      "spanish": "Carrera Arrolladora",
+      "english": "Breakneck Blitz",
+      "korean": "울트라대시어택"
+    },
+    {
+      "kind": "z",
+      "id": "fighting",
+      "spanish": "Ráfaga Demoledora",
+      "english": "All-Out Pummeling",
+      "korean": "전력무쌍격렬권"
+    },
+    {
+      "kind": "z",
+      "id": "flying",
+      "spanish": "Picado Supersónico",
+      "english": "Supersonic Skystrike",
+      "korean": "파이널다이브클래시"
+    },
+    {
+      "kind": "z",
+      "id": "poison",
+      "spanish": "Diluvio Corrosivo",
+      "english": "Acid Downpour",
+      "korean": "애시드포이즌딜리트"
+    },
+    {
+      "kind": "z",
+      "id": "ground",
+      "spanish": "Barrena Telúrica",
+      "english": "Tectonic Rage",
+      "korean": "라이징랜드오버"
+    },
+    {
+      "kind": "z",
+      "id": "rock",
+      "spanish": "Aplastamiento Gigalítico",
+      "english": "Continental Crush",
+      "korean": "월즈엔드폴"
+    },
+    {
+      "kind": "z",
+      "id": "bug",
+      "spanish": "Guadaña Sedosa",
+      "english": "Savage Spin-Out",
+      "korean": "절대포식회전참"
+    },
+    {
+      "kind": "z",
+      "id": "ghost",
+      "spanish": "Presa Espectral",
+      "english": "Never-Ending Nightmare",
+      "korean": "무한암야로의유인"
+    },
+    {
+      "kind": "z",
+      "id": "steel",
+      "spanish": "Hélice Trepanadora",
+      "english": "Corkscrew Crash",
+      "korean": "초월나선연격"
+    },
+    {
+      "kind": "z",
+      "id": "fire",
+      "spanish": "Hecatombe Pírica",
+      "english": "Inferno Overdrive",
+      "korean": "다이내믹풀플레임"
+    },
+    {
+      "kind": "z",
+      "id": "water",
+      "spanish": "Hidrovórtice Abisal",
+      "english": "Hydro Vortex",
+      "korean": "슈퍼아쿠아토네이도"
+    },
+    {
+      "kind": "z",
+      "id": "grass",
+      "spanish": "Megatón Floral",
+      "english": "Bloom Doom",
+      "korean": "블룸샤인엑스트라"
+    },
+    {
+      "kind": "z",
+      "id": "electric",
+      "spanish": "Gigavoltio Destructor",
+      "english": "Gigavolt Havoc",
+      "korean": "스파킹기가볼트"
+    },
+    {
+      "kind": "z",
+      "id": "psychic",
+      "spanish": "Disruptor Psíquico",
+      "english": "Shattered Psyche",
+      "korean": "맥시멈사이브레이커"
+    },
+    {
+      "kind": "z",
+      "id": "ice",
+      "spanish": "Crioaliento Despiadado",
+      "english": "Subzero Slammer",
+      "korean": "레이징지오프리즈"
+    },
+    {
+      "kind": "z",
+      "id": "dragon",
+      "spanish": "Dracoaliento Devastador",
+      "english": "Devastating Drake",
+      "korean": "얼티메이트드래곤번"
+    },
+    {
+      "kind": "z",
+      "id": "dark",
+      "spanish": "Agujero Negro Aniquilador",
+      "english": "Black Hole Eclipse",
+      "korean": "블랙홀이클립스"
+    },
+    {
+      "kind": "z",
+      "id": "fairy",
+      "spanish": "Arrumaco Sideral",
+      "english": "Twinkle Tackle",
+      "korean": "러블리스타임팩트"
+    },
+    {
+      "kind": "max",
+      "id": "normal",
+      "spanish": "Maxiataque",
+      "english": "Max Strike",
+      "korean": "다이어택"
+    },
+    {
+      "kind": "max",
+      "id": "fighting",
+      "spanish": "Maxipuño",
+      "english": "Max Knuckle",
+      "korean": "다이너클"
+    },
+    {
+      "kind": "max",
+      "id": "flying",
+      "spanish": "Maxiciclón",
+      "english": "Max Airstream",
+      "korean": "다이제트"
+    },
+    {
+      "kind": "max",
+      "id": "poison",
+      "spanish": "Maxiácido",
+      "english": "Max Ooze",
+      "korean": "다이애시드"
+    },
+    {
+      "kind": "max",
+      "id": "ground",
+      "spanish": "Maxitemblor",
+      "english": "Max Quake",
+      "korean": "다이어스"
+    },
+    {
+      "kind": "max",
+      "id": "rock",
+      "spanish": "Maxilito",
+      "english": "Max Rockfall",
+      "korean": "다이록"
+    },
+    {
+      "kind": "max",
+      "id": "bug",
+      "spanish": "Maxinsecto",
+      "english": "Max Flutterby",
+      "korean": "다이웜"
+    },
+    {
+      "kind": "max",
+      "id": "ghost",
+      "spanish": "Maxiespectro",
+      "english": "Max Phantasm",
+      "korean": "다이할로우"
+    },
+    {
+      "kind": "max",
+      "id": "steel",
+      "spanish": "Maximetal",
+      "english": "Max Steelspike",
+      "korean": "다이스틸"
+    },
+    {
+      "kind": "max",
+      "id": "fire",
+      "spanish": "Maxignición",
+      "english": "Max Flare",
+      "korean": "다이번"
+    },
+    {
+      "kind": "max",
+      "id": "water",
+      "spanish": "Maxichorro",
+      "english": "Max Geyser",
+      "korean": "다이스트림"
+    },
+    {
+      "kind": "max",
+      "id": "grass",
+      "spanish": "Maxiflora",
+      "english": "Max Overgrowth",
+      "korean": "다이그래스"
+    },
+    {
+      "kind": "max",
+      "id": "electric",
+      "spanish": "Maxitormenta",
+      "english": "Max Lightning",
+      "korean": "다이썬더"
+    },
+    {
+      "kind": "max",
+      "id": "psychic",
+      "spanish": "Maxionda",
+      "english": "Max Mindstorm",
+      "korean": "다이사이코"
+    },
+    {
+      "kind": "max",
+      "id": "ice",
+      "spanish": "Maxihelada",
+      "english": "Max Hailstorm",
+      "korean": "다이아이스"
+    },
+    {
+      "kind": "max",
+      "id": "dragon",
+      "spanish": "Maxidraco",
+      "english": "Max Wyrmwind",
+      "korean": "다이드라군"
+    },
+    {
+      "kind": "max",
+      "id": "dark",
+      "spanish": "Maxisombra",
+      "english": "Max Darkness",
+      "korean": "다이아크"
+    },
+    {
+      "kind": "max",
+      "id": "fairy",
+      "spanish": "Maxiestela",
+      "english": "Max Starfall",
+      "korean": "다이페어리"
+    },
+    {
+      "kind": "gmax",
+      "id": "3",
+      "spanish": "Gigalianas",
+      "english": "G-Max Vine Lash",
+      "korean": "거다이편달"
+    },
+    {
+      "kind": "gmax",
+      "id": "6",
+      "spanish": "Gigallamarada",
+      "english": "G-Max Wildfire",
+      "korean": "거다이옥염"
+    },
+    {
+      "kind": "gmax",
+      "id": "9",
+      "spanish": "Gigacañonazo",
+      "english": "G-Max Cannonade",
+      "korean": "거다이포격"
+    },
+    {
+      "kind": "gmax",
+      "id": "12",
+      "spanish": "Gigaestupor",
+      "english": "G-Max Befuddle",
+      "korean": "거다이고혹"
+    },
+    {
+      "kind": "gmax",
+      "id": "25",
+      "spanish": "Gigatronada",
+      "english": "G-Max Volt Crash",
+      "korean": "거다이만뢰"
+    },
+    {
+      "kind": "gmax",
+      "id": "52",
+      "spanish": "Gigamonedas",
+      "english": "G-Max Gold Rush",
+      "korean": "거다이금화"
+    },
+    {
+      "kind": "gmax",
+      "id": "68",
+      "spanish": "Gigapuñición",
+      "english": "G-Max Chi Strike",
+      "korean": "거다이회심격"
+    },
+    {
+      "kind": "gmax",
+      "id": "94",
+      "spanish": "Gigaaparición",
+      "english": "G-Max Terror",
+      "korean": "거다이환영"
+    },
+    {
+      "kind": "gmax",
+      "id": "99",
+      "spanish": "Gigaespuma",
+      "english": "G-Max Foam Burst",
+      "korean": "거다이포말"
+    },
+    {
+      "kind": "gmax",
+      "id": "131",
+      "spanish": "Gigamelodía",
+      "english": "G-Max Resonance",
+      "korean": "거다이선율"
+    },
+    {
+      "kind": "gmax",
+      "id": "133",
+      "spanish": "Gigaternura",
+      "english": "G-Max Cuddle",
+      "korean": "거다이포옹"
+    },
+    {
+      "kind": "gmax",
+      "id": "143",
+      "spanish": "Gigarreciclaje",
+      "english": "G-Max Replenish",
+      "korean": "거다이재생"
+    },
+    {
+      "kind": "gmax",
+      "id": "569",
+      "spanish": "Gigapestilencia",
+      "english": "G-Max Malodor",
+      "korean": "거다이악취"
+    },
+    {
+      "kind": "gmax",
+      "id": "809",
+      "spanish": "Gigafundido",
+      "english": "G-Max Meltdown",
+      "korean": "거다이융격"
+    },
+    {
+      "kind": "gmax",
+      "id": "812",
+      "spanish": "Gigarredoble",
+      "english": "G-Max Drum Solo",
+      "korean": "거다이난타"
+    },
+    {
+      "kind": "gmax",
+      "id": "815",
+      "spanish": "Gigaesfera ígnea",
+      "english": "G-Max Fireball",
+      "korean": "거다이화염구"
+    },
+    {
+      "kind": "gmax",
+      "id": "818",
+      "spanish": "Gigadisparo",
+      "english": "G-Max Hydrosnipe",
+      "korean": "거다이저격"
+    },
+    {
+      "kind": "gmax",
+      "id": "823",
+      "spanish": "Gigahuracán",
+      "english": "G-Max Wind Rage",
+      "korean": "거다이풍격"
+    },
+    {
+      "kind": "gmax",
+      "id": "826",
+      "spanish": "Gigabóveda",
+      "english": "G-Max Gravitas",
+      "korean": "거다이천도"
+    },
+    {
+      "kind": "gmax",
+      "id": "834",
+      "spanish": "Gigatrampa rocas",
+      "english": "G-Max Stonesurge",
+      "korean": "거다이암진"
+    },
+    {
+      "kind": "gmax",
+      "id": "839",
+      "spanish": "Gigarroca ígnea",
+      "english": "G-Max Volcalith",
+      "korean": "거다이분석"
+    },
+    {
+      "kind": "gmax",
+      "id": "841",
+      "spanish": "Gigacorrosión",
+      "english": "G-Max Tartness",
+      "korean": "거다이산격"
+    },
+    {
+      "kind": "gmax",
+      "id": "842",
+      "spanish": "Giganéctar",
+      "english": "G-Max Sweetness",
+      "korean": "거다이감로"
+    },
+    {
+      "kind": "gmax",
+      "id": "844",
+      "spanish": "Gigapolvareda",
+      "english": "G-Max Sandblast",
+      "korean": "거다이사진"
+    },
+    {
+      "kind": "gmax",
+      "id": "849",
+      "spanish": "Gigadescarga",
+      "english": "G-Max Stun Shock",
+      "korean": "거다이감전"
+    },
+    {
+      "kind": "gmax",
+      "id": "851",
+      "spanish": "Gigacienfuegos",
+      "english": "G-Max Centiferno",
+      "korean": "거다이백화"
+    },
+    {
+      "kind": "gmax",
+      "id": "858",
+      "spanish": "Gigacastigo",
+      "english": "G-Max Smite",
+      "korean": "거다이천벌"
+    },
+    {
+      "kind": "gmax",
+      "id": "861",
+      "spanish": "Gigasopor",
+      "english": "G-Max Snooze",
+      "korean": "거다이수마"
+    },
+    {
+      "kind": "gmax",
+      "id": "869",
+      "spanish": "Gigacolofón",
+      "english": "G-Max Finale",
+      "korean": "거다이단원"
+    },
+    {
+      "kind": "gmax",
+      "id": "879",
+      "spanish": "Gigatrampa acero",
+      "english": "G-Max Steelsurge",
+      "korean": "거다이강철진"
+    },
+    {
+      "kind": "gmax",
+      "id": "884",
+      "spanish": "Gigadesgaste",
+      "english": "G-Max Depletion",
+      "korean": "거다이감쇠"
+    },
+    {
+      "kind": "gmax",
+      "id": "892",
+      "spanish": "Gigagolpe brusco",
+      "english": "G-Max One Blow",
+      "korean": "거다이일격"
+    },
+    {
+      "kind": "unique-z",
+      "id": "25",
+      "spanish": "Gigarrayo Fulminante",
+      "english": "10,000,000 Volt Thunderbolt",
+      "korean": "1000만볼트"
+    },
+    {
+      "kind": "unique-z",
+      "id": "133",
+      "spanish": "Novena Potencia",
+      "english": "Extreme Evoboost",
+      "korean": "나인이볼부스트"
+    },
+    {
+      "kind": "unique-z",
+      "id": "143",
+      "spanish": "Arrojo Intempestivo",
+      "english": "Pulverizing Pancake",
+      "korean": "진심의공격"
+    },
+    {
+      "kind": "unique-z",
+      "id": "151",
+      "spanish": "Supernova Original",
+      "english": "Genesis Supernova",
+      "korean": "오리진즈슈퍼노바"
+    },
+    {
+      "kind": "unique-z",
+      "id": "724",
+      "spanish": "Aluvión de Flechas Sombrías",
+      "english": "Sinister Arrow Raid",
+      "korean": "섀도애로우즈스트라이크"
+    },
+    {
+      "kind": "unique-z",
+      "id": "727",
+      "spanish": "Hiperplancha Oscura",
+      "english": "Malicious Moonsault",
+      "korean": "하이퍼다크크러셔"
+    },
+    {
+      "kind": "unique-z",
+      "id": "730",
+      "spanish": "Sinfonía de la Diva Marina",
+      "english": "Oceanic Operetta",
+      "korean": "바다의심포니"
+    },
+    {
+      "kind": "unique-z",
+      "id": "745",
+      "spanish": "Tempestad Rocosa",
+      "english": "Splintered Stormshards",
+      "korean": "레이디얼에지스톰"
+    },
+    {
+      "kind": "unique-z",
+      "id": "778",
+      "spanish": "Somanta Amistosa",
+      "english": "Let’s Snuggle Forever",
+      "korean": "투닥투닥프렌드타임"
+    },
+    {
+      "kind": "unique-z",
+      "id": "784",
+      "spanish": "Estruendo Implacable",
+      "english": "Clangorous Soulblaze",
+      "korean": "브레이징소울비트"
+    },
+    {
+      "kind": "unique-z",
+      "id": "785",
+      "spanish": "Cólera del Guardián",
+      "english": "Guardian of Alola",
+      "korean": "알로라의수호자"
+    },
+    {
+      "kind": "unique-z",
+      "id": "786",
+      "spanish": "Cólera del Guardián",
+      "english": "Guardian of Alola",
+      "korean": "알로라의수호자"
+    },
+    {
+      "kind": "unique-z",
+      "id": "787",
+      "spanish": "Cólera del Guardián",
+      "english": "Guardian of Alola",
+      "korean": "알로라의수호자"
+    },
+    {
+      "kind": "unique-z",
+      "id": "788",
+      "spanish": "Cólera del Guardián",
+      "english": "Guardian of Alola",
+      "korean": "알로라의수호자"
+    },
+    {
+      "kind": "unique-z",
+      "id": "791",
+      "spanish": "Embestida Solar",
+      "english": "Searing Sunraze Smash",
+      "korean": "선샤인스매셔"
+    },
+    {
+      "kind": "unique-z",
+      "id": "792",
+      "spanish": "Deflagración Lunar",
+      "english": "Menacing Moonraze Maelstrom",
+      "korean": "문라이트블래스터"
+    },
+    {
+      "kind": "unique-z",
+      "id": "800",
+      "spanish": "Fotodestrucción Apocalíptica",
+      "english": "Light That Burns the Sky",
+      "korean": "하늘을태우는멸망의빛"
+    },
+    {
+      "kind": "unique-z",
+      "id": "802",
+      "spanish": "Constelación Robaalmas",
+      "english": "Soul-Stealing 7-Star Strike",
+      "korean": "칠성탈혼퇴"
+    }
+  ]
+}

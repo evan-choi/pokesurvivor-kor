@@ -12,7 +12,7 @@
   function add(source, target) {
     source = normalize(source);
     target = target.trim();
-    if (!source || (source === target && !source.includes('{name}'))) return;
+    if (!source || (source === target && !/\{(?:x|y|name)\}/u.test(source))) return;
     if (/\{(?:x|y|name)\}/u.test(source)) {
       patterns.push({
         regex: new RegExp(`^${source.split(/\{(?:x|y|name)\}/u).map(escape).join('(.+?)')}$`, 'iu'),
@@ -29,10 +29,13 @@
   for (const [spanish, english, korean] of globalThis.PSKO_MESSAGES || []) {
     add(spanish, korean);
     add(english, korean);
-    if (korean.includes('{name}')) add(korean, korean);
+    // The game can translate a template before inserting names from its catalogs.
+    if (/\{(?:x|y|name)\}/u.test(korean)) add(korean, korean);
   }
   for (const [name, korean] of Object.entries(globalThis.PSKO_POKEMON || {})) add(name, korean);
-  patterns.sort((a, b) => b.specificity - a.specificity);
+  // A user name can itself contain a phrase matched by another template.
+  patterns.sort((a, b) => Number(b.target.includes('{name}')) - Number(a.target.includes('{name}')) ||
+    b.specificity - a.specificity);
 
   const termPattern = terms.size
     ? new RegExp(`(?<![\\p{L}\\p{N}_])(?:${[...terms.keys()].sort((a, b) => b.length - a.length).map(escape).join('|')})(?![\\p{L}\\p{N}_])`, 'giu')

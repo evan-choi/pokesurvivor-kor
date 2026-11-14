@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const extensionUrl = new URL('../extension/', import.meta.url);
 const gameDictionaries = [
-  ['moves', 303],
+  ['moves', 368],
   ['menus', 300],
   ['progress', 500],
   ['settings', 288],
@@ -30,6 +30,43 @@ for (const name of [...gameDictionaries.map(([name]) => name), 'extra', 'gamepla
 }
 evaluate(context, 'translation-core.js');
 const translate = context.PSKO.translate;
+
+test('current stat and move upgrades translate before native word replacements', () => {
+  const native = vm.createContext({
+    PSKO_MESSAGES: context.PSKO_MESSAGES,
+    PSKO_POKEMON: context.PSKO_POKEMON,
+    localStorage: { getItem: () => null },
+    document: { addEventListener() {} },
+  });
+  evaluate(native, 'native-locale.js');
+  const [dictionary] = native.PS_LANG_Q[0];
+  for (const [spanish, english, expected] of [
+    ['-5% de recarga en todos los movimientos.', '-5% cooldown on every move.', '모든 기술의 재사용 대기시간이 5% 감소합니다.'],
+    ['+30% duración', '+30% duration', '지속 시간이 30% 증가합니다.'],
+  ]) {
+    for (const source of [spanish, english]) {
+      assert.equal(translate(source), expected, source);
+      assert.equal(dictionary[source], expected, source);
+    }
+    assert.equal(dictionary[expected], expected);
+  }
+});
+
+test('native Korean templates translate inserted move names without changing numbers or player names', () => {
+  const giant = '17초 동안 거대해집니다. 시야가 넓어지고 밟는 것을 부수며, 체력 2배, 피해 40% 증가와 범위 공격을 얻습니다. 3초마다 주변에 Gigallamarada 공격을 합니다. 재사용 대기시간 90초.';
+  assert.equal(translate(giant), giant.replace('Gigallamarada', '거다이옥염'));
+  assert.equal(translate(translate(giant)), translate(giant));
+  assert.equal(translate('Ash Pokémon 관전 중'), 'Ash Pokémon 관전 중');
+});
+
+test('all power moves use their official Korean names in both game languages', () => {
+  const { moves } = JSON.parse(readFileSync(new URL('fixtures/official-game-powers.json', import.meta.url), 'utf8'));
+  assert.equal(moves.length, 86);
+  for (const { spanish, english, korean } of moves) {
+    assert.equal(context.PSKO.translateMove(spanish), korean, spanish);
+    assert.equal(context.PSKO.translateMove(english), korean, english);
+  }
+});
 
 test('all added form labels preserve their complete Korean names', () => {
   const forms = readMessages('pokemon');
@@ -65,6 +102,8 @@ test('all translation records preserve the order and kind of their placeholders'
 });
 
 test('updated controls, reward placeholders and primal names keep their contexts', () => {
+  for (const source of ['No se pudo guardar el apodo (error).', "Couldn't save the nickname (error)."])
+    assert.equal(translate(source), '닉네임을 저장하지 못했습니다(오류).');
   assert.equal(translate('DOWN'), '쓰러짐');
   assert.equal(translate('Down'), '아래');
   assert.equal(translate('¡Gana Pikachu! Te llevas 10.'), '피카츄 승리! 10 획득.');
@@ -245,7 +284,7 @@ test('starting-move labels preserve all move names, including short names and ty
   assert.equal(translate('Psychic'), '에스퍼');
 });
 
-test('all 1,391 base game messages have complete translations and matching placeholders', () => {
+test('all base game messages have complete translations and matching placeholders', () => {
   let total = 0;
   for (const [name, count] of gameDictionaries) {
     const messages = readMessages(name);
@@ -263,7 +302,7 @@ test('all 1,391 base game messages have complete translations and matching place
       assert.deepEqual(placeholders(korean), placeholders(english), `${name}[${index}] English placeholders`);
     }
   }
-  assert.equal(total, 1391);
+  assert.equal(total, 1456);
 });
 
 test('audited interface, shop and changelog text resolves as a complete phrase in both input forms', () => {
@@ -414,4 +453,40 @@ test('non-string canvas arguments are passed through without coercion', () => {
   assert.equal(translate(null), null);
   assert.equal(translate(undefined), undefined);
   assert.equal(translate(value), value);
+});
+
+test('player notices preserve names through source and native Korean templates', () => {
+  const notices = [
+    'Faltan por elegir: {x}', 'Esperando a {x}…', '{x} ha dejado la partida',
+    '¡{x} necesita ayuda! · {x} m', 'Tu apodo es {x}', '¿Quitar a {x} de tus amigos?',
+    'Solicitud enviada a {x}', 'Ahora eres amigo de {x}',
+    'Estás en la sala de {x}. El anfitrión empezará la partida.',
+    'Invitación enviada a {x}', '{x} te invita a jugar en su sala',
+    'Pausa: {x} está eligiendo…', 'Pausa: {x} están eligiendo…',
+    'Pausa: esperando a {x} (anfitrión)…', '¿Reportar la marca de {x} como trampa?',
+    'Volver a tu sala ({x})', 'Viendo a {x}',
+    'Le has regalado un ticket a {x}', '{x} te ha regalado un ticket',
+    '¿Banear a {x}? No podrán volver a salir en el ranking y se borra su marca.',
+    '¡Gengar ha juzgado a {x}! Ya no volverá', '¡Arceus ha juzgado a {x}! Ya no volverá',
+    '¡Gengar le rompe a {x} su {x}!', '¡Arceus le rompe a {x} su {x}!', 'Hecha por {x}',
+  ];
+  for (const source of notices) {
+    const row = context.PSKO_MESSAGES.find(row => row[0] === source);
+    assert.ok(row, source);
+    const [spanish, english, korean] = row;
+    assert.ok(korean.includes('{name}'), source);
+    const item = source.includes('rompe');
+    const secondSource = item ? 'Life Orb' : '17';
+    const secondExpected = item ? '생명의구슬' : '17';
+    for (const name of ['Fire', 'Ash Pokémon', 'Psychic', 'Fire, Psychic']) {
+      const expected = korean.replaceAll('{name}', name).replaceAll('{x}', secondExpected);
+      for (const template of [spanish, english]) {
+        let index = 0;
+        const text = template.replace(/\{x\}/g, () => index++ === 0 ? name : secondSource);
+        assert.equal(translate(text), expected, text);
+      }
+      const native = korean.replaceAll('{name}', name).replaceAll('{x}', secondSource);
+      assert.equal(translate(native), expected, native);
+    }
+  }
 });

@@ -300,6 +300,20 @@ test('move titles and tooltips use move names while type badges retain type name
   await expect(frame.locator('.move-icons span')).toHaveAttribute('title', 'Psychic');
 });
 
+test('Mega Evolution choices translate type and ability names together', async () => {
+  await frame.locator('body').evaluate(body => {
+    body.insertAdjacentHTML('beforeend', `<div id="pow-cards">
+      <div class="ds">Grass / Poison · Sebo</div>
+      <div class="ds">불꽃 / 드래곤 · Garra Dura</div>
+      <div class="ds">Fire / Flying · Drought</div>
+    </div>`);
+  });
+  await expect(frame.locator('#pow-cards .ds')).toHaveText([
+    '풀 / 독 · 두꺼운지방', '불꽃 / 드래곤 · 단단한발톱', '불꽃 / 비행 · 가뭄',
+  ]);
+  expect(errors).toEqual([]);
+});
+
 test('starting move selections use move names after rerenders and preserve type badges', async () => {
   for (const [choose, psychic, hex, suffix] of [
     ['Elegir', 'Psíquico', 'Infortunio', '(de serie)'], ['Choose', 'Psychic', 'Hex', '(default)'],

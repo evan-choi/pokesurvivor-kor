@@ -782,7 +782,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Tu apodo es {x}",
     "Your nickname is {x}",
-    "내 닉네임은 {x}입니다"
+    "내 닉네임은 {name}입니다"
   ],
   [
     "Apodo de tu amigo",
@@ -892,7 +892,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "¿Quitar a {x} de tus amigos?",
     "Remove {x} from your friends?",
-    "친구 목록에서 {x} 님을 삭제할까요?"
+    "친구 목록에서 {name} 님을 삭제할까요?"
   ],
   [
     "Cancelar",
@@ -942,12 +942,12 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Solicitud enviada a {x}",
     "Request sent to {x}",
-    "{x} 님에게 요청을 보냈습니다"
+    "{name} 님에게 요청을 보냈습니다"
   ],
   [
     "Ahora eres amigo de {x}",
     "You're now friends with {x}",
-    "{x} 님과 친구가 되었습니다"
+    "{name} 님과 친구가 되었습니다"
   ],
   [
     "No hay solicitud.",
@@ -1192,7 +1192,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Estás en la sala de {x}. El anfitrión empezará la partida.",
     "You're in {x}'s room. The host will start the game.",
-    "{x} 님의 방입니다. 방장이 게임을 시작합니다."
+    "{name} 님의 방입니다. 방장이 게임을 시작합니다."
   ],
   [
     "Cuando el anfitrión empiece, entraréis todos a la vez.",
@@ -1217,7 +1217,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Invitación enviada a {x}",
     "Invite sent to {x}",
-    "{x} 님에게 초대를 보냈습니다"
+    "{name} 님에게 초대를 보냈습니다"
   ],
   [
     "Sólo puedes invitar a tus amigos.",
@@ -1262,7 +1262,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "{x} te invita a jugar en su sala",
     "{x} invites you to play in their room",
-    "{x} 님이 함께 플레이하도록 방에 초대했습니다"
+    "{name} 님이 함께 플레이하도록 방에 초대했습니다"
   ],
   [
     "te invita a jugar en su sala",

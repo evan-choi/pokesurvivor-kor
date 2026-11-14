@@ -794,7 +794,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "¿Banear a {x}? No podrán volver a salir en el ranking y se borra su marca.",
     "¿Banear a {x}? No podrán Back a Log out en el Leaderboard y se borra su marca.",
-    "{x} 님을 차단할까요? 기존 기록이 삭제되며 앞으로 순위표에 표시되지 않습니다."
+    "{name} 님을 차단할까요? 기존 기록이 삭제되며 앞으로 순위표에 표시되지 않습니다."
   ],
   [
     "{x} monedas · {x} tickets · {x} ×10 · {x} Pokémon · {x}",
@@ -1190,9 +1190,9 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ["Aguanta 5 minutos ante Arceus.", "Survive 5 minutes against Arceus.", "아르세우스를 상대로 5분 동안 버티세요."],
   ["Gigagolpe fluido", "G-Max Rapid Flow", "거다이연격"],
   ["Regresión primigenia", "Primal Reversion", "원시회귀"],
-  ["¡Gengar le rompe a {x} su {x}!", "Gengar breaks {x}'s {x}!", "팬텀의 도구 파괴 · {x} · {x}!"],
+  ["¡Gengar le rompe a {x} su {x}!", "Gengar breaks {x}'s {x}!", "팬텀의 도구 파괴 · {name} · {x}!"],
   ["¡Cuidado! Si vuelves a caer, Gengar te juzgará", "Careful! If you fall again, Gengar will judge you", "조심하세요! 다시 쓰러지면 팬텀에게 심판받습니다"],
-  ["¡Gengar ha juzgado a {x}! Ya no volverá", "Gengar has judged {x}! They won't be back", "{x} 님이 팬텀에게 심판받았습니다! 다시 돌아올 수 없습니다"],
+  ["¡Gengar ha juzgado a {x}! Ya no volverá", "Gengar has judged {x}! They won't be back", "{name} 님이 팬텀에게 심판받았습니다! 다시 돌아올 수 없습니다"],
   ["Gengar te ha juzgado: ya no puedes volver", "Gengar has judged you: you can't come back", "팬텀에게 심판받아 다시 돌아올 수 없습니다"],
   ["del desafío semanal", "of the weekly challenge", "주간 도전의"],
   ["Guías", "Guides", "가이드"],
@@ -1205,11 +1205,11 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ["Legendarios y grietas", "Legendaries & rifts", "전설의 포켓몬과 균열"],
   ["Tabla de tipos", "Type chart", "타입 상성표"],
   ["¡Cuidado! Si vuelves a caer, Arceus te juzgará", "Careful! If you fall again, Arceus will judge you", "조심하세요! 다시 쓰러지면 아르세우스에게 심판받습니다"],
-  ["¡Arceus ha juzgado a {x}! Ya no volverá", "Arceus has judged {x}! They won't be back", "{x} 님이 아르세우스에게 심판받았습니다! 다시 돌아올 수 없습니다"],
+  ["¡Arceus ha juzgado a {x}! Ya no volverá", "Arceus has judged {x}! They won't be back", "{name} 님이 아르세우스에게 심판받았습니다! 다시 돌아올 수 없습니다"],
   ["Arceus te ha juzgado: ya no puedes volver", "Arceus has judged you: you can't come back", "아르세우스에게 심판받아 다시 돌아올 수 없습니다"],
   ["JUZGADO", "JUDGED", "심판받음"],
   ["Ya no puedes volver a esta Sentencia", "You can't come back to this Judgment", "이번 심판에는 다시 돌아올 수 없습니다"],
-  ["¡Arceus le rompe a {x} su {x}!", "Arceus breaks {x}'s {x}!", "아르세우스의 도구 파괴 · {x} · {x}!"],
+  ["¡Arceus le rompe a {x} su {x}!", "Arceus breaks {x}'s {x}!", "아르세우스의 도구 파괴 · {name} · {x}!"],
   ["{x} · {x}/{x} · {x} s", "{x} · {x}/{x} · {x} s", "{x} · {x}/{x} · {x}초"],
   ["{x} · {x} m", "{x} · {x} m", "{x} · {x}분"],
   ["{x} min", "{x} min", "{x}분"],
@@ -1249,7 +1249,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ["Simisage de la selva", "Jungle Simisage", "정글 야나키"],
   ["También shiny", "Also shiny", "색이 다른 모습도 적용"],
   ["También megaevolucionado", "Also when Mega Evolved", "메가진화한 모습도 적용"],
-  ["Hecha por {x}", "Made by {x}", "제작자 {x}"],
+  ["Hecha por {x}", "Made by {x}", "{name} 제작"],
   ["Aspas Doradas", "Golden Wheels", "황금 바퀴"],
   ["¡Las Aspas Doradas recorren la Sala del Origen! Cruza por los huecos", "The Golden Wheels race around the Hall of Origin! Cross through the gaps", "황금 바퀴가 시작의 방을 누빕니다! 틈새로 지나가세요"],
   ["¡Otro carril de Aspas Doradas, girando al revés!", "Another lane of Golden Wheels, spinning the other way!", "반대 방향으로 도는 황금 바퀴가 한 줄 더 나타납니다!"],
@@ -1331,4 +1331,5 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ['Poder', 'Poder', '특수 능력'],
   ['Necesita {x}', 'Needs {x}', '{x} 필요'],
   ['Primero compra {x}', 'Buy {x} first', '먼저 {x} 기능을 구매하세요'],
+  ['No se pudo guardar el apodo (error).', "Couldn't save the nickname (error).", '닉네임을 저장하지 못했습니다(오류).'],
 ]);
