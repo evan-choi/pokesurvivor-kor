@@ -17,7 +17,8 @@
         return original.call(this, dt, player, ...rest);
       }
       const moves = player.activeGroup();
-      const due = move => move.kind === 'melee' && Number.isFinite(move.radius) && move.radius > 0 && move.t <= dt;
+      const due = move => (move.kind === 'melee' || move.kind === 'scissor')
+        && Number.isFinite(move.radius) && move.radius > 0 && move.t <= dt;
       if (!Array.isArray(moves) || !moves.some(due)) return original.call(this, dt, player, ...rest);
       const descriptor = Object.getOwnPropertyDescriptor(moves, Symbol.iterator);
       if (descriptor && !descriptor.configurable) return original.call(this, dt, player, ...rest);

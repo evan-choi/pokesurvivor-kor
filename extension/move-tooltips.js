@@ -20,7 +20,16 @@
     const frame = frames.get(this);
     if (frame?.active && args.length === 4 && icons.has(image) && frame.icons.length < 128) {
       const [x, y, w, h] = args;
-      frame.icons.push({ id: icons.get(image), x: x + w / 2, y: y + h / 2 });
+      const id = icons.get(image);
+      if (id.startsWith('item:') && w === h && (w === 28 || w === 36)) {
+        // Compact item slots omit labels; derive both layouts from their icon bounds.
+        const size = w === 28 ? 40 : 54, padding = (size - w) / 2;
+        const m = this.getTransform();
+        frame.slots.push({ x: (x - padding) * m.a + m.e, y: (y - padding) * m.d + m.f,
+          w: size * m.a, h: size * m.d, moves: [{ id, evolved: false }] });
+      } else {
+        frame.icons.push({ id, x: x + w / 2, y: y + h / 2 });
+      }
     }
     return drawImage.call(this, image, ...args);
   };
@@ -97,14 +106,12 @@
     text(ctx, text, x, y) {
       const frame = frames.get(ctx);
       if (!frame?.active) return;
-      const item = /^(?:700|bold) 9px /.test(ctx.font) && ctx.textAlign === 'center' && ctx.fillStyle === '#ffd23f';
-      if (!item && (!/^[1-4]$/.test(text) || !ctx.font.startsWith('800 9px ') || ctx.textAlign !== 'left')) return;
-      // The held item's name sits six pixels above its 54px slot.
-      const rect = item ? { x: x - 27, y: y + 6, w: 54, h: 54 } : { x: x - 3, y: y - 10, w: 54, h: 54 };
-      const found = frame.icons.filter(icon => icon.id.startsWith('item:') === item && inside(icon.x, icon.y, rect));
+      if (!/^[1-4]$/.test(text) || !ctx.font.startsWith('800 9px ') || ctx.textAlign !== 'left') return;
+      const rect = { x: x - 3, y: y - 10, w: 54, h: 54 };
+      const found = frame.icons.filter(icon => !icon.id.startsWith('item:') && inside(icon.x, icon.y, rect));
       if (!found.length) return;
-      const moves = found.map(icon => ({ id: icon.id, evolved: !item && (found.length === 1
-        ? ctx.strokeStyle === '#ffd23f' : frame.gold.some(r => inside(icon.x, icon.y, r))) }));
+      const moves = found.map(icon => ({ id: icon.id, evolved: found.length === 1
+        ? ctx.strokeStyle === '#ffd23f' : frame.gold.some(r => inside(icon.x, icon.y, r)) }));
       const m = ctx.getTransform();
       frame.slots.push({ x: rect.x * m.a + m.e, y: rect.y * m.d + m.f, w: rect.w * m.a, h: rect.h * m.d, moves });
     },

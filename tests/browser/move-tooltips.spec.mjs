@@ -23,6 +23,7 @@ test('skill hover shows Korean descriptions and stacks every linked move upward 
           icon.getContext('2d').fillRect(0,0,16,16);icons.set(id,icon);
         }
         window.item='lifeorb';
+        window.compactItems=false;
         window.clicks=0;canvas.onclick=()=>window.clicks++;
         window.groups=[['dragon-breath'],['sludge','nasty-plot']];
         window.paint=()=>{
@@ -37,7 +38,10 @@ test('skill hover shows Korean descriptions and stacks every linked move upward 
             });
             ctx.font='800 9px sans-serif';ctx.textAlign='left';ctx.fillText(String(i+1),x+3,y+10);
           });
-          if(item){ctx.drawImage(icons.get(item),337,709,36,36);ctx.font='700 9px sans-serif';ctx.textAlign='center';ctx.fillStyle='#ffd23f';ctx.fillText(item,355,694);}
+          if(compactItems){
+            ctx.drawImage(icons.get('shellbell'),288,706,28,28);
+            ctx.drawImage(icons.get('lifeorb'),334,706,28,28);
+          }else if(item){ctx.drawImage(icons.get(item),337,709,36,36);ctx.font='700 9px sans-serif';ctx.textAlign='center';ctx.fillStyle='#ffd23f';ctx.fillText(item,355,694);}
           ctx.restore();
         };window.paint();setInterval(window.paint, 50);
       </script>` }));
@@ -74,6 +78,12 @@ test('skill hover shows Korean descriptions and stacks every linked move upward 
     await page.evaluate(() => { item='shellbell';paint(); });
     await expect(tooltip.locator('b')).toHaveText('조개껍질방울');
     await expect(tooltip).toContainText('가한 피해에 따라 체력을 회복합니다.');
+    await page.evaluate(() => { compactItems=true;paint(); });
+    await page.mouse.move(284, 702);
+    await expect(tooltip.locator('b')).toHaveText('조개껍질방울');
+    await page.mouse.move(364, 738);
+    await expect(tooltip.locator('b')).toHaveText('생명의구슬');
+    await page.evaluate(() => { compactItems=false;paint(); });
     await page.evaluate(() => {
       const modal = document.createElement('section');
       modal.id = 'scr-levelup'; modal.className = 'scr dim';

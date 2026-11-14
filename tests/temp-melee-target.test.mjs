@@ -42,6 +42,14 @@ test('linked melee uses a reachable enemy while ranged aim and original target s
   assert.equal(run('moves[1].t'), 1);
 });
 
+test('crossed slashes use a reachable enemy without changing ranged targeting', () => {
+  const run = setup();
+  run("moves[1].kind='scissor';combat.tick(.016,player)");
+  assert.deepEqual(JSON.parse(run('JSON.stringify(calls.map(c=>[c.kind,c.target]))')), [['projectile','boss'],['scissor','near']]);
+  assert.equal(run('player.target===boss && player.aim===0'), true);
+  assert.equal(run('Object.hasOwn(moves,Symbol.iterator)'), false);
+});
+
 test('disabled, manual aim, remote players and cooling moves keep native behavior', () => {
   for (const condition of ['disabled','manualAim','remote','cooldown']) {
     const run = setup(condition !== 'disabled');
