@@ -51,12 +51,6 @@ Rankings follow PokéSurvivor Guide's stat-based assessment. [Tier rating criter
 
 An example collection filtered by the Korean initial consonant `ㄹ`.
 
-## Melee targeting fix
-
-When automatic aiming selects a distant target, redirect melee attacks toward an enemy within reach. Toggle this under **Settings → Controls → Melee targeting fix (temporary)**.
-
-<img src="docs/assets/melee-targeting.png" width="640" alt="Melee targeting fix setting">
-
 ## Direct P2P connection
 
 Enable **Settings → Network → Direct P2P connection** to allow direct connections in multiplayer. It is off by default. Enable it on both PCs, then rejoin the room.
