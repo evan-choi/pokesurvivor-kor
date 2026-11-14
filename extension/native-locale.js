@@ -13,6 +13,9 @@
   const messages = Object.fromEntries((globalThis.PSKO_MESSAGES || []).flatMap(([spanish, english, korean]) =>
     [[spanish, korean], [english, korean]]));
   Object.assign(messages, globalThis.PSKO_POKEMON);
+  // The native game translates this template before substituting the species.
+  messages['{x} Primigenio'] = '원시{x}';
+  messages['Primal {x}'] = '원시{x}';
   // The game translates its output again in DOM and canvas hooks. Preserve these
   // compound names before shorter glossary terms such as Switch, Pokémon and Credits.
   for (const name of ['Switch', 'The Pokémon Company', 'CREDITS.md', 'Authentication > Settings > Authorized domains']) {
@@ -21,7 +24,7 @@
   // The native DOM hook translates the output again. Match complete Korean
   // results before it can replace an English name next to a Korean particle.
   for (const translated of Object.values(messages)) {
-    if (/[가-힣]/u.test(translated) && !/\{(?:x|name)\}/u.test(translated)) messages[translated] = translated;
+    if (/[가-힣]/u.test(translated) && !/\{(?:x|y|name)\}/u.test(translated)) messages[translated] = translated;
   }
   // The game distinguishes move names from type names through this dictionary scope.
   const moveNames = { 'Psíquico': '사이코키네시스', 'Psychic': '사이코키네시스' };

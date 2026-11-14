@@ -5,9 +5,9 @@ import vm from 'node:vm';
 
 const extensionUrl = new URL('../extension/', import.meta.url);
 const gameDictionaries = [
-  ['moves', 300],
+  ['moves', 303],
   ['menus', 300],
-  ['progress', 300],
+  ['progress', 500],
   ['settings', 288],
 ];
 
@@ -30,6 +30,45 @@ for (const name of [...gameDictionaries.map(([name]) => name), 'extra', 'gamepla
 }
 evaluate(context, 'translation-core.js');
 const translate = context.PSKO.translate;
+
+test('all added form labels preserve their complete Korean names', () => {
+  const forms = readMessages('pokemon');
+  assert.equal(forms.length, 589);
+  for (const [spanish, english, korean] of forms) {
+    assert.equal(translate(spanish), korean, spanish);
+    assert.equal(translate(english), korean, english);
+  }
+  for (const [source, expected] of [
+    ['Mega Charizard X', '메가리자몽X'],
+    ['Mega Mewtwo Y', '메가뮤츠Y'],
+    ['Mega Lucario Z', '메가루카리오Z'],
+    ['Alolan Raichu', '라이츄 (알로라의 모습)'],
+    ['White Kyurem', '화이트큐레무'],
+    ['Ice Calyrex', '버드렉스 (백마 탄 모습)'],
+    ['Blade Aegislash', '킬가르도 (블레이드폼)'],
+    ['Stellar Form Terapagos', '테라파고스 (스텔라폼)'],
+  ]) assert.equal(translate(source), expected, source);
+});
+
+test('all translation records preserve the order and kind of their placeholders', () => {
+  const slots = text => (text.match(/\{(?:x|y|name)\}/g) || []).map(slot => slot.replace('name', 'x'));
+  for (const [spanish, english, korean] of context.PSKO_MESSAGES) {
+    assert.deepEqual(slots(spanish), slots(korean), spanish);
+    assert.deepEqual(slots(english), slots(korean), english);
+  }
+});
+
+test('updated controls, reward placeholders and primal names keep their contexts', () => {
+  assert.equal(translate('DOWN'), '쓰러짐');
+  assert.equal(translate('Down'), '아래');
+  assert.equal(translate('¡Gana Pikachu! Te llevas 10.'), '피카츄 승리! 10 획득.');
+  assert.equal(translate('Pikachu wins! You take 10.'), '피카츄 승리! 10 획득.');
+  assert.equal(translate('Groudon Primigenio'), '원시그란돈');
+  assert.equal(translate('Primal Kyogre'), '원시가이오가');
+  assert.equal(context.PSKO.translateMove('Elegir: Pulso Primigenio'), '선택: 근원의파동');
+  assert.equal(context.PSKO.translateMove('Choose: Origin Pulse'), '선택: 근원의파동');
+  assert.equal(translate(' Estás como invitado: '), ' 게스트로 플레이 중: ');
+});
 
 test('orb pickup messages translate the name, current control and effect together', () => {
   const effect = '15초 동안 자신과 주변 팀원의 급소 확률이 25% 증가합니다.';
@@ -197,7 +236,7 @@ test('starting-move labels preserve all move names, including short names and ty
   assert.equal(translate('Psychic'), '에스퍼');
 });
 
-test('all 1,188 game messages have complete translations and matching placeholders', () => {
+test('all 1,391 base game messages have complete translations and matching placeholders', () => {
   let total = 0;
   for (const [name, count] of gameDictionaries) {
     const messages = readMessages(name);
@@ -210,18 +249,18 @@ test('all 1,188 game messages have complete translations and matching placeholde
         assert.equal(typeof text, 'string', `${name}[${index}] must contain strings`);
         assert.ok(text.trim(), `${name}[${index}] must not be empty`);
       }
-      const placeholders = (text) => (text.match(/\{x\}/g) || []).length;
-      assert.equal(placeholders(korean), placeholders(spanish), `${name}[${index}] Spanish placeholders`);
-      assert.equal(placeholders(korean), placeholders(english), `${name}[${index}] English placeholders`);
+      const placeholders = (text) => (text.match(/\{(?:x|y|name)\}/g) || []).map(slot => slot.replace('name', 'x'));
+      assert.deepEqual(placeholders(korean), placeholders(spanish), `${name}[${index}] Spanish placeholders`);
+      assert.deepEqual(placeholders(korean), placeholders(english), `${name}[${index}] English placeholders`);
     }
   }
-  assert.equal(total, 1188);
+  assert.equal(total, 1391);
 });
 
 test('audited interface, shop and changelog text resolves as a complete phrase in both input forms', () => {
   for (const file of ['extra', 'gameplay', 'interface', 'shop', 'pokedex', 'changelog']) {
     for (const [source, intermediate, korean] of readMessages(file)) {
-      const count = (text) => (text.match(/\{(?:x|name)\}/g) || []).length;
+      const count = (text) => (text.match(/\{(?:x|y|name)\}/g) || []).length;
       assert.equal(count(source), count(korean), source);
       assert.equal(count(intermediate), count(korean), intermediate);
       if (count(source)) continue;
@@ -233,14 +272,14 @@ test('audited interface, shop and changelog text resolves as a complete phrase i
 
 test('every current TM uses its Korean move name and a complete translated description', () => {
   const { moves } = JSON.parse(readFileSync(new URL('./fixtures/official-game-moves.json', import.meta.url), 'utf8'));
-  assert.equal(moves.length, 103);
+  assert.equal(moves.length, 176);
   for (const { id, name: [spanish, english, korean], desc } of moves) {
     assert.equal(context.PSKO.translateMove(spanish), korean, id);
     assert.equal(context.PSKO.translateMove(english), korean, id);
     assert.equal(context.PSKO.translateMove(`TM ${english}`), `기술머신 ${korean}`, id);
     assert.equal(context.PSKO.translateMove(`MT ${spanish}`), `기술머신 ${korean}`, id);
     for (const text of desc) {
-      assert.doesNotMatch(translate(text).replace(/\b(?:HP|XP|DPS)\b/g, ''), /[\p{Script=Latin}\p{Script=Han}]/u, id);
+      assert.doesNotMatch(translate(text).replace(/\b(?:HP|XP|DPS)\b|DD(?=래리어트)/g, ''), /[\p{Script=Latin}\p{Script=Han}]/u, id);
     }
   }
   assert.equal(translate('Turtwig can learn it'), '학습 가능: 모부기');
@@ -255,16 +294,16 @@ test('hover descriptions cover all current moves and fully translate evolved nam
     const data = context.PSKO_MOVE_INFO[id];
     for (const name of data.name) assert.equal(context.PSKO.translateMove(name), korean, id);
     for (const entry of [data, data.evo].filter(Boolean)) {
-      for (const name of entry.name) assert.doesNotMatch(context.PSKO.translateMove(name), /[\p{Script=Latin}\p{Script=Han}]/u, id);
-      for (const desc of entry.desc) assert.doesNotMatch(translate(desc).replace(/\b(?:HP|XP|DPS)\b/g, ''), /[\p{Script=Latin}\p{Script=Han}]/u, id);
+      for (const name of entry.name) assert.doesNotMatch(context.PSKO.translateMove(name).replace(/DD(?=래리어트)/g, ''), /[\p{Script=Latin}\p{Script=Han}]/u, id);
+      for (const desc of entry.desc) assert.doesNotMatch(translate(desc).replace(/\b(?:HP|XP|DPS)\b|DD(?=래리어트)/g, ''), /[\p{Script=Latin}\p{Script=Han}]/u, id);
     }
   }
 });
 
-test('held-item hover descriptions cover all eleven items and translate their effects', () => {
+test('held-item hover descriptions cover all 24 items and translate their effects', () => {
   evaluate(context, 'move-tooltip-data.js');
   const items = Object.entries(context.PSKO_MOVE_INFO).filter(([id]) => id.startsWith('item:'));
-  assert.equal(items.length, 11);
+  assert.equal(items.length, 24);
   for (const [id, data] of items) {
     for (const value of [...data.name, ...data.desc]) {
       assert.doesNotMatch(translate(value), /[\p{Script=Latin}\p{Script=Han}]/u, id);
@@ -278,7 +317,7 @@ test('handles native partial translations, Chinese notices, and localized durati
   assert.equal(translate('You have su shiny'), '색이 다른 모습을 보유 중입니다');
   assert.equal(translate('Buscar por Name'), '이름으로 검색');
   assert.equal(translate('Impulsivo'), '즉흥적');
-  assert.equal(translate('Web oficial: pokesurvivor.com · si alguien te pide pagar, no somos nosotros'), '공식 웹사이트: pokesurvivor.com · 이 게임은 무료입니다');
+  assert.equal(translate('Web oficial: pokesurvivor.com · si alguien te pide pagar, no somos nosotros'), '공식 웹사이트: pokesurvivor.com · 돈을 요구하는 곳은 저희와 관계없습니다');
   assert.equal(translate('Se renuevan en 2 h 15 min'), '2시간 15분 후 갱신');
   assert.equal(translate('Psychic Nv.5'), '에스퍼 레벨 5');
   assert.equal(translate('登录窗口被浏览器拦截，请允许弹出窗口后重试。'), '로그인 팝업이 차단됐습니다. 팝업을 허용한 뒤 다시 시도하세요.');

@@ -2,6 +2,7 @@
   'use strict';
 
   const exact = new Map();
+  const exactCase = new Map();
   const terms = new Map();
   const patterns = [];
   const cache = new Map();
@@ -10,15 +11,17 @@
 
   function add(source, target) {
     source = normalize(source);
+    target = target.trim();
     if (!source || (source === target && !source.includes('{name}'))) return;
-    if (/\{(?:x|name)\}/u.test(source)) {
+    if (/\{(?:x|y|name)\}/u.test(source)) {
       patterns.push({
-        regex: new RegExp(`^${source.split(/\{(?:x|name)\}/u).map(escape).join('(.+?)')}$`, 'iu'),
-        specificity: source.replace(/\{(?:x|name)\}/gu, '').length,
+        regex: new RegExp(`^${source.split(/\{(?:x|y|name)\}/u).map(escape).join('(.+?)')}$`, 'iu'),
+        specificity: source.replace(/\{(?:x|y|name)\}/gu, '').length,
         target,
       });
     } else {
       exact.set(source.toLowerCase(), target);
+      exactCase.set(source, target);
       if (source.length >= 4 || /\s/.test(source)) terms.set(source.toLowerCase(), target);
     }
   }
@@ -39,7 +42,7 @@
     const key = text.toLowerCase();
     // Match a complete dictionary term so Psychic Fangs still becomes 사이코팽.
     if (moveName && (key === 'psychic' || key === 'psíquico')) return '사이코키네시스';
-    return exact.get(key);
+    return exactCase.get(text) ?? exact.get(key);
   }
 
   function translateBody(text, depth = 0, moveName = false) {
@@ -50,7 +53,7 @@
         const match = regex.exec(text);
         if (!match) continue;
         let index = 1;
-        return target.replace(/\{(x|name)\}/g, (_, slot) => {
+        return target.replace(/\{(x|y|name)\}/g, (_, slot) => {
           const value = match[index++];
           return slot === 'name' ? value : translateBody(value, depth + 1, moveName);
         });

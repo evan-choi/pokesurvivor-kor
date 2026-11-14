@@ -1053,7 +1053,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   [
     "Nv.",
     "Lv.",
-    "Lv."
+    "레벨"
   ],
   [
     "+20 de vida máxima (y la recupera).",
@@ -1499,5 +1499,24 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
     "Central Voltio",
     "Volt Plant",
     "볼트 발전소"
+  ]
+]);
+
+// Current game aliases use the official Korean move names.
+globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
+  [
+    "Tormenta Arena",
+    "Sandstorm",
+    "모래바람"
+  ],
+  [
+    "Placaje Eléctrico",
+    "Volt Tackle",
+    "볼트태클"
+  ],
+  [
+    "Ascuas",
+    "Embers",
+    "불꽃세례"
   ]
 ]);

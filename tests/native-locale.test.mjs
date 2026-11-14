@@ -51,6 +51,8 @@ test('Korean is registered before the game consumes its locales and dictionaries
   assert.equal(moveLanguage, 'ko');
   assert.equal(scope, 'move');
   assert.equal(moves.Psychic, '사이코키네시스');
+  assert.equal(dictionary['{x} Primigenio'], '원시{x}');
+  assert.equal(dictionary['Primal {x}'], '원시{x}');
 });
 
 test('a disabled extension restores the previous language when the saved game language is Korean', () => {

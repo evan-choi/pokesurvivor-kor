@@ -41,7 +41,7 @@ const previousMoveNames = [
   "Gunk Shot", "Avalanche", "Magnet Bomb", "Inferno", "Double Team", "Acrobatics",
   "Flare Blitz", "Aqua Tail", "Poltergeist",
 ];
-const { moves: currentMoves } = JSON.parse(await readFile(new URL('../tests/fixtures/official-game-moves.json', import.meta.url), 'utf8'));
+const { moves: currentMoves, evolvedMoveIds } = JSON.parse(await readFile(new URL('../tests/fixtures/official-game-moves.json', import.meta.url), 'utf8'));
 const gameMoveNames = [...new Set([...previousMoveNames, ...currentMoves.map((move) => move.name[1])])];
 
 const base = 'https://raw.githubusercontent.com/PokeAPI/pokeapi/master/data/v2/csv/';
@@ -93,6 +93,13 @@ for (const name of gameMoveNames) {
   assert.ok(expected, `PokéAPI 기술명 없음: ${name}`);
   assert.equal(context.PSKO.translateMove(name), expected, `기술 이름: ${name}`);
 }
+for (const id of evolvedMoveIds) {
+  const move = currentMoves.find(move => move.id === id);
+  assert.ok(move, `진화 기술의 기본 기술 없음: ${id}`);
+  for (const name of move.name.slice(0, 2)) {
+    assert.equal(context.PSKO.translateMove(`${name} +`), `${move.name[2]} +`, `진화 기술 이름: ${name}`);
+  }
+}
 for (const type of ['Normal', 'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy']) {
   assert.equal(context.PSKO.translate(type), koreanByEnglish(types).get(type), `타입 이름: ${type}`);
 }
@@ -102,8 +109,8 @@ for (const region of ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova', 'Kalos', 'Al
 let itemCount = 0;
 const itemNames = koreanByEnglish(items);
 for (const [, english, korean] of context.PSKO_MESSAGES) {
-  // "Upgrade" is a UI action here, not the similarly named held item.
-  if (!itemNames.has(english) || english === 'Upgrade') continue;
+  // Upgrade labels a UI action. Egg labels a Pokémon egg, not the sandwich ingredient.
+  if (!itemNames.has(english) || ['Upgrade', 'Egg'].includes(english)) continue;
   assert.equal(korean, itemNames.get(english), `도구 이름: ${english}`);
   itemCount++;
 }
@@ -122,4 +129,4 @@ for (const [spanish, english, korean] of [
   assert.equal(context.PSKO.translate(english), korean, english);
 }
 
-console.log(`명칭 대조 통과: 포켓몬·별칭 ${Object.keys(context.PSKO_POKEMON).length}개, 게임 기술 ${gameMoveNames.length}개(특성명 1개 포함), 타입 18개, 지방 9개, 도구 ${itemCount}개, 불가사의 던전 명칭 6개.`);
+console.log(`명칭 대조 통과: 포켓몬·별칭 ${Object.keys(context.PSKO_POKEMON).length}개, 게임 기술 ${gameMoveNames.length}개(특성명 1개 포함), 진화 기술 ${evolvedMoveIds.length}개, 타입 18개, 지방 9개, 도구 ${itemCount}개, 불가사의 던전 명칭 6개.`);
