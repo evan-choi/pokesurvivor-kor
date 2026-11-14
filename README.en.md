@@ -6,8 +6,7 @@ A Chrome extension for playing PokéSurvivor in Korean.
 
 ## Getting started
 
-1. Install the extension, then reload the game.
-2. Choose **Settings → Graphics → Language → 한국어** in the game.
+Korean is applied automatically when you first install the extension and open the game. Reload the game if it is already open.
 
 Chrome updates the store version automatically.
 
