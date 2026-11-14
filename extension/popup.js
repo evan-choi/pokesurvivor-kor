@@ -7,10 +7,18 @@ const collectionCount = document.getElementById('collection-count');
 const pokemonList = document.getElementById('pokemon-list');
 const tierUpdated = document.getElementById('tier-updated');
 const refreshCollection = document.getElementById('refresh-collection');
+const pokemonSearch = document.getElementById('pokemon-search');
 const gameControls = document.getElementById('game-controls');
 const play = document.querySelector('.play');
 const cacheDuration = 24 * 60 * 60 * 1000;
 const formNames = new Map((globalThis.PSKO_MESSAGES || []).map(([source, , korean]) => [source, korean]));
+const formEnglishNames = new Map((globalThis.PSKO_MESSAGES || []).map(([source, english]) => [source, english]));
+let ownedPokemon = [];
+let rankingNotice = '';
+
+function pokemonName(entry) {
+  return globalThis.PSKO_POKEMON[entry.name] || formNames.get(entry.name) || entry.name || `도감 #${entry.dex}`;
+}
 
 async function loadRankings(refresh) {
   const { tierCache } = await chrome.storage.local.get('tierCache');
@@ -77,7 +85,7 @@ function renderPokemon(entries) {
     const name = document.createElement('div');
     name.className = 'pokemon-name';
     const label = document.createElement(entry.path ? 'a' : 'strong');
-    label.textContent = globalThis.PSKO_POKEMON[entry.name] || formNames.get(entry.name) || entry.name || `도감 #${entry.dex}`;
+    label.textContent = pokemonName(entry);
     if (entry.path) {
       label.href = new URL(entry.path, DEX_SOURCE).href;
       label.target = '_blank';
@@ -99,8 +107,24 @@ function renderPokemon(entries) {
   pokemonList.replaceChildren(fragment);
 }
 
+function filterPokemon() {
+  const query = pokemonSearch.value.trim().toLowerCase();
+  const entries = ownedPokemon.filter(entry => [
+    pokemonName(entry), entry.name, formEnglishNames.get(entry.name),
+    String(entry.dex), String(entry.nationalDex || entry.dex).padStart(3, '0'),
+  ].some(value => value?.toLowerCase().includes(query)));
+  renderPokemon(entries);
+  collectionCount.textContent = query ? `${entries.length} / ${ownedPokemon.length}마리` : `${ownedPokemon.length}마리`;
+  collectionStatus.textContent = [entries.length ? '' : '검색 결과가 없습니다.', rankingNotice].filter(Boolean).join(' ');
+  collectionStatus.hidden = !collectionStatus.textContent;
+}
+
 async function loadCollection(refresh = false) {
   refreshCollection.disabled = true;
+  pokemonSearch.disabled = true;
+  ownedPokemon = [];
+  rankingNotice = '';
+  collectionStatus.hidden = false;
   collectionStatus.textContent = '보유 목록 불러오는 중…';
   collectionCount.textContent = '';
   tierUpdated.textContent = '';
@@ -128,10 +152,10 @@ async function loadCollection(refresh = false) {
     }
     collectionStatus.textContent = '티어 불러오는 중…';
     const rankings = await loadRankings(refresh);
-    const entries = rankOwnedPokemon(collection.owned, rankings.entries);
-    renderPokemon(entries);
-    collectionCount.textContent = `${entries.length}마리`;
-    collectionStatus.textContent = rankings.notice || '전체 순위가 높은 순서입니다.';
+    ownedPokemon = rankOwnedPokemon(collection.owned, rankings.entries);
+    rankingNotice = rankings.notice || '';
+    pokemonSearch.disabled = false;
+    filterPokemon();
     tierUpdated.textContent = `티어 확인: ${new Date(rankings.fetchedAt).toLocaleString('ko-KR')}`;
   } catch (error) {
     collectionStatus.textContent = error.message || '보유 목록을 불러오지 못했습니다. 다시 시도하세요.';
@@ -141,4 +165,5 @@ async function loadCollection(refresh = false) {
 }
 
 refreshCollection.addEventListener('click', () => loadCollection(true));
+pokemonSearch.addEventListener('input', filterPokemon);
 loadCollection();

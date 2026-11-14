@@ -94,6 +94,14 @@ test.beforeEach(async () => {
 
 test('popup keeps its header and shows the collection or launch button according to open tabs', async ({}, testInfo) => {
   await openPopup();
+  const github = popup.getByRole('link', { name: 'GitHub 저장소' });
+  await expect(github).toHaveAttribute('href', 'https://github.com/evan-choi/pokesurvivor-kor');
+  await expect(github).toHaveAttribute('target', '_blank');
+  await expect(github).toHaveAttribute('rel', 'noopener noreferrer');
+  const headerBounds = await popup.locator('header').boundingBox();
+  const githubBounds = await github.boundingBox();
+  expect(Math.abs(githubBounds.y + githubBounds.height / 2 - headerBounds.y - headerBounds.height / 2)).toBeLessThan(1);
+  expect(githubBounds.x + githubBounds.width).toBeCloseTo(headerBounds.x + headerBounds.width, 0);
   await expect(popup.locator('.play')).toBeHidden();
   await expect(popup.locator('.collection')).toBeVisible();
   await expect(popup.locator('#lan-direct, #lan-status')).toHaveCount(0);
@@ -135,6 +143,38 @@ test('renders only owned Pokémon in tier order with Korean names and runtime im
   await popup.locator('body').screenshot({ path: testInfo.outputPath('expanded-ranking.png') });
   await popup.locator('html').evaluate((root) => { root.style.fontFamily = 'system-ui'; });
   expect(await popup.locator('body').evaluate((body) => body.scrollHeight)).toBeLessThanOrEqual(600);
+  expect(errors).toEqual([]);
+});
+
+test('searches owned names and numbers, preserves the query on refresh and keeps notices', async () => {
+  await openPopup();
+  const search = popup.getByRole('searchbox', { name: '보유 포켓몬 검색' });
+  await expect(search).toBeEnabled();
+  await expect(popup.locator('#collection-status')).toBeHidden();
+  for (const [query, name] of [['피카', '피카츄'], ['RAIKOU', '라이코'], ['890', '무한다이노']]) {
+    await search.fill(query);
+    await expect(popup.locator('.pokemon-name a')).toHaveText([name]);
+    await expect(popup.locator('#collection-count')).toHaveText('1 / 3마리');
+  }
+  await search.fill('없는 이름');
+  await expect(popup.locator('.pokemon-row')).toHaveCount(0);
+  await expect(popup.locator('#collection-status')).toHaveText('검색 결과가 없습니다.');
+  await expect(popup.locator('#collection-count')).toHaveText('0 / 3마리');
+  await search.fill('');
+  await expect(popup.locator('.pokemon-name a')).toHaveText(['무한다이노', '라이코', '피카츄']);
+  await expect(popup.locator('#collection-count')).toHaveText('3마리');
+  await expect(popup.locator('#collection-status')).toBeHidden();
+  await expect(popup.locator('body')).not.toContainText('전체 순위가 높은 순서입니다.');
+
+  await search.fill('mewtwo');
+  await gameFrame.evaluate(() => { window.testSave = { owned: { 150: {} } }; });
+  failGuide = true;
+  await popup.locator('#refresh-collection').click();
+  await expect(search).toBeEnabled();
+  await expect(search).toHaveValue('mewtwo');
+  await expect(popup.locator('.pokemon-name a')).toHaveText(['뮤츠']);
+  await expect(popup.locator('#collection-count')).toHaveText('1 / 1마리');
+  await expect(popup.locator('#collection-status')).toContainText('마지막으로 저장한 티어');
   expect(errors).toEqual([]);
 });
 
@@ -248,6 +288,14 @@ test('shows regional forms with their own names and sprites while keeping them u
   await expect(popup.locator('.pokemon-row').nth(3).locator('.pokemon-image span')).toHaveText('이미지 없음');
   expect(imageRequests.some(url => /\/(500019|510052|520128)\./.test(url))).toBe(false);
   expect(await gameFrame.evaluate(() => window.testSave)).toEqual({ owned: { 243: true, 500019: true, 510052: true, 520128: true } });
+  const search = popup.getByRole('searchbox', { name: '보유 포켓몬 검색' });
+  for (const query of ['alolan', '500019', '019']) {
+    await search.fill(query);
+    await expect(popup.locator('.pokemon-name strong')).toHaveText(['꼬렛 (알로라의 모습)']);
+    await expect(popup.locator('#collection-count')).toHaveText('1 / 4마리');
+  }
+  await search.fill('가라르');
+  await expect(popup.locator('.pokemon-name strong')).toHaveText(['나옹 (가라르의 모습)']);
 });
 
 test('uses still images when reduced motion is requested', async () => {
