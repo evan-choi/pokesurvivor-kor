@@ -25,7 +25,7 @@
       if (descriptor && !descriptor.configurable) return original.call(this, dt, player, ...rest);
       const iterate = moves[Symbol.iterator];
       const distance2 = target => (target.x - player.x) ** 2 + (target.y - player.y) ** 2;
-      const usable = target => target && !target.dead && !(target.arceus && root.Judgment?.shielded);
+      const usable = target => target && !target.dead && !target.immune && !(target.arceus && root.Judgment?.shielded);
       // Keep the whole linked group intact, but scope target/aim to each cast.
       // The original tick still controls cooldowns, damage, effects and network messages.
       Object.defineProperty(moves, Symbol.iterator, { configurable: true, value: function* () {

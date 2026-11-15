@@ -50,6 +50,19 @@ test('crossed slashes use a reachable enemy without changing ranged targeting', 
   assert.equal(run('Object.hasOwn(moves,Symbol.iterator)'), false);
 });
 
+test('melee skips a closer immune enemy and restores the original aim', () => {
+  const run = setup();
+  run(`
+    var immune = { x: 10, y: 0, immune: true };
+    enemies.queryCircle = () => [immune, near];
+    combat.tick(.016, player);
+  `);
+  assert.deepEqual(JSON.parse(run('JSON.stringify(calls.map(c => [c.kind, c.target]))')), [['projectile', 'boss'], ['melee', 'near']]);
+  assert.equal(run('calls[1].aim'), Math.atan2(20, 40));
+  assert.equal(run('player.target === boss && player.aim === 0'), true);
+  assert.equal(run('Object.hasOwn(moves, Symbol.iterator)'), false);
+});
+
 test('disabled, manual aim, remote players and cooling moves keep native behavior', () => {
   for (const condition of ['disabled','manualAim','remote','cooldown']) {
     const run = setup(condition !== 'disabled');
