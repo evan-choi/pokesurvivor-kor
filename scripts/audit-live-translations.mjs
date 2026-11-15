@@ -26,7 +26,7 @@ const allowedNames = [
   'JPTER78', 'TheAdro7', 'Folagor', 'Sekiam', 'PokeAlex', 'Copyright',
   'Pokémon Edición Reloaded', 'F3R', 'Jhony_Ryu', 'SrYena', 'Frisma32', 'pokemon-reloaded.blogspot.com',
   'Google', 'Gmail', 'GitHub', 'YouTube', 'Ko-fi', 'Discord', 'Firebase', 'CREDITS.md', 'MIT',
-  'Xbox', 'PlayStation', 'Switch', 'USB', 'Bluetooth',
+  'Xbox', 'PlayStation', 'Switch', 'USB', 'Bluetooth', 'Radmin VPN',
   'iPhone', 'Safari', 'Chrome', 'Android', 'iOS', 'Windows', 'macOS',
   'PMD', 'OFL', 'NFT', 'FPS', 'PC', 'HP', 'LAN', 'P2P',
 ];
@@ -167,8 +167,8 @@ async function auditGeneratedChoices() {
   await resetScreens();
   const { records, counts } = await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    const player = game._91bdc48.player;
-    const choices = game._446e60f.STATS.map(stat => ({
+    const player = game._5f3f9e0.player;
+    const choices = game._9aa3a13.STATS.map(stat => ({
       type: 'stat', key: `stat:${stat.id}`, title: stat.title, desc: stat.desc,
       icon: stat.icon, color: '#8fa3c4', tag: 'Mejora',
     }));
@@ -178,7 +178,7 @@ async function auditGeneratedChoices() {
     try {
       Math.random = () => 0;
       const sample = Object.assign(Object.create(player), { itemSlots: 3, got4: false, gotWis: false });
-      const offered = game._446e60f.offer(sample, 10000);
+      const offered = game._9aa3a13.offer(sample, 10000);
       counts.offered = offered.length;
       choices.push(...offered);
     } finally { Math.random = random; }
@@ -232,8 +232,8 @@ async function auditGeneratedChoices() {
 async function auditPowerChoices() {
   const records = await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    const powers = game._eb42550;
-    const config = game._28d0136;
+    const powers = game._cd1bb11;
+    const config = game._8eeb15f;
     const names = [
       ...Object.entries(config.Z_BY_TYPE).map(([id, source]) => ({ kind: 'z', id, source })),
       ...Object.entries(config.MAX_BY_TYPE).map(([id, source]) => ({ kind: 'max', id, source })),
@@ -241,7 +241,7 @@ async function auditPowerChoices() {
       ...Object.entries(config.GMAX).map(([id, value]) => ({ kind: 'gmax', id, source: value.name })),
     ];
     const entries = new Map();
-    for (const dex of Object.keys(game._425bf7c)) {
+    for (const dex of Object.keys(game._857f4ae)) {
       for (const option of powers.options(Number(dex))) {
         entries.set(`${option.title}|${option.desc}`, option);
       }
@@ -371,12 +371,12 @@ try {
       const source = await response.text();
       const prefix = source.match(/var (_0x[\da-f]+)=Object\[(?:'create'|_0x[\da-f]+\(0x[\da-f]+\))\]\(null\);/);
       if (!prefix) throw new Error('UI audit hook no longer matches the official game bundle.');
-      if (!source.includes('_0x484108=[')) throw new Error('Account notice fixture no longer matches the game bundle.');
-      const register = /function _0x49ac83\([^)]*\)\{/;
+      if (!source.includes('_0x13bf69=[')) throw new Error('Account notice fixture no longer matches the game bundle.');
+      const register = /function _0x1714f2\([^)]*\)\{/;
       if (!register.test(source)) throw new Error('Locale registry audit hook no longer matches the game bundle.');
       const fixtureSource = source
-        .replace('_0x484108=[', '_0x484108=window.__PSKO_TEST_NOTICES__=[')
-        .replace(register, match => match + "if(_0x594b01==='en'&&!_0x11410d)Object.assign(window.__PSKO_TEST_LOCALES__??={},_0x3baa1f);");
+        .replace('_0x13bf69=[', '_0x13bf69=window.__PSKO_TEST_NOTICES__=[')
+        .replace(register, match => match + "if(_0x131781==='en'&&!_0x1a8bd6)Object.assign(window.__PSKO_TEST_LOCALES__??={},_0x35327b);");
       await route.fulfill({ response, body: fixtureSource.replace(prefix[0], `${prefix[0]}window.__PSKO_TEST_GAME__=${prefix[1]};`) });
     } catch (error) {
       errors.push(error.stack || error.message);
@@ -391,10 +391,10 @@ try {
     const game = window.__PSKO_TEST_GAME__;
     // The official bundle hashes module names; fail explicitly when a release changes them.
     const names = {
-      U: 'U', DB: '_03ab719', MenuUI: '_8b883ad', SettingsUI: '_878b8eb',
-      NewsUI: '_149ed9f', SupportUI: '_4d5c13e', NickUI: '_4cb2bbd', GoalsUI: '_90e86c1',
-      GachaUI: '_63f8269', Moves: '_17bfa59', RunUI: '_aca87e3',
-      ShopUI: '_4583e4a', ClosetUI: '_7a79124', MasteryUI: '_37b9277',
+      U: 'U', DB: '_a62579b', MenuUI: '_19acd83', SettingsUI: '_3b12be6',
+      NewsUI: '_9256d27', SupportUI: '_5839051', NickUI: '_df66b8a', GoalsUI: '_c22fd81',
+      GachaUI: '_418938a', Moves: '_10f811e', RunUI: '_02a4af4',
+      ShopUI: '_aa6a2d4', ClosetUI: '_6eea24b', MasteryUI: '_0fdc426',
     };
     const components = Object.fromEntries(Object.entries(names).map(([name, key]) => {
       if (!game?.[key]) throw new Error(`UI audit module changed: ${name}`);
@@ -436,7 +436,7 @@ try {
   for (const [spanish, english] of locale.untranslated) findings.push({ screen: 'locale-registry', spanish, english });
   const nativeChecks = await run((body, preservedLabels) => {
     const game = window.__PSKO_TEST_GAME__;
-    const notice = (template, ...values) => window.PSKO.translate(game.T(game._cda5f89.f(template, ...values)));
+    const notice = (template, ...values) => window.PSKO.translate(game.T(game._741c60d.f(template, ...values)));
     return {
       aliases: ['Mando conectado', 'Mando conectado:', 'atrás / cerrar', 'TIRADA ×100'].map(text => game.T(text)),
       products: ['Switch', 'The Pokémon Company', 'CREDITS.md', 'Authentication > Settings > Authorized domains']
@@ -472,12 +472,12 @@ try {
   const traitCatalog = await run(() => {
     const game = window.__PSKO_TEST_GAME__;
     return [
-      ...game._d067b81.map(nature => {
-        const source = game._65ba4aa.name(nature.n);
+      ...game._2a96e24.map(nature => {
+        const source = game._d5fcd85.name(nature.n);
         return { kind: 'nature', source, translated: window.PSKO_NATURES[source] || source };
       }),
-      ...Object.keys(game._ff8bd15).map(id => {
-        const source = game._65ba4aa.abilityName(id);
+      ...Object.keys(game._b080256).map(id => {
+        const source = game._d5fcd85.abilityName(id);
         return { kind: 'ability', source, translated: window.PSKO_ABILITIES[source] || source };
       }),
     ];
@@ -490,13 +490,13 @@ try {
   }
   const formCatalog = await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    const definitions = game._ffbf3b0;
-    if (!definitions?.list?.length || !game._aa73e1c || !game._425bf7c) {
+    const definitions = game._ca0e4fd;
+    if (!definitions?.list?.length || !game._7404bbb || !game._857f4ae) {
       throw new Error('The live Pokémon/form catalog changed.');
     }
     const labels = new Set([
-      ...Object.values(game._425bf7c).map(pokemon => pokemon.name),
-      ...Object.values(game._aa73e1c).flatMap(form => [form.name, form.fn]),
+      ...Object.values(game._857f4ae).map(pokemon => pokemon.name),
+      ...Object.values(game._7404bbb).flatMap(form => [form.name, form.fn]),
       ...Object.entries(definitions.names.en).flat(),
       ...Object.entries(definitions.fnames.en).flat(),
     ].filter(name => typeof name === 'string' && name));
@@ -528,7 +528,7 @@ try {
       notice.when = () => true;
       localStorage.removeItem(notice.key);
     }
-    window.__PSKO_TEST_GAME__._07c7efc.updateNotices();
+    window.__PSKO_TEST_GAME__._e742e8c.updateNotices();
   });
   await capture('account-update-notice');
   if (/[a-z]/i.test(await frame.locator('#scr-savenote').innerText())) {
@@ -560,15 +560,15 @@ try {
       id: 'Local test controller', index: 0, connected: true, mapping: 'standard',
       buttons: Array.from({ length: 17 }, () => ({ pressed: false, value: 0 })), axes: [0, 0, 0, 0],
     }] });
-    window.__PSKO_TEST_GAME__._d16e847.poll(performance.now());
+    window.__PSKO_TEST_GAME__._221160f.poll(performance.now());
   });
   await openPanel('SettingsUI', 'ctl');
   await capture('settings-connected-controller');
   await run(() => { delete navigator.getGamepads; });
   await resetScreens();
-  await run(() => window.__PSKO_TEST_GAME__._154943f.open());
+  await run(() => window.__PSKO_TEST_GAME__._18f20ea.open());
   await capture('touch-layout');
-  await run(() => window.__PSKO_TEST_GAME__._154943f.close());
+  await run(() => window.__PSKO_TEST_GAME__._18f20ea.close());
   await openPanel('NewsUI');
   await capture('news');
   await frame.locator('#news-body .news-more[aria-expanded="false"]').evaluateAll(buttons => buttons.forEach(button => button.click()));
@@ -727,8 +727,8 @@ try {
   await run(() => {
     const save = window.__PSKO_TEST_GAME__.DB.save;
     save.bag = { mint: 5, cap: 5, caph: 5, candy: 70 };
-    save.tms = Object.fromEntries(Object.keys(window.__PSKO_TEST_GAME__._cd04291).map(id => [id, 1]));
-    window.__PSKO_TEST_GAME__._65ba4aa.setAbility(121, 0);
+    save.tms = Object.fromEntries(Object.keys(window.__PSKO_TEST_GAME__._f725f0e).map(id => [id, 1]));
+    window.__PSKO_TEST_GAME__._d5fcd85.setAbility(121, 0);
   });
   await resetScreens(true);
   await frame.locator('[data-go="dex"]').click();
@@ -867,17 +867,17 @@ try {
   await resetScreens();
   await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    game._68ae755.showData({ name: 'Local player', title: 'Brillante', favs: [{ dex: 1, shiny: true }],
+    game._7f5f016.showData({ name: 'Local player', title: 'Brillante', favs: [{ dex: 1, shiny: true }],
       best: { solo: 200, group: 300, level: 40, bosses: 8, legends: 2, kills: 700, medals: 0 } });
     game.UI.show('scr-profile');
   });
   await capture('public-profile');
   await resetScreens(true);
-  await run(() => window.__PSKO_TEST_GAME__._3e0c490.play());
-  await frame.waitForFunction(() => !!window.__PSKO_TEST_GAME__._91bdc48.player);
+  await run(() => window.__PSKO_TEST_GAME__._2d16e22.play());
+  await frame.waitForFunction(() => !!window.__PSKO_TEST_GAME__._5f3f9e0.player);
   await frame.keyboard.press('Escape');
   await run(() => {
-    const game = window.__PSKO_TEST_GAME__, player = game._91bdc48.player;
+    const game = window.__PSKO_TEST_GAME__, player = game._5f3f9e0.player;
     player.orbs = ['slumber', 'slow', 'blowback', 'focus'].map(id => ({ id, n: 3 }));
     player.orbBuff = { focus: 12, luminous: 13, quick: 8 };
     player.statsTaken = { hp: 3, magnet: 2 };
@@ -905,17 +905,17 @@ try {
   await resetScreens();
   await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    const player = game._91bdc48.player;
-    game.RunUI.showEvo({ ...player, dex: 1, mon: { ...game._425bf7c[1], nature: player.mon.nature } },
+    const player = game._5f3f9e0.player;
+    game.RunUI.showEvo({ ...player, dex: 1, mon: { ...game._857f4ae[1], nature: player.mon.nature } },
       { opts: [2, 3], all: [2, 3], half: false }, () => {});
   });
   await capture('pokemon-evolution-choices');
   await resetScreens();
   await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    const player = game._91bdc48.player;
-    game.RunUI.showForm({ ...player, dex: 479, form: 0, mon: { ...game._425bf7c[479], nature: player.mon.nature } },
-      { forms: game._92b9ff7.of(479, 'stat') }, () => {});
+    const player = game._5f3f9e0.player;
+    game.RunUI.showForm({ ...player, dex: 479, form: 0, mon: { ...game._857f4ae[479], nature: player.mon.nature } },
+      { forms: game._7e8b2d0.of(479, 'stat') }, () => {});
   });
   await capture('pokemon-form-choices');
   for (const gengar of [false, true]) {
@@ -924,8 +924,8 @@ try {
       const game = window.__PSKO_TEST_GAME__;
       game.RunUI.showOver({ dead: !gengar, time: 600, level: 40, kills: 1500, coins: 200,
         t1: 3, t10: 2, candy: 10, judge: { gengar, dmg: 20000, time: 120 },
-        chal: { cond: game._06546c2.CONDS[0], prize: true },
-        mastery: { dex: 1, gained: 200, after: gengar ? 1e9 : 200, got: Object.keys(game._0b6657c.BY) },
+        chal: { cond: game._3342b42.CONDS[0], prize: true },
+        mastery: { dex: 1, gained: 200, after: gengar ? 1e9 : 200, got: Object.keys(game._0089e05.BY) },
         moves: [{ id: 'psychic', name: 'Psíquico', lvl: 5 }], caught: [{ dex: 1, isNew: true }], record: true }, () => {});
     }, gengar);
     await capture(gengar ? 'run-rewards-gengar-complete-mastery' : 'run-rewards-arceus-mastery');
