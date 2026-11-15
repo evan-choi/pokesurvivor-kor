@@ -83,7 +83,11 @@
 
   for (const method of ['alert', 'confirm']) {
     const original = window[method];
-    window[method] = function (message) { return original.call(this, translate(message)); };
+    window[method] = function (message) {
+      const confirmation = method === 'confirm' && enabled && gameDocument
+        ? globalThis.PSKO.translateRewardConfirmation(message) : message;
+      return original.call(this, confirmation !== message ? confirmation : translate(message));
+    };
   }
   document.dispatchEvent(new Event('psko:canvas-ready'));
 })();

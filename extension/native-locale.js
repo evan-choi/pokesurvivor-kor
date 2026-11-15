@@ -16,6 +16,9 @@
   // The native game translates this template before substituting the species.
   messages['{x} Primigenio'] = '원시{x}';
   messages['Primal {x}'] = '원시{x}';
+  // Preserve the entire reward confirmation until its names and item lists are separated.
+  messages['¿Dar a {name}?'] = '지급 확인 · {name}';
+  messages['¿Quitar a {name}?'] = '회수 확인 · {name}';
   // The game translates its output again in DOM and canvas hooks. Preserve these
   // compound names before shorter glossary terms such as Switch, Pokémon and Credits.
   for (const name of ['Switch', 'The Pokémon Company', 'CREDITS.md', 'Authentication > Settings > Authorized domains']) {

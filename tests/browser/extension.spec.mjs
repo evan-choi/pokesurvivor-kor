@@ -823,3 +823,104 @@ test('translates ranking moderation controls while preserving protected player n
   await expect(moderation.locator('button')).toHaveText(['Quitar de esta tabla', 'Quitar de todas las tablas', 'Cancelar']);
   await expect(frame.locator('#scr-rank .rk-del')).toHaveAttribute('title', 'Quitar marca (admin)');
 });
+
+test('translates pending-score and reward controls while preserving account identifiers', async () => {
+  await frame.locator('body').evaluate((body) => {
+    body.insertAdjacentHTML('beforeend', `<section id="scr-mod"><div id="mod-list"><div translate="no">
+      <div class="set-row"><div class="grow"><b>Preguntas sorpresa</b><small>Revisar el top 3</small></div>
+        <select id="mod-qmode"><option value="medir">medir</option><option value="avisar">avisar</option><option value="ban">ban</option></select></div>
+      <div class="set-row"><div class="grow"><b>Revisar el top 3</b></div>
+        <select id="mod-hold"><option value="on">sí</option><option value="off">no</option></select></div>
+      <p class="sub">2 marcas esperando</p><div id="mod-hold-list"><div class="rk-row mod-row hold">
+        <span class="who"><b translate="no">Fire</b><small>Solo · Semana · Nv. 20 · 123 derrotados · daño a Arceus 456</small>
+          <small class="mod-warn" translate="no">Fire-flag</small></span><span class="time">20:34</span>
+        <span class="mod-acts"><button>Aprobar</button><button>Borrar marca</button></span></div></div>
+      <div class="row"><input id="mod-nick" placeholder="Apodo" value="Fire"><button id="mod-find">Buscar</button></div>
+      <div id="mod-acc"><div class="set-row"><div class="grow"><b class="gold">Water</b>
+        <small>1.234 monedas · 2 tickets · 3 ×10 · 4 Pokémon · 1 shiny · Fire-uid</small></div><span id="mod-acc-ban"><button>Banear</button></span></div>
+        <h3>Dar</h3><div class="keys"><span>MT</span><div id="mod-tms"><details class="mod-region" open>
+          <summary>Elegir MT (2)<span></span></summary><div class="row"><input type="search" placeholder="Buscar">
+          <button data-all="1">Todos</button><button data-all="0">Ninguno</button></div>
+          <div class="mod-mons"><label><input type="checkbox"> Psíquico</label><label><input type="checkbox"> Rayo</label></div></details>
+          <label><small>Cuántos de cada uno</small><input type="number" value="1"></label></div></div>
+        <div class="row"><button id="mod-send">Dar ahora</button></div></div>
+    </div></div></section>`);
+  });
+  await expect(frame.locator('#mod-qmode option')).toHaveText(['기록만 남기기', '경고하기', '차단하기']);
+  expect(await frame.locator('#mod-qmode option').evaluateAll(options => options.map(option => option.value)))
+    .toEqual(['medir', 'avisar', 'ban']);
+  await expect(frame.locator('#mod-list > div > p.sub')).toHaveText('검토 대기 중인 기록 2개');
+  await expect(frame.locator('#mod-hold-list .who > b')).toHaveText('Fire');
+  await expect(frame.locator('#mod-hold-list .mod-warn')).toHaveText('Fire-flag');
+  await expect(frame.locator('#mod-hold-list .who > small').first()).toHaveText('솔로 · 주간 · 레벨 20 · 123 격파 · 아르세우스에게 준 피해 456');
+  await expect(frame.locator('#mod-hold-list .mod-acts > button').first()).toHaveText('승인');
+  await expect(frame.locator('#mod-nick')).toHaveValue('Fire');
+  await expect(frame.locator('#mod-nick')).toHaveAttribute('placeholder', '닉네임');
+  await expect(frame.locator('#mod-find')).toHaveText('검색');
+  await expect(frame.locator('#mod-acc > .set-row b.gold')).toHaveText('Water');
+  await expect(frame.locator('#mod-acc > .set-row .grow > small')).toHaveText('1.234코인 · 티켓 2개 · 10연속 티켓 3개 · 포켓몬 4마리 · 색이 다른 포켓몬 1마리 · Fire-uid');
+  await expect(frame.locator('#mod-tms summary')).toHaveText('기술머신 선택 (2)');
+  await expect(frame.locator('#mod-tms input[type="search"]')).toHaveAttribute('placeholder', '검색');
+  await expect(frame.locator('#mod-tms .mod-mons label')).toHaveText([' 사이코키네시스', ' 10만볼트']);
+  await expect(frame.locator('#mod-send')).toHaveText('지급하기');
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
+  await expect(frame.locator('#mod-qmode option')).toHaveText(['medir', 'avisar', 'ban']);
+  await expect(frame.locator('#mod-acc > .set-row .grow > small')).toHaveText('1.234 monedas · 2 tickets · 3 ×10 · 4 Pokémon · 1 shiny · Fire-uid');
+  await expect(frame.locator('#mod-tms .mod-mons label')).toHaveText([' Psíquico', ' Rayo']);
+});
+
+test('translates reward confirmations without changing player names or Psychic type text', async () => {
+  const pairs = [
+    ['¿Dar a Fire: MT: Psychic, Tackle (×2 cada una)?', 'Fire · 기술머신 사이코키네시스, 몸통박치기 (각 2개) · 지급할까요?'],
+    ['지급 확인 · Fire: MT: Psychic, Tackle (×2 cada una)', 'Fire · 기술머신 사이코키네시스, 몸통박치기 (각 2개) · 지급할까요?'],
+    ['¿Dar a Fire: MT: 6 MT (×2 cada una), objetos: 6 objetos, skins: 6 skins, estelas: 6 estelas, marcos: 6 marcos?', 'Fire · 기술머신 6개 (각 2개), 도구 6개, 스킨 6개, 궤적 6개, 테두리 6개 · 지급할까요?'],
+    ['¿Dar a Ash Pokémon: 100 monedas, 2 tickets, 1 ×10, MT: Psíquico, Placaje (×2 cada una), objetos: Restos (×3 cada una)?', 'Ash Pokémon · 코인 100개, 티켓 2장, 10연속 티켓 1장, 기술머신 사이코키네시스, 몸통박치기 (각 2개), 도구 먹다남은음식 (각 3개) · 지급할까요?'],
+    ['¿Quitar a Ash: Pokémon, Fire: 2 Pokémon (y su shiny)?', 'Ash: Pokémon, Fire · 포켓몬 2마리와 색이 다른 모습 · 회수할까요?'],
+    ['회수 확인 · Ash: Pokémon, Fire: 2 Pokémon (y su shiny)', 'Ash: Pokémon, Fire · 포켓몬 2마리와 색이 다른 모습 · 회수할까요?'],
+  ];
+  expect(await frame.locator('body').evaluate((_, pairs) => pairs.map(([input]) => globalThis.PSKO.translateRewardConfirmation(input)), pairs))
+    .toEqual(pairs.map(([, output]) => output));
+  expect(await frame.locator('body').evaluate(() => [globalThis.PSKO.translate('Psychic'), globalThis.PSKO.translateMove('Psychic')]))
+    .toEqual(['에스퍼', '사이코키네시스']);
+  const dialog = page.waitForEvent('dialog');
+  const confirmation = frame.locator('body').evaluate((_, source) => confirm(source), pairs[0][0]);
+  const shown = await dialog;
+  expect(shown.message()).toBe(pairs[0][1]);
+  await shown.dismiss();
+  expect(await confirmation).toBe(false);
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
+  const disabledDialog = page.waitForEvent('dialog');
+  const disabledConfirmation = frame.locator('body').evaluate((_, source) => confirm(source), pairs[0][0]);
+  const disabledShown = await disabledDialog;
+  expect(disabledShown.message()).toBe(pairs[0][0]);
+  await disabledShown.dismiss();
+  expect(await disabledConfirmation).toBe(false);
+});
+
+test('translates the extension compatibility notice while preserving unrelated protected content', async () => {
+  await frame.locator('body').evaluate((body) => {
+    body.insertAdjacentHTML('beforeend', `<div translate="no" id="extension-notice"><div>
+      <h1>PokéSurvivor</h1><p><b>A browser extension is not compatible with the game.</b></p>
+      <p>Disable the extensions for this site (chrome://extensions) and reload the page to play.</p>
+      <button>Reload</button><span>Fire</span></div></div>
+      <div translate="no" id="other-protected-notice"><div><h1>PokéSurvivor</h1>
+      <p><b>Fire</b></p><button>Reload</button></div></div>`);
+  });
+  await expect(frame.locator('#extension-notice b')).toHaveText('이 브라우저 확장 프로그램은 게임과 호환되지 않습니다.');
+  await expect(frame.locator('#extension-notice p').last()).toHaveText('chrome://extensions에서 이 사이트의 확장 프로그램을 끄고 페이지를 새로고침해 주세요.');
+  await expect(frame.locator('#extension-notice button')).toHaveText('새로고침');
+  await expect(frame.locator('#extension-notice span')).toHaveText('Fire');
+  await expect(frame.locator('#other-protected-notice b')).toHaveText('Fire');
+  await expect(frame.locator('#other-protected-notice button')).toHaveText('Reload');
+  await frame.locator('#extension-notice').evaluate((notice) => {
+    notice.querySelector('b').textContent = 'Una extensión del navegador no es compatible con el juego.';
+    notice.querySelectorAll('p')[1].textContent = 'Desactiva las extensiones de esta web (chrome://extensions) y recarga la página para jugar.';
+    notice.querySelector('button').textContent = 'Recargar';
+  });
+  await expect(frame.locator('#extension-notice b')).toHaveText('이 브라우저 확장 프로그램은 게임과 호환되지 않습니다.');
+  await expect(frame.locator('#extension-notice p').last()).toHaveText('chrome://extensions에서 이 사이트의 확장 프로그램을 끄고 페이지를 새로고침해 주세요.');
+  await expect(frame.locator('#extension-notice button')).toHaveText('새로고침');
+  await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
+  await expect(frame.locator('#extension-notice b')).toHaveText('Una extensión del navegador no es compatible con el juego.');
+  await expect(frame.locator('#extension-notice button')).toHaveText('Recargar');
+});

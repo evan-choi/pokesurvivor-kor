@@ -70,11 +70,48 @@ test('all power moves use their official Korean names in both game languages', (
 
 test('new game news translates the complete Spanish and English paragraphs', () => {
   const { entries } = JSON.parse(readFileSync(new URL('fixtures/official-game-news.json', import.meta.url), 'utf8'));
-  assert.equal(entries.length, 7);
+  assert.equal(entries.length, 20);
   for (const { spanish, english, korean } of entries) {
     assert.equal(translate(spanish), korean, spanish);
     assert.equal(translate(english), korean, english);
     assert.equal(translate(korean), korean);
+  }
+});
+
+test('account purchases and ranking review notices translate the complete current copy', () => {
+  for (const [spanish, english, korean] of [
+    ['Tu marca no ha entrado en el ranking. Juega sin extensiones del navegador (desactívalas) y vuelve a intentarlo.',
+      'Your score did not enter the leaderboard. Play without browser extensions (turn them off) and try again.',
+      '기록이 순위표에 등록되지 않았습니다. 브라우저 확장 프로그램을 끈 뒤 다시 플레이해 주세요.'],
+    ['La marca del grupo no ha entrado en el ranking: alguien del equipo juega con extensiones del navegador.',
+      'The group score did not enter the leaderboard: someone on the team is playing with browser extensions.',
+      '팀원 중 브라우저 확장 프로그램을 사용하는 사람이 있어 그룹 기록이 순위표에 등록되지 않았습니다.'],
+    ['¡Marca de top 3! Un moderador la revisará antes de que salga en el ranking.',
+      'Top 3 score! A moderator will review it before it shows on the leaderboard.',
+      '상위 3위에 해당하는 기록입니다! 운영자가 검토한 뒤 순위표에 표시됩니다.'],
+    ['en revisión', 'under review', '검토 중'],
+    ['Necesitas conexión para comprar.', 'You need a connection to buy.', '구매하려면 인터넷 연결이 필요합니다.'],
+    ['Un momento: se está cobrando tu última partida.', 'One moment: your last run is being paid out.',
+      '직전 전투의 보상을 지급하고 있습니다. 잠시 기다려 주세요.'],
+  ]) {
+    assert.equal(translate(spanish), korean, spanish);
+    assert.equal(translate(english), korean, english);
+  }
+  assert.equal(translate('Top por revisar'), '검토할 상위 기록');
+});
+
+test('current patch notes preserve account rewards, difficulty limits and item names', () => {
+  for (const [spanish, english, korean] of [
+    ['Compras que se quedan', 'Purchases that stick', '구매 내역 저장 개선'],
+    ['Las Botas Gruesas, el Guante de Boxeo y la Gafa Protectora de la Mochila ya no se pierden al jugar en dos aparatos o con dos pestañas.',
+      'Heavy-Duty Boots, Punching Glove and Safety Goggles in your Bag are no longer lost when playing on two devices or in two tabs.',
+      '두 기기나 두 탭에서 플레이하면 가방의 통굽부츠, 펀치글러브, 방진고글이 사라지던 문제를 수정했습니다.'],
+    ['Modos: Normal es un poco más fácil (enemigos y jefes con algo menos de vida y daño, y ningún golpe te quita más de un cuarto de la vida) y Pesadilla, un poco más difícil (más vida y daño, golpes más duros y más enemigos a la vez). La Sentencia de Arceus no cambia en Normal.',
+      "Modes: Normal is a bit easier (enemies and bosses with a little less health and damage, and no hit takes more than a quarter of your health) and Nightmare a bit harder (more health and damage, harder hits and more enemies at once). Arceus's Judgment doesn't change on Normal.",
+      '노말 난이도가 조금 쉬워졌습니다. 적과 보스의 체력·피해량이 줄고, 한 번의 공격으로 잃는 체력이 최대 체력의 4분의 1을 넘지 않습니다. 악몽 난이도는 적의 체력·피해량과 동시 출현 수가 늘고 공격이 더 강해졌습니다. 노말 난이도의 아르세우스 심판은 기존과 같습니다.'],
+  ]) {
+    assert.equal(translate(spanish), korean, spanish);
+    assert.equal(translate(english), korean, english);
   }
 });
 

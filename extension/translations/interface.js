@@ -1355,3 +1355,72 @@ globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
   ["Marcas quitadas de todas las tablas", "Scores removed from all leaderboards", "모든 순위표에서 기록을 삭제했습니다"],
   ["No se pudo quitar la marca ({x})", "Could not remove the score ({x})", "기록을 삭제하지 못했습니다({x})"],
 ]);
+
+globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
+  ["Tu marca no ha entrado en el ranking. Juega sin extensiones del navegador (desactívalas) y vuelve a intentarlo.", "Your score did not enter the leaderboard. Play without browser extensions (turn them off) and try again.", "기록이 순위표에 등록되지 않았습니다. 브라우저 확장 프로그램을 끈 뒤 다시 플레이해 주세요."],
+  ["La marca del grupo no ha entrado en el ranking: alguien del equipo juega con extensiones del navegador.", "The group score did not enter the leaderboard: someone on the team is playing with browser extensions.", "팀원 중 브라우저 확장 프로그램을 사용하는 사람이 있어 그룹 기록이 순위표에 등록되지 않았습니다."],
+  ["¡Marca de top 3! Un moderador la revisará antes de que salga en el ranking.", "Top 3 score! A moderator will review it before it shows on the leaderboard.", "상위 3위에 해당하는 기록입니다! 운영자가 검토한 뒤 순위표에 표시됩니다."],
+  ["en revisión", "under review", "검토 중"],
+  ["Necesitas conexión para comprar.", "You need a connection to buy.", "구매하려면 인터넷 연결이 필요합니다."],
+  ["Un momento: se está cobrando tu última partida.", "One moment: your last run is being paid out.", "직전 전투의 보상을 지급하고 있습니다. 잠시 기다려 주세요."],
+  ["Top por revisar", "Top por revisar", "검토할 상위 기록"],
+]);
+
+globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
+  ["Preguntas sorpresa", "Preguntas sorpresa", "추가 확인 질문"],
+  ["preguntas sorpresa", "preguntas sorpresa", "추가 확인 질문"],
+  ["medir: sólo apunta · avisar: la marca no entra y sale el aviso «juega sin extensiones» · ban: además, la 2.ª vez, ban", "medir: sólo apunta · avisar: la marca no entra y sale el aviso «juega sin extensiones» · ban: además, la 2.ª vez, ban", "기록만 남기기 · 경고하기는 기록을 순위표에서 제외하고 ‘확장 프로그램을 끄고 플레이하세요’ 안내 표시 · 차단하기는 여기에 더해 두 번째 적발 시 계정 차단"],
+  ["medir", "medir", "기록만 남기기"],
+  ["avisar", "avisar", "경고하기"],
+  ["Revisar el top 3", "Revisar el top 3", "상위 3위 기록 검토"],
+  ["revisar el top", "revisar el top", "상위 기록 검토"],
+  ["Lo que entra en el top 3 de hoy, semana, mes, histórico y desafío no sale hasta aprobarlo", "Lo que entra en el top 3 de hoy, semana, mes, histórico y desafío no sale hasta aprobarlo", "일간·주간·월간·역대·도전 순위의 상위 3위 기록은 승인 후 표시합니다"],
+  ["{x} marcas esperando", "{x} marcas esperando", "검토 대기 중인 기록 {x}개"],
+  ["No hay marcas esperando.", "No hay marcas esperando.", "검토 대기 중인 기록이 없습니다."],
+  ["Cambiado: {x}", "Cambiado: {x}", "변경했습니다. {x}"],
+  [" · daño a Arceus {x}", " · daño a Arceus {x}", " · 아르세우스 피해량 {x}"],
+  ["Aprobar", "Aprobar", "승인"],
+  ["Aprobada: ya sale en el ranking", "Aprobada: ya sale en el ranking", "승인했습니다. 순위표에 표시됩니다"],
+  ["Desafío", "Desafío", "도전"],
+  ["Cuántos de cada uno", "Cuántos de cada uno", "각 항목의 수량"],
+  ["Dar", "Dar", "지급"],
+  ["Dar ahora", "Dar ahora", "지급하기"],
+  ["Quitar ahora", "Quitar ahora", "회수하기"],
+  ["Tickets", "Tickets", "티켓"],
+  ["los Pokémon de arriba, en shiny", "los Pokémon de arriba, en shiny", "위에서 선택한 포켓몬을 색이 다른 모습으로 지급"],
+  ["quitar sólo la versión shiny (se queda el normal)", "quitar sólo la versión shiny (se queda el normal)", "색이 다른 모습만 회수하고 일반 모습은 유지"],
+  ["Se mete ya en su partida de la nube y se suma a lo que tenga. Si está jugando, le aparece en su siguiente guardado (al acabar la partida, al pulsar Guardar o al salir); si no, al entrar.", "Se mete ya en su partida de la nube y se suma a lo que tenga. Si está jugando, le aparece en su siguiente guardado (al acabar la partida, al pulsar Guardar o al salir); si no, al entrar.", "계정의 클라우드 저장 데이터에 바로 추가합니다. 플레이 중이면 다음 저장 시점인 전투 종료, 저장 버튼 클릭, 게임 종료 때 반영되며, 접속 중이 아니면 다음 로그인 때 반영됩니다."],
+  ["Se resta de lo que tenga (nunca baja de 0). Los Pokémon quitados no vuelven aunque tenga una copia vieja; si los consigue otra vez jugando, sí se le quedan. Si era su compañero, pasa a su inicial.", "Se resta de lo que tenga (nunca baja de 0). Los Pokémon quitados no vuelven aunque tenga una copia vieja; si los consigue otra vez jugando, sí se le quedan. Si era su compañero, pasa a su inicial.", "현재 보유량에서 차감하며 0 미만으로 내려가지 않습니다. 회수한 포켓몬은 이전 저장 데이터로 복원되지 않으며, 다시 획득하면 보유할 수 있습니다. 회수한 포켓몬이 파트너였다면 처음 선택한 포켓몬으로 바뀝니다."],
+  ["Elegir MT", "Elegir MT", "기술머신 선택"],
+  ["Elegir objetos", "Elegir objetos", "도구 선택"],
+  ["Elegir skins", "Elegir skins", "스킨 선택"],
+  ["Elegir estelas", "Elegir estelas", "궤적 선택"],
+  ["Elegir marcos", "Elegir marcos", "테두리 선택"],
+  ["Estelas", "Estelas", "궤적"],
+  ["estelas", "estelas", "궤적"],
+  ["Marcos", "Marcos", "테두리"],
+  ["marcos", "marcos", "테두리"],
+  ["Buscar", "Buscar", "검색"],
+  ["(×{x} cada una)", "(×{x} cada una)", "(각 {x}개)"],
+  ["MT: {x}", "MT: {x}", "기술머신 {x}"],
+  ["objetos: {x}", "objetos: {x}", "도구 {x}"],
+  ["skins: {x}", "skins: {x}", "스킨 {x}"],
+  ["estelas: {x}", "estelas: {x}", "궤적 {x}"],
+  ["marcos: {x}", "marcos: {x}", "테두리 {x}"],
+]);
+
+globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
+  ["Cambiado: {x} = {x}", "Cambiado: {x} = {x}", "{x} 설정을 변경했습니다. 현재 값 {x}"],
+]);
+
+globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
+  ["Sospechosas", "Sospechosas", "의심 기록"],
+  ["Cuentas", "Cuentas", "계정"],
+  ["Ninguno elegido", "Ninguno elegido", "선택한 항목 없음"],
+  ["Elegir Pokémon", "Elegir Pokémon", "포켓몬 선택"],
+]);
+
+globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
+  ["Una extensión del navegador no es compatible con el juego.", "A browser extension is not compatible with the game.", "이 브라우저 확장 프로그램은 게임과 호환되지 않습니다."],
+  ["Desactiva las extensiones de esta web (chrome://extensions) y recarga la página para jugar.", "Disable the extensions for this site (chrome://extensions) and reload the page to play.", "chrome://extensions에서 이 사이트의 확장 프로그램을 끄고 페이지를 새로고침해 주세요."],
+]);

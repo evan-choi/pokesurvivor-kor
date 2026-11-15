@@ -4,6 +4,8 @@
   const attributes = ['title', 'placeholder', 'aria-label', 'alt'];
   const excluded = 'script, style, code, pre, textarea, [contenteditable]:not([contenteditable="false"]), [data-psko-ui]';
   const originals = new WeakMap();
+  const extensionNotice = /^(?:Una extensión del navegador no es compatible con el juego\.|A browser extension is not compatible with the game\.|이 브라우저 확장 프로그램은 게임과 호환되지 않습니다\.)$/;
+  const extensionNoticeInstructions = /^(?:Desactiva las extensiones de esta web \(chrome:\/\/extensions\) y recarga la página para jugar\.|Disable the extensions for this site \(chrome:\/\/extensions\) and reload the page to play\.|chrome:\/\/extensions에서 이 사이트의 확장 프로그램을 끄고 페이지를 새로고침해 주세요\.)$/;
   let enabled = false;
   let observer;
   let originalLang;
@@ -21,6 +23,22 @@
     if (owner.matches('.mb-txt > b, #menu-banner .mb-count')) return false;
     if (owner.matches('#user-pill > span') && owner.parentElement.querySelector('.sync.guest')) return false;
     if (owner.matches('#scr-rank .rk-rep.rk-del')) return false;
+    if (owner.matches('body > div, html > div') &&
+        owner.firstElementChild?.matches('div') &&
+        owner.firstElementChild.querySelector(':scope > h1')?.textContent === 'PokéSurvivor' &&
+        extensionNotice.test(owner.querySelector('p > b')?.textContent || '') &&
+        (element.matches('p > b') && extensionNotice.test(element.textContent) ||
+          element.matches('p') && extensionNoticeInstructions.test(element.textContent) ||
+          element.matches('button') && /^(?:Recargar|Reload|새로고침)$/.test(element.textContent))) return false;
+    if (owner.matches('#mod-list > div') && element.matches(
+      '#mod-list > div > .set-row b, #mod-list > div > .set-row small, ' +
+      '#mod-qmode option, #mod-hold option, #mod-list > div > p.sub, ' +
+      '#mod-hold-list .who > small, #mod-hold-list .mod-acts button, ' +
+      '#mod-nick, #mod-find, #mod-acc > h3, #mod-acc > .note, ' +
+      '#mod-acc > .keys > span, #mod-acc > .keys > label, ' +
+      '#mod-acc > .keys :is(summary, small, button, label, input[placeholder]), #mod-acc > .row button, ' +
+      '#mod-acc-ban button, #mod-acc > .set-row > .grow > small'
+    )) return false;
     // The moderation modal includes fixed controls alongside protected player names.
     if (owner.matches('body > section.scr.dim') &&
         owner.querySelector(':scope > .box > div > button[data-a="one"]') &&
@@ -41,6 +59,7 @@
         element.matches('#dex-detail > p > b.gold') ||
         element.matches('#shop-body .upg-item b, #bag-body .upg-item b') ||
         element.matches('.bind-slot option, .ban-moves .chip') ||
+        element.matches('#mod-tms .mod-mons label') ||
         element.matches('#upg-list [data-start], #upg-list [data-start2]') ||
         (element.closest('#cards .nm, #bond-cards .nm') && !element.closest('.type, .tag-chip')) ||
         element.matches('#over-stats > div > b[style*="font-size:15px"]') ||
@@ -48,6 +67,16 @@
       );
     const translate = moveName ? globalThis.PSKO.translateMove : globalThis.PSKO.translate;
     let translated = enabled ? translate(source) : source;
+    if (enabled && key === 'text' && element.matches('#mod-qmode option[value="ban"]')) {
+      translated = source.replace(/^ban$/, '차단하기');
+    }
+    if (enabled && key === 'text' && element.matches('#mod-acc > .set-row > .grow > small:not(.mod-warn)')) {
+      // The account ID shares this text node with counts and must stay verbatim.
+      translated = source.replace(
+        /^([\d.,]+) monedas · (\d+) tickets · (\d+) ×10 · (\d+) Pokémon · (\d+) shiny · (.+)$/,
+        '$1코인 · 티켓 $2개 · 10연속 티켓 $3개 · 포켓몬 $4마리 · 색이 다른 포켓몬 $5마리 · $6'
+      );
+    }
     if (enabled && key === 'text' && element.matches('#dex-detail .mon-extra > .mx-row:nth-child(-n+2) > b')) {
       const names = element.parentElement.matches(':first-child') ? globalThis.PSKO_NATURES : globalThis.PSKO_ABILITIES;
       translated = source.replace(/\S(?:[\s\S]*\S)?/, (name) => names?.[name] || name);

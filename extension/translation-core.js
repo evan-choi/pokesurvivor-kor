@@ -90,5 +90,32 @@
     return translate(text, true);
   }
 
-  globalThis.PSKO = Object.freeze({ translate, translateMove });
+  function translateRewardConfirmation(text) {
+    if (typeof text !== 'string') return text;
+    const request = /^(?:¿(Dar|Quitar) a ([\s\S]+)\?|(?:(지급|회수) 확인 · )([\s\S]+))$/.exec(text);
+    if (!request) return text;
+    const body = request[2] || request[4];
+    const separator = /: (?=\d[\d.,]* (?:monedas|tickets|×10|Pokémon)|(?:MT|objetos|skins|estelas|marcos): )/.exec(body);
+    if (!separator) return text;
+    const player = body.slice(0, separator.index);
+    const payload = body.slice(separator.index + separator[0].length);
+    const rewards = payload.split(/, (?=(?:MT|objetos|skins|estelas|marcos): |\d[\d.,]* (?:monedas|tickets|×10|Pokémon))/);
+    const translated = rewards.map(reward => {
+      const category = /^(MT|objetos|skins|estelas|marcos): (.+?)( \(×\d+ cada una\))?$/.exec(reward);
+      if (category) {
+        const label = translate(category[1]);
+        const translateName = category[1] === 'MT' ? translateMove : translate;
+        const summary = /^(\d+) (MT|objetos|skins|estelas|marcos)$/.exec(category[2]);
+        const names = summary?.[2] === category[1] ? `${summary[1]}개`
+          : category[2].split(', ').map(name => translateName(name)).join(', ');
+        return `${label} ${names}${category[3] ? ` ${translate(category[3].trim())}` : ''}`;
+      }
+      return translate(reward.replace(/^(\d+) ×10$/, '10연속 티켓 $1장')
+        .replace(/^(\d+) Pokémon \(y su shiny\)$/, '포켓몬 $1마리와 색이 다른 모습'));
+    });
+    const action = request[1] === 'Dar' || request[3] === '지급' ? '지급' : '회수';
+    return `${player} · ${translated.join(', ')} · ${action}할까요?`;
+  }
+
+  globalThis.PSKO = Object.freeze({ translate, translateMove, translateRewardConfirmation });
 })();
