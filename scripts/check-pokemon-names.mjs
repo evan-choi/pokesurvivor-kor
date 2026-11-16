@@ -89,7 +89,8 @@ for (const [english, korean] of koreanByEnglish(species)) {
 const moveNames = koreanByEnglish(moves);
 for (const name of gameMoveNames) {
   // The game uses the ability Swarm as an evolved move.
-  const expected = name === 'Swarm' ? koreanByEnglish(abilities).get(name) : moveNames.get(name);
+  const officialName = name === 'Embers' ? 'Ember' : name;
+  const expected = name === 'Swarm' ? koreanByEnglish(abilities).get(name) : moveNames.get(officialName);
   assert.ok(expected, `PokéAPI 기술명 없음: ${name}`);
   assert.equal(context.PSKO.translateMove(name), expected, `기술 이름: ${name}`);
 }

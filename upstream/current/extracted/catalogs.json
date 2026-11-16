@@ -31311,14 +31311,14 @@
     "surf": {
       "cat": "special",
       "cd": 2.2,
-      "desc": "Una ola enorme cruza la pantalla y arrastra a los enemigos.",
-      "dmg": 154.96,
+      "desc": "Una ola grande sale hacia donde apuntas y arrastra a los enemigos.",
+      "dmg": 60.06,
       "id": "surf",
       "kind": "wave",
       "knock": 160,
       "maxLvl": 5,
       "name": "Surf",
-      "radius": 560,
+      "radius": 360,
       "speed": 560,
       "type": "water",
       "ups": [
@@ -31348,7 +31348,7 @@
           "t": "+50% daño y arrastra más"
         }
       ],
-      "width": 190
+      "width": 130
     },
     "swords-dance": {
       "amount": 0.13,
@@ -53330,14 +53330,12 @@
       "desc": "+8% de daño con todos los movimientos.",
       "icon": "fist",
       "id": "atk",
-      "max": 10,
       "title": "Potencia"
     },
     "cd": {
       "desc": "-5% de recarga en todos los movimientos.",
       "icon": "clock",
       "id": "cd",
-      "max": 8,
       "title": "Reflejos"
     },
     "coin": {
@@ -53350,21 +53348,18 @@
       "desc": "+2% de probabilidad de golpe crítico.",
       "icon": "star",
       "id": "crit",
-      "max": 20,
       "title": "Ojo Crítico"
     },
     "critd": {
       "desc": "+5% de daño de los golpes críticos.",
       "icon": "punchingglove",
       "id": "critd",
-      "max": 20,
       "title": "Golpe Brutal"
     },
     "def": {
       "desc": "+5% de reducción de daño recibido.",
       "icon": "shield",
       "id": "def",
-      "max": 10,
       "title": "Coraza"
     },
     "dodge": {
@@ -53384,14 +53379,12 @@
       "desc": "+20 de vida máxima (y la recupera).",
       "icon": "heart",
       "id": "hp",
-      "max": 10,
       "title": "Vigor"
     },
     "hunt": {
       "desc": "+6% de daño a jefes, legendarios y Eternatus.",
       "icon": "crown",
       "id": "hunt",
-      "max": 5,
       "title": "Cazador"
     },
     "luck": {
@@ -53406,35 +53399,31 @@
       "desc": "+25% de radio de recogida de experiencia.",
       "icon": "magnet",
       "id": "mag",
-      "max": 6,
       "title": "Imán"
     },
     "pwr": {
       "desc": "-8% de recarga del poder (Mega, Dinamax, Z, Teracristal).",
       "icon": "pmega",
       "id": "pwr",
-      "max": 4,
       "title": "Poder rápido"
     },
     "rgn": {
       "desc": "+0,6 de vida regenerada por segundo.",
       "icon": "sprout",
       "id": "rgn",
-      "max": 8,
       "title": "Síntesis"
     },
     "spd": {
       "desc": "+5% de velocidad de movimiento.",
       "icon": "boot",
       "id": "spd",
-      "max": 6,
       "title": "Carrera"
     },
     "xp": {
       "desc": "+8% de experiencia ganada.",
       "icon": "book",
       "id": "xp",
-      "max": 5,
+      "max": 15,
       "title": "Aprendizaje"
     }
   },

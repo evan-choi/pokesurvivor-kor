@@ -1566,5 +1566,79 @@
       "Compras que se quedan",
       "Purchases that stick"
     ]
+  },
+  "2026-11-16": {
+    "chg": [
+      [
+        "Cartas de mejora de la partida sin tope: Vigor, Potencia, Carrera, Reflejos, Coraza, Síntesis, Imán, Ojo Crítico, Golpe Brutal, Cazador y Poder rápido salen todas las veces que quieras, para montarte la build que quieras, y el daño a Arceus cuenta entero en el ranking. Aprendizaje llega ahora hasta 15. Reflejos y Poder rápido quitan cada vez un poco menos (la recarga nunca llega a cero), la reducción de daño no pasa del 80 % y el crítico mantiene sus topes.",
+        "In-run upgrade cards with no limit: Vigor, Power, Sprint, Reflexes, Armor, Synthesis, Magnet, Critical Eye, Brutal Blow, Hunter and Quick Power can come up as many times as you like, so you can build however you want, and your damage to Arceus counts in full on the ranking. Learning now goes up to 15. Reflexes and Quick Power take off a little less each time (cooldowns never reach zero), damage reduction stays at 80% at most and crits keep their caps."
+      ],
+      [
+        "La reducción de daño (Coraza, objetos y mejoras) también te protege de los ataques de Arceus, pero mucho menos: como mucho un 30 %, y sólo con la reducción al máximo (80 %); con la mitad, la mitad. Al máximo, un pilar que quita el 35 % de tu vida se queda en un 24,5 %. Tocarle sigue quitando lo mismo.",
+        "Damage reduction (Armor, items and upgrades) now also protects you from Arceus's attacks, but much less: 30% at most, and only with reduction maxed out (80%); with half, half. Maxed out, a pillar that takes 35% of your health is cut to 24.5%. Touching him still takes the same."
+      ],
+      [
+        "Más experiencia: cada nivel pide un 25 % menos que hasta ahora (la experiencia pasa de ×3 a ×4).",
+        "More experience: each level needs 25% less than before (experience goes from ×3 to ×4)."
+      ],
+      [
+        "En grupo, un cofre con candado ya no sube un nivel a todos: da medio nivel con dos jugadores, un tercio con tres y un cuarto con cuatro. En solitario sigue dando un nivel.",
+        "In a group, a locked chest no longer gives everyone a full level: half a level with two players, a third with three and a quarter with four. Solo, it still gives one level."
+      ],
+      [
+        "Surf, más flojo: la ola llega menos lejos (360 en vez de 560), es más estrecha y hace un 60 % menos de daño.",
+        "Surf toned down: the wave travels less far (360 instead of 560), is narrower and deals 60% less damage."
+      ],
+      [
+        "Gravedad de Arceus: mientras dura, Arceus se queda quieto (antes te perseguía mientras ibas lento y te alcanzaba). Primero hace su animación de gravedad y luego otra en cada tanda de pilares.",
+        "Arceus's Gravity: while it lasts, Arceus stays still (before, it chased you while you were slowed and caught you). First it does its gravity animation, then another for each wave of pillars."
+      ],
+      [
+        "La ficha de cada Pokémon dice con qué vida empieza la partida: los que ya están evolucionados empiezan con la fuerza de su primera fase y llegan a la suya en el nivel 40, y los que no evolucionan, con el 65 % de sus stats.",
+        "Each Pokémon's card now says how much HP it starts a run with: evolved Pokémon start with the strength of their first stage and reach their own at level 40, and those that don't evolve start with 65% of their stats."
+      ]
+    ],
+    "fix": [
+      [
+        "Los Pokémon que empiezan ya evolucionados pegan por su lado desde el principio: Gallade, Lucario o Volcarona, con la fuerza de su primera fase, pegaban por el lado contrario hasta el nivel 40.",
+        "Pokémon that start already evolved now hit with their own side from the start: Gallade, Lucario or Volcarona, with their first stage's strength, hit with the opposite side until level 40."
+      ],
+      [
+        "El Modo Daruma de Darmanitan (también el de Galar) sólo se activa con la habilidad Modo Daruma: salía con cualquier habilidad.",
+        "Darmanitan's Zen Mode (Galarian too) only triggers with the Zen Mode ability: it triggered with any ability."
+      ],
+      [
+        "Grietas: si la Luminosfera se acaba dentro de la arena, la cámara vuelve a la vista de la arena (se quedaba demasiado cerca); y si sales con ella puesta, la vista sigue alejada hasta que se acaba.",
+        "Rifts: if the Luminous Orb runs out inside the arena, the camera goes back to the arena view (it stayed too close); and if you leave with it still on, the view stays wide until it runs out."
+      ],
+      [
+        "La grieta ya no puede aparecer en un sitio cerrado al que no se llega andando, ni detrás de un paso demasiado estrecho para los Pokémon grandes.",
+        "Rifts can no longer appear in an enclosed spot you can't walk to, or behind a gap too narrow for big Pokémon."
+      ],
+      [
+        "Grietas en el móvil: el suelo de la arena ya no se queda negro a trozos al entrar (se vuelve a pintar en un momento), y el juego suelta antes la memoria del suelo que ya no usa.",
+        "Rifts on mobile: the arena floor no longer stays black in patches when you enter (it redraws in a moment), and the game frees the floor memory it no longer uses sooner."
+      ],
+      [
+        "Gafas Radar: el minimapa gasta mucho menos y en el móvil se repinta 10 veces por segundo (bajaba los FPS).",
+        "Radar Goggles: the minimap is much lighter, and on mobile it redraws 10 times per second (it lowered the FPS)."
+      ],
+      [
+        "Con un mando conectado que se mueve solo (con deriva, o un volante o unos pedales), las listas de la Colección y de la Tienda ya no se desplazan solas: en los menús, el stick vuelve a contar cuando lo sueltas.",
+        "With a connected controller that moves on its own (drift, or a wheel or pedals), the Collection and Shop lists no longer scroll by themselves: in menus, the stick counts again once you let go of it."
+      ],
+      [
+        "Cooperativo: un corte de conexión de unos segundos entre dos jugadores ya no parte la partida en dos (cada uno seguía solo viendo al otro quieto), y al volver llega lo que pasó mientras (ya no faltan los enemigos nuevos).",
+        "Co-op: a connection drop of a few seconds between two players no longer splits the run in two (each kept playing alone, seeing the other standing still), and when it comes back, what happened in the meantime arrives (new enemies are no longer missing)."
+      ],
+      [
+        "En grupo, el tiempo «Ante Arceus» del resumen se cuenta con el mismo reloj que el de la partida: podía salir más largo de lo que fue.",
+        "In a group, the end-screen «Against Arceus» time uses the same clock as the run time: it could come out longer than it really was."
+      ]
+    ],
+    "title": [
+      "Más experiencia, Surf y arreglos",
+      "More experience, Surf and fixes"
+    ]
   }
 }

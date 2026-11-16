@@ -781,3 +781,8 @@ globalThis.PSKO_ABILITIES = {
   "Salpicante": "하바네로분출",
   "Spicy Spray": "하바네로분출"
 };
+
+globalThis.PSKO_MESSAGES.push(
+  ["En la partida empieza con la fuerza de {x} ({x} de vida) y llega a la suya en el nivel {x}", "In a run it starts with the strength of {x} ({x} HP) and reaches its own at level {x}", "전투 시작 시 {x}의 능력치(체력 {x})로 시작하고 레벨 {x}에 본래 능력치에 도달합니다"],
+  ["En la partida empieza con el {x} % de sus stats ({x} de vida) y los tiene todos en el nivel {x}", "In a run it starts with {x}% of its stats ({x} HP) and has all of them at level {x}", "전투 시작 시 능력치의 {x}%(체력 {x})로 시작하고 레벨 {x}에 본래 능력치에 도달합니다"],
+);

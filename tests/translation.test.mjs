@@ -7,7 +7,7 @@ const extensionUrl = new URL('../extension/', import.meta.url);
 const gameDictionaries = [
   ['moves', 368],
   ['menus', 300],
-  ['progress', 500],
+  ['progress', 501],
   ['settings', 288],
 ];
 
@@ -70,7 +70,7 @@ test('all power moves use their official Korean names in both game languages', (
 
 test('new game news translates the complete Spanish and English paragraphs', () => {
   const { entries } = JSON.parse(readFileSync(new URL('fixtures/official-game-news.json', import.meta.url), 'utf8'));
-  assert.equal(entries.length, 22);
+  assert.equal(entries.length, 39);
   for (const { spanish, english, korean } of entries) {
     assert.equal(translate(spanish), korean, spanish);
     assert.equal(translate(english), korean, english);
@@ -78,7 +78,7 @@ test('new game news translates the complete Spanish and English paragraphs', () 
   }
 });
 
-test('rift and Surf patch notes register complete native Korean translations', () => {
+test('all current patch notes register complete native Korean translations', () => {
   const native = vm.createContext({
     PSKO_MESSAGES: context.PSKO_MESSAGES,
     PSKO_POKEMON: context.PSKO_POKEMON,
@@ -88,9 +88,37 @@ test('rift and Surf patch notes register complete native Korean translations', (
   evaluate(native, 'native-locale.js');
   const [dictionary] = native.PS_LANG_Q[0];
   const { entries } = JSON.parse(readFileSync(new URL('fixtures/official-game-news.json', import.meta.url), 'utf8'));
-  for (const { spanish, english, korean } of entries.slice(-2)) {
+  for (const { spanish, english, korean } of entries) {
     assert.equal(dictionary[spanish], korean);
     assert.equal(dictionary[english], korean);
+  }
+});
+
+test('starting stats preserve each value in native and fallback translations', () => {
+  const native = vm.createContext({
+    PSKO_MESSAGES: context.PSKO_MESSAGES,
+    PSKO_POKEMON: context.PSKO_POKEMON,
+    localStorage: { getItem: () => null },
+    document: { addEventListener() {} },
+  });
+  evaluate(native, 'native-locale.js');
+  const [dictionary] = native.PS_LANG_Q[0];
+  for (const [spanish, english, korean, values] of [
+    ['En la partida empieza con la fuerza de {x} ({x} de vida) y llega a la suya en el nivel {x}',
+      'In a run it starts with the strength of {x} ({x} HP) and reaches its own at level {x}',
+      '전투 시작 시 랄토스의 능력치(체력 72)로 시작하고 레벨 40에 본래 능력치에 도달합니다',
+      ['랄토스', '72', '40']],
+    ['En la partida empieza con el {x} % de sus stats ({x} de vida) y los tiene todos en el nivel {x}',
+      'In a run it starts with {x}% of its stats ({x} HP) and has all of them at level {x}',
+      '전투 시작 시 능력치의 65%(체력 156)로 시작하고 레벨 40에 본래 능력치에 도달합니다',
+      ['65', '156', '40']],
+  ]) {
+    for (const source of [spanish, english]) {
+      let index = 0;
+      assert.equal(translate(source.replaceAll('{x}', () => values[index++])), korean);
+      index = 0;
+      assert.equal(dictionary[source].replaceAll('{x}', () => values[index++]), korean);
+    }
   }
 });
 
@@ -382,7 +410,7 @@ test('all base game messages have complete translations and matching placeholder
       assert.deepEqual(placeholders(korean), placeholders(english), `${name}[${index}] English placeholders`);
     }
   }
-  assert.equal(total, 1456);
+  assert.equal(total, 1457);
 });
 
 test('audited interface, shop and changelog text resolves as a complete phrase in both input forms', () => {

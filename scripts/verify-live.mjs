@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright';
@@ -55,7 +56,10 @@ try {
   await context.route('**/*', (route) => {
     return ['POST', 'PUT', 'PATCH', 'DELETE'].includes(route.request().method()) ? route.abort() : route.continue();
   });
+  const bundleResponse = page.waitForResponse(response => new URL(response.url()).pathname === '/js/app.min.js');
   await page.goto('https://pokesurvivor.com/', { waitUntil: 'domcontentloaded' });
+  const response = await bundleResponse;
+  console.log('Game bundle:', { url: response.url(), sha256: createHash('sha256').update(await response.body()).digest('hex') });
   const frame = page;
   await frame.locator('#tap-start:not(.hidden), #scr-login:not(.hidden) #btn-guest').first().waitFor();
   if (await frame.locator('#tap-start').isVisible()) await frame.locator('#tap-start').click();

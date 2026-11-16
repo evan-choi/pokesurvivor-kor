@@ -1,4 +1,5 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
@@ -59,6 +60,7 @@ const preservedLabels = {
   'Bloq Mayús': 'Caps Lock', 'Caps Lock': 'Caps Lock',
 };
 const errors = [];
+let gameBundle;
 const screens = [];
 const findings = [];
 let localeEntriesChecked = 0;
@@ -167,8 +169,8 @@ async function auditGeneratedChoices() {
   await resetScreens();
   const { records, counts } = await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    const player = game._f07f95a.player;
-    const choices = game._93414a7.STATS.map(stat => ({
+    const player = game._3245f7e.player;
+    const choices = game._55b1f8e.STATS.map(stat => ({
       type: 'stat', key: `stat:${stat.id}`, title: stat.title, desc: stat.desc,
       icon: stat.icon, color: '#8fa3c4', tag: 'Mejora',
     }));
@@ -178,7 +180,7 @@ async function auditGeneratedChoices() {
     try {
       Math.random = () => 0;
       const sample = Object.assign(Object.create(player), { itemSlots: 3, got4: false, gotWis: false });
-      const offered = game._93414a7.offer(sample, 10000);
+      const offered = game._55b1f8e.offer(sample, 10000);
       counts.offered = offered.length;
       choices.push(...offered);
     } finally { Math.random = random; }
@@ -232,8 +234,8 @@ async function auditGeneratedChoices() {
 async function auditPowerChoices() {
   const records = await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    const powers = game._bb3ee37;
-    const config = game._2ca29d3;
+    const powers = game.Power;
+    const config = game._d8eef22;
     const names = [
       ...Object.entries(config.Z_BY_TYPE).map(([id, source]) => ({ kind: 'z', id, source })),
       ...Object.entries(config.MAX_BY_TYPE).map(([id, source]) => ({ kind: 'max', id, source })),
@@ -241,7 +243,7 @@ async function auditPowerChoices() {
       ...Object.entries(config.GMAX).map(([id, value]) => ({ kind: 'gmax', id, source: value.name })),
     ];
     const entries = new Map();
-    for (const dex of Object.keys(game._a233732)) {
+    for (const dex of Object.keys(game._79583bb)) {
       for (const option of powers.options(Number(dex))) {
         entries.set(`${option.title}|${option.desc}`, option);
       }
@@ -369,14 +371,15 @@ try {
     try {
       const response = await route.fetch();
       const source = await response.text();
+      gameBundle = { url: response.url(), sha256: createHash('sha256').update(source).digest('hex') };
       const prefix = source.match(/var (_0x[\da-f]+)=Object\[(?:'create'|_0x[\da-f]+\(0x[\da-f]+\))\]\(null\);/);
       if (!prefix) throw new Error('UI audit hook no longer matches the official game bundle.');
-      if (!source.includes('_0x382273=[')) throw new Error('Account notice fixture no longer matches the game bundle.');
-      const register = /function _0x40c03b\([^)]*\)\{/;
+      if (!source.includes('_0x10246c=[')) throw new Error('Account notice fixture no longer matches the game bundle.');
+      const register = /function _0x4be58f\([^)]*\)\{/;
       if (!register.test(source)) throw new Error('Locale registry audit hook no longer matches the game bundle.');
       const fixtureSource = source
-        .replace('_0x382273=[', '_0x382273=window.__PSKO_TEST_NOTICES__=[')
-        .replace(register, match => match + "if(_0x581962==='en'&&!_0x55be03)Object.assign(window.__PSKO_TEST_LOCALES__??={},_0x12c458);");
+        .replace('_0x10246c=[', '_0x10246c=window.__PSKO_TEST_NOTICES__=[')
+        .replace(register, match => match + "if(_0x3e434a==='en'&&!_0x1ed7ed)Object.assign(window.__PSKO_TEST_LOCALES__??={},_0x2bbb3c);");
       await route.fulfill({ response, body: fixtureSource.replace(prefix[0], `${prefix[0]}window.__PSKO_TEST_GAME__=${prefix[1]};`) });
     } catch (error) {
       errors.push(error.stack || error.message);
@@ -391,10 +394,10 @@ try {
     const game = window.__PSKO_TEST_GAME__;
     // The official bundle hashes module names; fail explicitly when a release changes them.
     const names = {
-      U: 'U', DB: '_e11d879', MenuUI: '_d0325ad', SettingsUI: '_2f2d8f0',
-      NewsUI: '_66c4938', SupportUI: '_b786b0c', NickUI: '_b13e295', GoalsUI: '_ddabb04',
-      GachaUI: '_cd6b7d3', Moves: '_1a69fb7', RunUI: '_6bafdcf',
-      ShopUI: '_0f99b9a', ClosetUI: '_40927f6', MasteryUI: '_4cb80bf',
+      U: 'U', DB: '_0f5f716', MenuUI: '_aa14151', SettingsUI: '_c561298',
+      NewsUI: '_1538499', SupportUI: '_55e2eef', NickUI: '_220fd54', GoalsUI: '_6000c1f',
+      GachaUI: '_a8970e3', Moves: '_a53f315', RunUI: '_27c1980',
+      ShopUI: '_7a4642f', ClosetUI: '_03b67db', MasteryUI: '_3a620b2',
     };
     const components = Object.fromEntries(Object.entries(names).map(([name, key]) => {
       if (!game?.[key]) throw new Error(`UI audit module changed: ${name}`);
@@ -436,7 +439,7 @@ try {
   for (const [spanish, english] of locale.untranslated) findings.push({ screen: 'locale-registry', spanish, english });
   const nativeChecks = await run((body, preservedLabels) => {
     const game = window.__PSKO_TEST_GAME__;
-    const notice = (template, ...values) => window.PSKO.translate(game.T(game._1a56a94.f(template, ...values)));
+    const notice = (template, ...values) => window.PSKO.translate(game.T(game._fa5218d.f(template, ...values)));
     return {
       aliases: ['Mando conectado', 'Mando conectado:', 'atrás / cerrar', 'TIRADA ×100'].map(text => game.T(text)),
       products: ['Switch', 'The Pokémon Company', 'CREDITS.md', 'Authentication > Settings > Authorized domains']
@@ -472,12 +475,12 @@ try {
   const traitCatalog = await run(() => {
     const game = window.__PSKO_TEST_GAME__;
     return [
-      ...game._6585ae9.map(nature => {
-        const source = game._b81fe38.name(nature.n);
+      ...game._16a38b2.map(nature => {
+        const source = game._5565764.name(nature.n);
         return { kind: 'nature', source, translated: window.PSKO_NATURES[source] || source };
       }),
-      ...Object.keys(game._6e23a26).map(id => {
-        const source = game._b81fe38.abilityName(id);
+      ...Object.keys(game._af8d1e0).map(id => {
+        const source = game._5565764.abilityName(id);
         return { kind: 'ability', source, translated: window.PSKO_ABILITIES[source] || source };
       }),
     ];
@@ -490,13 +493,13 @@ try {
   }
   const formCatalog = await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    const definitions = game._32f6477;
-    if (!definitions?.list?.length || !game._e1e8c4b || !game._a233732) {
+    const definitions = game._7923881;
+    if (!definitions?.list?.length || !game._8615e70 || !game._79583bb) {
       throw new Error('The live Pokémon/form catalog changed.');
     }
     const labels = new Set([
-      ...Object.values(game._a233732).map(pokemon => pokemon.name),
-      ...Object.values(game._e1e8c4b).flatMap(form => [form.name, form.fn]),
+      ...Object.values(game._79583bb).map(pokemon => pokemon.name),
+      ...Object.values(game._8615e70).flatMap(form => [form.name, form.fn]),
       ...Object.entries(definitions.names.en).flat(),
       ...Object.entries(definitions.fnames.en).flat(),
     ].filter(name => typeof name === 'string' && name));
@@ -528,7 +531,7 @@ try {
       notice.when = () => true;
       localStorage.removeItem(notice.key);
     }
-    window.__PSKO_TEST_GAME__._21a8f3a.updateNotices();
+    window.__PSKO_TEST_GAME__._f9bd78b.updateNotices();
   });
   await capture('account-update-notice');
   if (/[a-z]/i.test(await frame.locator('#scr-savenote').innerText())) {
@@ -560,20 +563,24 @@ try {
       id: 'Local test controller', index: 0, connected: true, mapping: 'standard',
       buttons: Array.from({ length: 17 }, () => ({ pressed: false, value: 0 })), axes: [0, 0, 0, 0],
     }] });
-    window.__PSKO_TEST_GAME__._38d0813.poll(performance.now());
+    window.__PSKO_TEST_GAME__._0e4c20c.poll(performance.now());
   });
   await openPanel('SettingsUI', 'ctl');
   await capture('settings-connected-controller');
   await run(() => { delete navigator.getGamepads; });
   await resetScreens();
-  await run(() => window.__PSKO_TEST_GAME__._174cf39.open());
+  await run(() => window.__PSKO_TEST_GAME__._49c2153.open());
   await capture('touch-layout');
-  await run(() => window.__PSKO_TEST_GAME__._174cf39.close());
+  await run(() => window.__PSKO_TEST_GAME__._49c2153.close());
   await openPanel('NewsUI');
   await capture('news');
   await frame.locator('#news-body .news-more[aria-expanded="false"]').evaluateAll(buttons => buttons.forEach(button => button.click()));
   await capture('news-expanded');
   await frame.locator('#news-body').screenshot({ path: path.join(root, 'test-results', `news-korean-${language}.png`) });
+  await page.setViewportSize({ width: 960, height: 600 });
+  await capture('news-compact');
+  await page.screenshot({ path: path.join(root, 'test-results', `news-compact-${language}.png`) });
+  await page.setViewportSize({ width: 1400, height: 1000 });
   await openPanel('SupportUI');
   await capture('support');
   await resetScreens();
@@ -727,8 +734,8 @@ try {
   await run(() => {
     const save = window.__PSKO_TEST_GAME__.DB.save;
     save.bag = { mint: 5, cap: 5, caph: 5, candy: 70 };
-    save.tms = Object.fromEntries(Object.keys(window.__PSKO_TEST_GAME__._86cac2e).map(id => [id, 1]));
-    window.__PSKO_TEST_GAME__._b81fe38.setAbility(121, 0);
+    save.tms = Object.fromEntries(Object.keys(window.__PSKO_TEST_GAME__._0adb295).map(id => [id, 1]));
+    window.__PSKO_TEST_GAME__._5565764.setAbility(121, 0);
   });
   await resetScreens(true);
   await frame.locator('[data-go="dex"]').click();
@@ -741,6 +748,32 @@ try {
     throw new Error(`The ability picker fixture must select Starmie: ${selectedPokemon}`);
   }
   await capture('dex-with-inventory');
+  for (const dex of [282, 127]) {
+    await run((body, dex) => { window.__PSKO_TEST_GAME__.DB.save.owned[dex] = 1; }, dex);
+    await frame.locator('#dex-q').fill(String(dex));
+    await frame.locator('#dex-grid .cell:not(.locked)').filter({
+      has: frame.locator('.no', { hasText: new RegExp(`^${dex}$`) }),
+    }).click();
+    for (const width of [1400, 960]) {
+      await page.setViewportSize({ width, height: width === 960 ? 600 : 1000 });
+      await capture(`starting-stats-${dex}-${width}`);
+      const hint = frame.locator('#dex-detail p').filter({ hasText: '전투 시작 시' });
+      const text = await hint.textContent();
+      if (!text.includes('레벨 40') || (dex === 282 ? !text.includes('랄토스') : !text.includes('65%'))) {
+        throw new Error(`Incorrect starting stats: ${text}`);
+      }
+      if (!await hint.evaluate(element => element.scrollWidth <= element.clientWidth)) {
+        throw new Error(`Starting stats overflow at ${width}px: ${text}`);
+      }
+      await hint.scrollIntoViewIfNeeded();
+      await page.screenshot({ path: path.join(root, 'test-results', `starting-stats-${dex}-${language}-${width}.png`) });
+    }
+  }
+  await page.setViewportSize({ width: 1400, height: 1000 });
+  await frame.locator('#dex-q').fill('121');
+  await frame.locator('#dex-grid .cell:not(.locked)').filter({
+    has: frame.locator('.no', { hasText: /^121$/ }),
+  }).click();
   for (const mode of ['nat', 'cap', 'caph']) {
     const button = frame.locator(`#dex-detail [data-extra="${mode}"]`);
     if (!await button.count()) throw new Error(`Missing nature/ability picker fixture: ${mode}`);
@@ -867,17 +900,17 @@ try {
   await resetScreens();
   await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    game._74339e5.showData({ name: 'Local player', title: 'Brillante', favs: [{ dex: 1, shiny: true }],
+    game._09d8e28.showData({ name: 'Local player', title: 'Brillante', favs: [{ dex: 1, shiny: true }],
       best: { solo: 200, group: 300, level: 40, bosses: 8, legends: 2, kills: 700, medals: 0 } });
     game.UI.show('scr-profile');
   });
   await capture('public-profile');
   await resetScreens(true);
-  await run(() => window.__PSKO_TEST_GAME__._8d762f0.play());
-  await frame.waitForFunction(() => !!window.__PSKO_TEST_GAME__._f07f95a.player);
+  await run(() => window.__PSKO_TEST_GAME__._3167ee5.play());
+  await frame.waitForFunction(() => !!window.__PSKO_TEST_GAME__._3245f7e.player);
   await frame.keyboard.press('Escape');
   await run(() => {
-    const game = window.__PSKO_TEST_GAME__, player = game._f07f95a.player;
+    const game = window.__PSKO_TEST_GAME__, player = game._3245f7e.player;
     player.orbs = ['slumber', 'slow', 'blowback', 'focus'].map(id => ({ id, n: 3 }));
     player.orbBuff = { focus: 12, luminous: 13, quick: 8 };
     player.statsTaken = { hp: 3, magnet: 2 };
@@ -905,17 +938,17 @@ try {
   await resetScreens();
   await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    const player = game._f07f95a.player;
-    game.RunUI.showEvo({ ...player, dex: 1, mon: { ...game._a233732[1], nature: player.mon.nature } },
+    const player = game._3245f7e.player;
+    game.RunUI.showEvo({ ...player, dex: 1, mon: { ...game._79583bb[1], nature: player.mon.nature } },
       { opts: [2, 3], all: [2, 3], half: false }, () => {});
   });
   await capture('pokemon-evolution-choices');
   await resetScreens();
   await run(() => {
     const game = window.__PSKO_TEST_GAME__;
-    const player = game._f07f95a.player;
-    game.RunUI.showForm({ ...player, dex: 479, form: 0, mon: { ...game._a233732[479], nature: player.mon.nature } },
-      { forms: game._6943e57.of(479, 'stat') }, () => {});
+    const player = game._3245f7e.player;
+    game.RunUI.showForm({ ...player, dex: 479, form: 0, mon: { ...game._79583bb[479], nature: player.mon.nature } },
+      { forms: game._868eed5.of(479, 'stat') }, () => {});
   });
   await capture('pokemon-form-choices');
   for (const gengar of [false, true]) {
@@ -924,8 +957,8 @@ try {
       const game = window.__PSKO_TEST_GAME__;
       game.RunUI.showOver({ dead: !gengar, time: 600, level: 40, kills: 1500, coins: 200,
         t1: 3, t10: 2, candy: 10, judge: { gengar, dmg: 20000, time: 120 },
-        chal: { cond: game._f708574.CONDS[0], prize: true },
-        mastery: { dex: 1, gained: 200, after: gengar ? 1e9 : 200, got: Object.keys(game._98170ff.BY) },
+        chal: { cond: game._d59a9da.CONDS[0], prize: true },
+        mastery: { dex: 1, gained: 200, after: gengar ? 1e9 : 200, got: Object.keys(game._06d6d43.BY) },
         moves: [{ id: 'psychic', name: 'Psíquico', lvl: 5 }], caught: [{ dex: 1, isNew: true }], record: true }, () => {});
     }, gengar);
     await capture(gengar ? 'run-rewards-gengar-complete-mastery' : 'run-rewards-arceus-mastery');
@@ -934,7 +967,7 @@ try {
   errors.push(error.stack || error.message);
   console.error(error);
 } finally {
-  await writeFile(output, JSON.stringify({ language, localeEntriesChecked, traitNamesChecked, formNamesChecked, moveLabelsChecked, moveNameFindings, generatedChoiceCounts, generatedChoiceChecks, powerNameChecks, errors, findings, screens }, null, 2));
+  await writeFile(output, JSON.stringify({ language, gameBundle, localeEntriesChecked, traitNamesChecked, formNamesChecked, moveLabelsChecked, moveNameFindings, generatedChoiceCounts, generatedChoiceChecks, powerNameChecks, errors, findings, screens }, null, 2));
   await context.close();
   console.log(`${screens.length} screens checked; ${findings.length} unexplained entries; ${errors.length} errors.`);
   console.log(output);

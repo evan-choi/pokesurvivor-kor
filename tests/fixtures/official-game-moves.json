@@ -1,5 +1,5 @@
 {
-  "source": "https://pokesurvivor.com/js/app.min.js?v=c042c25b58",
+  "source": "https://pokesurvivor.com/js/app.min.js?v=afdb307d50",
   "moves": [
     {"id":"tackle","name":["Placaje","Tackle","몸통박치기"],"desc":["Embiste en arco a todo lo que tengas delante.","Charges in an arc at everything in front of you."],"kind":"melee"},
     {"id":"quick-attack","name":["Ataque Rápido","Quick Attack","전광석화"],"desc":["Cruzas como un rayo hacia el enemigo y golpeas todo el camino.","You dash at the enemy like lightning and hit everything on the way."],"kind":"dash"},
@@ -7,7 +7,7 @@
     {"id":"nasty-plot","name":["Maquinación","Nasty Plot","나쁜음모"],"desc":["No hace daño: acumula ATAQUE ESPECIAL mientras esté activo.","Deals no damage: builds SPECIAL ATTACK while active."],"kind":"buff"},
     {"id":"agility","name":["Agilidad","Agility","고속이동"],"desc":["No hace daño: acumula VELOCIDAD mientras esté activo.","Deals no damage: builds SPEED while active."],"kind":"buff"},
     {"id":"harden","name":["Fortaleza","Harden","단단해지기"],"desc":["No hace daño: acumula DEFENSA mientras esté activo.","Deals no damage: builds DEFENSE while active."],"kind":"buff"},
-    {"id":"ember","name":["Ascuas","Ember","불꽃세례"],"desc":["Bola de fuego al enemigo más cercano.","A fireball at the nearest enemy."],"kind":"projectile"},
+    {"id":"ember","name":["Ascuas","Embers","불꽃세례"],"desc":["Bola de fuego al enemigo más cercano.","A fireball at the nearest enemy."],"kind":"projectile"},
     {"id":"flamethrower","name":["Lanzallamas","Flamethrower","화염방사"],"desc":["Chorro de llamas en abanico corto que quema.","A short fan of flames that burns."],"kind":"cone"},
     {"id":"fire-spin","name":["Giro Fuego","Fire Spin","회오리불꽃"],"desc":["Llamas que giran a tu alrededor. Defensa constante.","Flames that spin around you. Constant defense."],"kind":"orbit"},
     {"id":"heat-wave","name":["Onda Ígnea","Heat Wave","열풍"],"desc":["Explota en llamas en todas las direcciones.","Explodes in flames in every direction."],"kind":"nova"},
@@ -105,7 +105,7 @@
     {"id":"sucker-punch","name":["Golpe Bajo","Sucker Punch","기습"],"desc":["Un golpe a traición que busca al enemigo.","A sneaky blow that seeks out the enemy."],"kind":"homing"},
     {"id":"night-slash","name":["Tajo Umbrío","Night Slash","깜짝베기"],"desc":["Cortes en giro que alcanzan a todo lo que te rodea.","Spinning slashes that reach everything around you."],"kind":"spin"},
     {"id":"earthquake","name":["Terremoto","Earthquake","지진"],"desc":["Un temblor sale de ti en anillo y golpea a todo lo que alcanza.","A tremor spreads out from you in a ring and hits everything it reaches."],"kind":"tremor"},
-    {"id":"surf","name":["Surf","Surf","파도타기"],"desc":["Una ola enorme cruza la pantalla y arrastra a los enemigos.","A huge wave crosses the screen and sweeps the enemies along."],"kind":"wave"},
+    {"id":"surf","name":["Surf","Surf","파도타기"],"desc":["Una ola grande sale hacia donde apuntas y arrastra a los enemigos.","A big wave rushes where you aim and sweeps the enemies along."],"kind":"wave"},
     {"id":"blizzard","name":["Ventisca","Blizzard","눈보라"],"desc":["Un abanico de nieve ancho que deja a los enemigos casi quietos.","A wide fan of snow that leaves enemies almost frozen in place."],"kind":"cone"},
     {"id":"fire-blast","name":["Llamarada","Fire Blast","불대문자"],"desc":["Una explosión de fuego en cruz sobre el enemigo que quema.","A cross-shaped fire explosion on the enemy that burns."],"kind":"cross"},
     {"id":"thunder","name":["Trueno","Thunder","번개"],"desc":["Caen rayos sobre enemigos al azar de la pantalla.","Lightning strikes random enemies on the screen."],"kind":"storm"},

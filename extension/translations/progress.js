@@ -1704,3 +1704,7 @@ globalThis.PSKO_MESSAGES = (globalThis.PSKO_MESSAGES || []).concat([
   ["Versión de pruebas: la partida sólo se guarda en este navegador.", "Test version: your progress is only saved in this browser.", "시험 버전에서는 진행 상황이 이 브라우저에만 저장됩니다."],
   ["No se pudo conectar (servidor de apoyo agotado este mes)", "Could not connect (backup server used up this month)", "연결하지 못했습니다. 이번 달 보조 서버 사용량을 모두 소진했습니다"]
 ]);
+
+globalThis.PSKO_MESSAGES.push(
+  ["Una ola grande sale hacia donde apuntas y arrastra a los enemigos.", "A big wave rushes where you aim and sweeps the enemies along.", "조준한 방향으로 큰 파도가 나아가 적을 휩쓸어 갑니다."]
+);

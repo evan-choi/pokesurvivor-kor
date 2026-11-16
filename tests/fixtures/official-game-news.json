@@ -1,5 +1,5 @@
 {
-  "source": "https://pokesurvivor.com/js/app.min.js?v=3e03cb375e",
+  "source": "https://pokesurvivor.com/js/app.min.js?v=afdb307d50",
   "entries": [
     {
       "spanish": "Con cuenta, el Casino Rocket y abrir huevos necesitan conexión, como la gacha. Los tickets que coges en una partida se guardan al acabarla; si el juego se cierra a mitad, te llegan al volver a entrar.",
@@ -110,6 +110,91 @@
       "spanish": "Surf hace un 28 % menos de daño: ahora pega como los demás ataques de área.",
       "english": "Surf deals 28% less damage: it now hits like the other area moves.",
       "korean": "파도타기의 피해량이 28% 감소하여 다른 범위 공격 기술과 비슷해졌습니다."
+    },
+    {
+      "spanish": "Más experiencia, Surf y arreglos",
+      "english": "More experience, Surf and fixes",
+      "korean": "경험치 증가, 파도타기 조정과 오류 수정"
+    },
+    {
+      "spanish": "Cartas de mejora de la partida sin tope: Vigor, Potencia, Carrera, Reflejos, Coraza, Síntesis, Imán, Ojo Crítico, Golpe Brutal, Cazador y Poder rápido salen todas las veces que quieras, para montarte la build que quieras, y el daño a Arceus cuenta entero en el ranking. Aprendizaje llega ahora hasta 15. Reflejos y Poder rápido quitan cada vez un poco menos (la recarga nunca llega a cero), la reducción de daño no pasa del 80 % y el crítico mantiene sus topes.",
+      "english": "In-run upgrade cards with no limit: Vigor, Power, Sprint, Reflexes, Armor, Synthesis, Magnet, Critical Eye, Brutal Blow, Hunter and Quick Power can come up as many times as you like, so you can build however you want, and your damage to Arceus counts in full on the ranking. Learning now goes up to 15. Reflexes and Quick Power take off a little less each time (cooldowns never reach zero), damage reduction stays at 80% at most and crits keep their caps.",
+      "korean": "전투 중 강화 카드의 획득 횟수 제한을 없앴습니다. 활력, 위력, 질주, 반사신경, 갑옷, 광합성, 자석, 급소 포착, 강력한 일격, 사냥꾼, 빠른 능력 충전을 원하는 만큼 골라 육성할 수 있으며, 아르세우스에게 준 피해도 순위에 전부 반영됩니다. 학습은 최대 15회까지 획득할 수 있습니다. 반사신경과 빠른 능력 충전은 획득할수록 대기시간 감소 효과가 줄어들며, 대기시간이 0이 되지는 않습니다. 피해 감소율은 최대 80%이며 급소 관련 상한도 유지됩니다."
+    },
+    {
+      "spanish": "La reducción de daño (Coraza, objetos y mejoras) también te protege de los ataques de Arceus, pero mucho menos: como mucho un 30 %, y sólo con la reducción al máximo (80 %); con la mitad, la mitad. Al máximo, un pilar que quita el 35 % de tu vida se queda en un 24,5 %. Tocarle sigue quitando lo mismo.",
+      "english": "Damage reduction (Armor, items and upgrades) now also protects you from Arceus's attacks, but much less: 30% at most, and only with reduction maxed out (80%); with half, half. Maxed out, a pillar that takes 35% of your health is cut to 24.5%. Touching him still takes the same.",
+      "korean": "갑옷, 도구, 강화의 피해 감소 효과가 아르세우스의 공격에도 적용되지만 효과는 더 작습니다. 피해 감소율이 최대인 80%일 때 아르세우스의 공격 피해가 최대 30% 줄며, 감소율이 절반이면 효과도 절반입니다. 최대치에서는 체력의 35%를 깎는 기둥의 피해가 24.5%로 줄어듭니다. 아르세우스에게 직접 닿을 때 받는 피해는 그대로입니다."
+    },
+    {
+      "spanish": "Más experiencia: cada nivel pide un 25 % menos que hasta ahora (la experiencia pasa de ×3 a ×4).",
+      "english": "More experience: each level needs 25% less than before (experience goes from ×3 to ×4).",
+      "korean": "경험치를 더 쉽게 얻습니다. 레벨 업에 필요한 경험치가 25% 줄었습니다. 경험치 배율이 ×3에서 ×4로 올랐습니다."
+    },
+    {
+      "spanish": "En grupo, un cofre con candado ya no sube un nivel a todos: da medio nivel con dos jugadores, un tercio con tres y un cuarto con cuatro. En solitario sigue dando un nivel.",
+      "english": "In a group, a locked chest no longer gives everyone a full level: half a level with two players, a third with three and a quarter with four. Solo, it still gives one level.",
+      "korean": "협동 플레이에서 잠긴 상자가 모두의 레벨을 1씩 올려 주지 않습니다. 2명일 때는 레벨의 절반, 3명일 때는 3분의 1, 4명일 때는 4분의 1만큼 경험치를 줍니다. 혼자 플레이할 때는 그대로 1레벨을 올려 줍니다."
+    },
+    {
+      "spanish": "Surf, más flojo: la ola llega menos lejos (360 en vez de 560), es más estrecha y hace un 60 % menos de daño.",
+      "english": "Surf toned down: the wave travels less far (360 instead of 560), is narrower and deals 60% less damage.",
+      "korean": "파도타기가 약해졌습니다. 사거리가 560에서 360으로 줄고 파도의 폭이 좁아졌으며, 피해량이 60% 감소했습니다."
+    },
+    {
+      "spanish": "Gravedad de Arceus: mientras dura, Arceus se queda quieto (antes te perseguía mientras ibas lento y te alcanzaba). Primero hace su animación de gravedad y luego otra en cada tanda de pilares.",
+      "english": "Arceus's Gravity: while it lasts, Arceus stays still (before, it chased you while you were slowed and caught you). First it does its gravity animation, then another for each wave of pillars.",
+      "korean": "아르세우스의 중력 효과가 지속되는 동안 아르세우스가 제자리에 머뭅니다. 이전에는 플레이어가 느려진 상태에서 추격해 따라잡았습니다. 먼저 중력 연출을 재생하고, 이후 기둥이 나타날 때마다 연출을 다시 재생합니다."
+    },
+    {
+      "spanish": "La ficha de cada Pokémon dice con qué vida empieza la partida: los que ya están evolucionados empiezan con la fuerza de su primera fase y llegan a la suya en el nivel 40, y los que no evolucionan, con el 65 % de sus stats.",
+      "english": "Each Pokémon's card now says how much HP it starts a run with: evolved Pokémon start with the strength of their first stage and reach their own at level 40, and those that don't evolve start with 65% of their stats.",
+      "korean": "포켓몬 상세 화면에 전투 시작 시 체력이 표시됩니다. 이미 진화한 포켓몬은 첫 단계의 능력치로 시작해 레벨 40에 본래 능력치에 도달하며, 진화하지 않는 포켓몬은 능력치의 65%로 시작합니다."
+    },
+    {
+      "spanish": "Los Pokémon que empiezan ya evolucionados pegan por su lado desde el principio: Gallade, Lucario o Volcarona, con la fuerza de su primera fase, pegaban por el lado contrario hasta el nivel 40.",
+      "english": "Pokémon that start already evolved now hit with their own side from the start: Gallade, Lucario or Volcarona, with their first stage's strength, hit with the opposite side until level 40.",
+      "korean": "이미 진화한 포켓몬이 처음부터 자신의 물리·특수 공격 구분에 맞게 공격합니다. 엘레이드, 루카리오, 불카모스 등은 첫 단계의 능력치로 시작할 때 레벨 40까지 반대쪽 능력치로 공격하던 문제가 있었습니다."
+    },
+    {
+      "spanish": "El Modo Daruma de Darmanitan (también el de Galar) sólo se activa con la habilidad Modo Daruma: salía con cualquier habilidad.",
+      "english": "Darmanitan's Zen Mode (Galarian too) only triggers with the Zen Mode ability: it triggered with any ability.",
+      "korean": "불비달마의 달마모드는 가라르의 모습도 포함해 달마모드 특성이 있을 때만 발동합니다. 이전에는 어떤 특성이든 발동했습니다."
+    },
+    {
+      "spanish": "Grietas: si la Luminosfera se acaba dentro de la arena, la cámara vuelve a la vista de la arena (se quedaba demasiado cerca); y si sales con ella puesta, la vista sigue alejada hasta que se acaba.",
+      "english": "Rifts: if the Luminous Orb runs out inside the arena, the camera goes back to the arena view (it stayed too close); and if you leave with it still on, the view stays wide until it runs out.",
+      "korean": "균열 안에서 빛의구슬 효과가 끝나면 카메라가 투기장 시점으로 돌아갑니다. 이전에는 너무 가까운 시점이 유지됐습니다. 효과가 남은 채 밖으로 나가면 효과가 끝날 때까지 넓은 시야가 유지됩니다."
+    },
+    {
+      "spanish": "La grieta ya no puede aparecer en un sitio cerrado al que no se llega andando, ni detrás de un paso demasiado estrecho para los Pokémon grandes.",
+      "english": "Rifts can no longer appear in an enclosed spot you can't walk to, or behind a gap too narrow for big Pokémon.",
+      "korean": "걸어서 갈 수 없는 막힌 곳이나 큰 포켓몬이 통과하기에 너무 좁은 통로 너머에는 균열이 나타나지 않습니다."
+    },
+    {
+      "spanish": "Grietas en el móvil: el suelo de la arena ya no se queda negro a trozos al entrar (se vuelve a pintar en un momento), y el juego suelta antes la memoria del suelo que ya no usa.",
+      "english": "Rifts on mobile: the arena floor no longer stays black in patches when you enter (it redraws in a moment), and the game frees the floor memory it no longer uses sooner.",
+      "korean": "모바일에서 균열에 들어갈 때 투기장 바닥 일부가 검게 남던 문제를 수정했습니다. 이제 곧바로 다시 그리며, 사용하지 않는 바닥의 메모리도 더 빨리 해제합니다."
+    },
+    {
+      "spanish": "Gafas Radar: el minimapa gasta mucho menos y en el móvil se repinta 10 veces por segundo (bajaba los FPS).",
+      "english": "Radar Goggles: the minimap is much lighter, and on mobile it redraws 10 times per second (it lowered the FPS).",
+      "korean": "레이더 고글의 미니맵 처리 부담이 크게 줄었습니다. 모바일에서는 초당 10번 다시 그립니다. 이전에는 프레임 속도가 떨어지는 문제가 있었습니다."
+    },
+    {
+      "spanish": "Con un mando conectado que se mueve solo (con deriva, o un volante o unos pedales), las listas de la Colección y de la Tienda ya no se desplazan solas: en los menús, el stick vuelve a contar cuando lo sueltas.",
+      "english": "With a connected controller that moves on its own (drift, or a wheel or pedals), the Collection and Shop lists no longer scroll by themselves: in menus, the stick counts again once you let go of it.",
+      "korean": "쏠림이 있는 컨트롤러나 핸들·페달처럼 저절로 입력이 들어오는 장치가 연결돼도 컬렉션과 상점 목록이 자동으로 스크롤되지 않습니다. 메뉴에서는 스틱을 놓은 뒤 다시 움직여야 입력이 적용됩니다."
+    },
+    {
+      "spanish": "Cooperativo: un corte de conexión de unos segundos entre dos jugadores ya no parte la partida en dos (cada uno seguía solo viendo al otro quieto), y al volver llega lo que pasó mientras (ya no faltan los enemigos nuevos).",
+      "english": "Co-op: a connection drop of a few seconds between two players no longer splits the run in two (each kept playing alone, seeing the other standing still), and when it comes back, what happened in the meantime arrives (new enemies are no longer missing).",
+      "korean": "협동 플레이에서 두 플레이어 사이의 연결이 몇 초 끊겨도 전투가 둘로 갈라지지 않습니다. 이전에는 상대가 멈춘 것처럼 보이며 각자 따로 플레이하게 됐습니다. 다시 연결되면 끊긴 동안의 변화도 전달되어 새로 등장한 적이 누락되지 않습니다."
+    },
+    {
+      "spanish": "En grupo, el tiempo «Ante Arceus» del resumen se cuenta con el mismo reloj que el de la partida: podía salir más largo de lo que fue.",
+      "english": "In a group, the end-screen «Against Arceus» time uses the same clock as the run time: it could come out longer than it really was.",
+      "korean": "협동 플레이의 결과 화면에서 ‘아르세우스와 대결한 시간’을 전투 시간과 같은 시계로 계산합니다. 이전에는 실제보다 길게 표시될 수 있었습니다."
     }
   ]
 }
