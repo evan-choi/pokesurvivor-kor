@@ -28,6 +28,27 @@ Neo둥근모 폰트를 게임 페이지·전투 표시·팝업에 사용합니�
 
 로그인·회원가입 전용 `/game-auth` 페이지는 언어별 경로를 포함해 패치 적용 범위에서 제외합니다. 이 페이지에는 번역 코드, Canvas 처리, 설정 전달 코드와 CSS를 주입하지 않습니다.
 
+## 게임 업데이트 비교
+
+`upstream/current/`에 마지막으로 갱신한 게임의 원본과 추출 데이터를 보관합니다. 과거 버전은 Git 이력에서 확인합니다.
+
+```sh
+npm run upstream:check
+```
+
+새 버전을 내려받고 `_workspace/upstream-candidate/diff.json`에 문구·카탈로그·모듈 구조의 변경 전후 값을 저장합니다. 원본 HTML·JS·CSS의 변경 여부도 표시합니다. 기준 파일은 `upstream/current/manifest.json`에 있는 URL과 SHA-256으로 확인합니다.
+
+번역과 호환성 검사를 마치면 기준을 갱신하고 함께 커밋합니다.
+
+```sh
+npm run upstream:accept
+git diff -- upstream/current
+```
+
+`accept`는 파일 해시와 추출 결과의 재현 여부를 다시 확인합니다. 파일이 손상되었거나 비교 이후 기준이 바뀌면 오류를 표시합니다. 이미 내려받은 원본 폴더는 `npm run upstream:check -- --from <폴더>`로 비교할 수 있습니다. 폴더에는 `index.html`, `app.min.js`, `locales.js`, `style.css`가 필요합니다.
+
+추출은 임시 Chromium에서 네트워크를 차단한 상태로 수행합니다. 게임의 난독화 구조나 Playwright에 포함된 파서가 바뀌면 `scripts/upstream-extract.mjs`를 수정하고 `EXTRACTOR_VERSION`을 올립니다.
+
 ## 성능 분석 기록
 
 팝업의 debug 설정과 성능 오버레이는 제거했습니다. 이전 설치본의 `debug: true` 값도 무시하며, `storage.js`는 네트워크 계측에 항상 `debug: false`를 전달합니다.

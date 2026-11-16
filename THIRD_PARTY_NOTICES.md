@@ -11,7 +11,7 @@
 - 배포본에 표시된 라이선스: [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0)
 - 변경 사항: 한국어 번역 추가, 포켓몬·기술 명칭 대조, 한국어 표시를 위한 화면 조정
 
-원본 게임의 실행 코드와 음악 파일은 포함하지 않습니다. 아이콘 원본은 [게임의 512px 아이콘](https://pokesurvivor.com/assets/icons/icon-512.png)이며, Neo둥근모 폰트로 Kor 표시를 추가했습니다. 라이선스 전문은 `LICENSE`에도 포함되어 있습니다. 게임의 원본 GitHub 라이선스 링크는 확인 시점에 열리지 않아, 공개 배포본의 저작권·라이선스 표시와 PolyForm 공식 전문을 기준으로 고지합니다.
+`upstream/current/source/`에는 업데이트 비교용으로 공개 배포본의 HTML·JavaScript·CSS를 변경 없이 보관합니다. 원본 게임의 실행 코드와 음악 파일은 확장 설치 패키지에 포함하지 않습니다. 아이콘 원본은 [게임의 512px 아이콘](https://pokesurvivor.com/assets/icons/icon-512.png)이며, Neo둥근모 폰트로 Kor 표시를 추가했습니다. 라이선스 전문은 `LICENSE`에도 포함되어 있습니다. 게임의 원본 GitHub 라이선스 링크는 확인 시점에 열리지 않아, 공개 배포본의 저작권·라이선스 표시와 PolyForm 공식 전문을 기준으로 고지합니다.
 
 ## PokéAPI
 

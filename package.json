@@ -20,6 +20,8 @@
     "test:live": "node scripts/verify-live.mjs",
     "check:names": "node scripts/check-pokemon-names.mjs --online",
     "audit:translations": "node scripts/audit-live-translations.mjs",
+    "upstream:check": "node scripts/upstream-snapshot.mjs check",
+    "upstream:accept": "node scripts/upstream-snapshot.mjs accept",
     "vendor:search": "node scripts/vendor-search.mjs",
     "package": "node scripts/package.mjs",
     "build:site": "node scripts/build-site.mjs"

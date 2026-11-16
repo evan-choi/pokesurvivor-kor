@@ -1,0 +1,50 @@
+{
+  "capturedAt": "2026-11-16T03:11:34.612Z",
+  "comparedWith": null,
+  "extractorVersion": 1,
+  "files": {
+    "extracted/catalogs.json": {
+      "bytes": 1143584,
+      "sha256": "bdff71a7f294e5179af12f5c982b2e5188a6fc8ef9174dcfe3f24b220789f92c"
+    },
+    "extracted/locale.json": {
+      "bytes": 237287,
+      "sha256": "dde9344f529978679e77a7dc5072179bc4949cd8339e69ea13b039fac2991d69"
+    },
+    "extracted/modules.json": {
+      "bytes": 140568,
+      "sha256": "9beed6d07b47ecba757d39baac70db4e6ce765181834d35edfb25c181efb7e5e"
+    },
+    "extracted/news.json": {
+      "bytes": 123555,
+      "sha256": "d7faab48925619b81d8bb1ad16d472d7dde83da1264585f2cf0e144cae2f5c53"
+    },
+    "extracted/strings.json": {
+      "bytes": 672328,
+      "sha256": "6d5c52e9bb45f406bb7b4c50620401ab7f8293ba2400ffb530669c89389d04d7"
+    },
+    "source/app.min.js": {
+      "bytes": 4843543,
+      "sha256": "f3ff442620038c67937a1f30be625bd83f162de6899daefe9fe3a9014eb390d3",
+      "url": "https://pokesurvivor.com/js/app.min.js?v=3e03cb375e"
+    },
+    "source/index.html": {
+      "bytes": 36921,
+      "sha256": "b3a902ed19ab407cce9559689f96234c77d73404642c24d0b5bc5e251bca8402",
+      "url": "https://pokesurvivor.com/"
+    },
+    "source/locales.js": {
+      "bytes": 1464,
+      "sha256": "d147ad357e32797ecb705a4ebead7e0df54208246f78539d281009af452b431b",
+      "url": "https://pokesurvivor.com/js/core/locales.js?v=4cf61c2730"
+    },
+    "source/style.css": {
+      "bytes": 149728,
+      "sha256": "e0f5e072d414d0affe33cc9ebc184c16e974b85feb374160221782ace3606138",
+      "url": "https://pokesurvivor.com/css/style.css?v=e192fbc956"
+    }
+  },
+  "gameVersion": "3e03cb375e",
+  "schemaVersion": 1,
+  "sourceUrl": "https://pokesurvivor.com/"
+}
