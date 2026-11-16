@@ -773,3 +773,9 @@ globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
   ["Cooperativo: si el anfitrión se va cuando los demás ya habéis elegido carta de nivel, la partida sigue (antes se quedaba parada para todos).", "Co-op: if the host leaves when the rest of you have already picked your level-up card, the run goes on (before, it froze for everyone).", "협동 플레이에서 다른 플레이어들이 레벨 업 카드를 선택한 뒤 방장이 나가도 전투가 계속됩니다. 이전에는 모든 플레이어의 전투가 멈췄습니다."],
   ["Casino Rocket: sin conexión ya no se queda bloqueada la salida en Voltorb escondido, y un corte de red de un momento ya no te quita la victoria contra Pikachu.", "Rocket Casino: without a connection the exit no longer stays locked in Hidden Voltorb, and a brief network drop no longer costs you your win against Pikachu.", "로켓 카지노에서 인터넷 연결이 없어도 ‘숨은 찌리리공’의 출구가 잠기지 않습니다. 잠시 연결이 끊겨도 피카츄에게 거둔 승리가 취소되지 않습니다."],
 ]);
+
+// News added in the 3e03cb375e game build.
+globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
+  ["Grietas: los remolinos de los legendarios (Tornado, Torbellino, Giro Fuego…) van más despacio y te atraen menos.", "Rifts: legendaries' whirlwinds (Gust, Whirlpool, Fire Spin…) move slower and pull you in less.", "균열에서 전설의 포켓몬이 사용하는 회오리 공격(바람일으키기, 바다회오리, 회오리불꽃 등)의 이동 속도와 끌어당기는 힘이 줄었습니다."],
+  ["Surf hace un 28 % menos de daño: ahora pega como los demás ataques de área.", "Surf deals 28% less damage: it now hits like the other area moves.", "파도타기의 피해량이 28% 감소하여 다른 범위 공격 기술과 비슷해졌습니다."],
+]);

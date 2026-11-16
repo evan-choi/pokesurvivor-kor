@@ -1,5 +1,5 @@
 {
-  "source": "https://pokesurvivor.com/js/app.min.js?v=09a1992c78",
+  "source": "https://pokesurvivor.com/js/app.min.js?v=3e03cb375e",
   "entries": [
     {
       "spanish": "Con cuenta, el Casino Rocket y abrir huevos necesitan conexión, como la gacha. Los tickets que coges en una partida se guardan al acabarla; si el juego se cierra a mitad, te llegan al volver a entrar.",
@@ -100,6 +100,16 @@
       "spanish": "Casino Rocket: sin conexión ya no se queda bloqueada la salida en Voltorb escondido, y un corte de red de un momento ya no te quita la victoria contra Pikachu.",
       "english": "Rocket Casino: without a connection the exit no longer stays locked in Hidden Voltorb, and a brief network drop no longer costs you your win against Pikachu.",
       "korean": "로켓 카지노에서 인터넷 연결이 없어도 ‘숨은 찌리리공’의 출구가 잠기지 않습니다. 잠시 연결이 끊겨도 피카츄에게 거둔 승리가 취소되지 않습니다."
+    },
+    {
+      "spanish": "Grietas: los remolinos de los legendarios (Tornado, Torbellino, Giro Fuego…) van más despacio y te atraen menos.",
+      "english": "Rifts: legendaries' whirlwinds (Gust, Whirlpool, Fire Spin…) move slower and pull you in less.",
+      "korean": "균열에서 전설의 포켓몬이 사용하는 회오리 공격(바람일으키기, 바다회오리, 회오리불꽃 등)의 이동 속도와 끌어당기는 힘이 줄었습니다."
+    },
+    {
+      "spanish": "Surf hace un 28 % menos de daño: ahora pega como los demás ataques de área.",
+      "english": "Surf deals 28% less damage: it now hits like the other area moves.",
+      "korean": "파도타기의 피해량이 28% 감소하여 다른 범위 공격 기술과 비슷해졌습니다."
     }
   ]
 }

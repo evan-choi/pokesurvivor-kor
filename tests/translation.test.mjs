@@ -70,11 +70,27 @@ test('all power moves use their official Korean names in both game languages', (
 
 test('new game news translates the complete Spanish and English paragraphs', () => {
   const { entries } = JSON.parse(readFileSync(new URL('fixtures/official-game-news.json', import.meta.url), 'utf8'));
-  assert.equal(entries.length, 20);
+  assert.equal(entries.length, 22);
   for (const { spanish, english, korean } of entries) {
     assert.equal(translate(spanish), korean, spanish);
     assert.equal(translate(english), korean, english);
     assert.equal(translate(korean), korean);
+  }
+});
+
+test('rift and Surf patch notes register complete native Korean translations', () => {
+  const native = vm.createContext({
+    PSKO_MESSAGES: context.PSKO_MESSAGES,
+    PSKO_POKEMON: context.PSKO_POKEMON,
+    localStorage: { getItem: () => null },
+    document: { addEventListener() {} },
+  });
+  evaluate(native, 'native-locale.js');
+  const [dictionary] = native.PS_LANG_Q[0];
+  const { entries } = JSON.parse(readFileSync(new URL('fixtures/official-game-news.json', import.meta.url), 'utf8'));
+  for (const { spanish, english, korean } of entries.slice(-2)) {
+    assert.equal(dictionary[spanish], korean);
+    assert.equal(dictionary[english], korean);
   }
 });
 
