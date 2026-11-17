@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
@@ -23,6 +23,21 @@ test('an unsupported game decoder fails instead of returning an empty snapshot',
   try {
     await writeFile(path.join(directory, 'app.min.js'), 'console.log("changed format");');
     await assert.rejects(extractSnapshot(directory), /Game decoder structure changed/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('a string table factory call is not mistaken for the decoder alias', async () => {
+  const directory = await mkdtemp(path.join(os.tmpdir(), 'pokesurvivor-extractor-test-'));
+  try {
+    await cp(baseline, directory, { recursive: true });
+    const source = await readFile(path.join(directory, 'app.min.js'), 'utf8');
+    await writeFile(path.join(directory, 'app.min.js'),
+      `function a0_0xabcdef(){return [];}const _0xabcdef=a0_0xabcdef();${source}`);
+    const extracted = await extractSnapshot(directory);
+    const news = JSON.parse(await readFile(path.join(baseline, '../extracted/news.json'), 'utf8'));
+    assert.deepEqual(extracted.news, news);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }

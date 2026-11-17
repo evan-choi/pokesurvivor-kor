@@ -5,7 +5,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import { chromium } from '@playwright/test';
 
-export const EXTRACTOR_VERSION = 1;
+export const EXTRACTOR_VERSION = 2;
 const require = createRequire(import.meta.url);
 const obfuscated = /^(?:a0_)?_?0x[\da-f]+$|^_[\da-f]{7}$/;
 
@@ -22,7 +22,7 @@ async function parseSource(source) {
 
 async function decodeSource(source) {
   const application = /a0_0x[\da-f]+\(\),\(\(\(\)=>\{/.exec(source);
-  const decoder = /const _0x[\da-f]+=(a0_0x[\da-f]+)/.exec(source);
+  const decoder = /const _0x[\da-f]+=(a0_0x[\da-f]+)(?=[,;])/.exec(source);
   if (!application || !decoder) throw new Error('Game decoder structure changed; update the snapshot extractor.');
   const context = vm.createContext({});
   vm.runInContext(source.slice(0, application.index), context, { timeout: 10000 });
