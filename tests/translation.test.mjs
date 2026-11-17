@@ -70,7 +70,7 @@ test('all power moves use their official Korean names in both game languages', (
 
 test('new game news translates the complete Spanish and English paragraphs', () => {
   const { entries } = JSON.parse(readFileSync(new URL('fixtures/official-game-news.json', import.meta.url), 'utf8'));
-  assert.equal(entries.length, 39);
+  assert.equal(entries.length, 46);
   for (const { spanish, english, korean } of entries) {
     assert.equal(translate(spanish), korean, spanish);
     assert.equal(translate(english), korean, english);

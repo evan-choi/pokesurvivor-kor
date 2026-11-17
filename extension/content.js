@@ -32,7 +32,7 @@
           element.matches('button') && /^(?:Recargar|Reload|새로고침)$/.test(element.textContent))) return false;
     if (owner.matches('#mod-list > div') && element.matches(
       '#mod-list > div > .set-row b, #mod-list > div > .set-row small, ' +
-      '#mod-qmode option, #mod-hold option, #mod-list > div > p.sub, ' +
+      '#mod-qmode option, #mod-qneed option, #mod-hold option, #mod-list > div > p.sub, ' +
       '#mod-hold-list .who > small, #mod-hold-list .mod-acts button, ' +
       '#mod-nick, #mod-find, #mod-acc > h3, #mod-acc > .note, ' +
       '#mod-acc > .keys > span, #mod-acc > .keys > label, ' +
@@ -69,6 +69,9 @@
     let translated = enabled ? translate(source) : source;
     if (enabled && key === 'text' && element.matches('#mod-qmode option[value="ban"]')) {
       translated = source.replace(/^ban$/, '차단하기');
+    }
+    if (enabled && key === 'text' && element.matches('#mod-qneed option[value="on"]')) {
+      translated = source.replace(/^on$/, '켜기');
     }
     if (enabled && key === 'text' && element.matches('#mod-acc > .set-row > .grow > small:not(.mod-warn)')) {
       // The account ID shares this text node with counts and must stay verbatim.

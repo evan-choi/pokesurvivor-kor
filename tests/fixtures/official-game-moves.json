@@ -1,5 +1,5 @@
 {
-  "source": "https://pokesurvivor.com/js/app.min.js?v=afdb307d50",
+  "source": "https://pokesurvivor.com/js/app.min.js?v=63b179263b",
   "moves": [
     {"id":"tackle","name":["Placaje","Tackle","몸통박치기"],"desc":["Embiste en arco a todo lo que tengas delante.","Charges in an arc at everything in front of you."],"kind":"melee"},
     {"id":"quick-attack","name":["Ataque Rápido","Quick Attack","전광석화"],"desc":["Cruzas como un rayo hacia el enemigo y golpeas todo el camino.","You dash at the enemy like lightning and hit everything on the way."],"kind":"dash"},

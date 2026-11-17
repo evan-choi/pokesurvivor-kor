@@ -831,6 +831,8 @@ test('translates pending-score and reward controls while preserving account iden
         <select id="mod-qmode"><option value="medir">medir</option><option value="avisar">avisar</option><option value="ban">ban</option></select></div>
       <div class="set-row"><div class="grow"><b>Revisar el top 3</b></div>
         <select id="mod-hold"><option value="on">sí</option><option value="off">no</option></select></div>
+      <div class="set-row"><div class="grow"><b>Prueba de juego</b></div>
+        <select id="mod-qneed"><option value="medir">medir</option><option value="on">on</option></select></div>
       <p class="sub">2 marcas esperando</p><div id="mod-hold-list"><div class="rk-row mod-row hold">
         <span class="who"><b translate="no">Fire</b><small>Solo · Semana · Nv. 20 · 123 derrotados · daño a Arceus 456</small>
           <small class="mod-warn" translate="no">Fire-flag</small></span><span class="time">20:34</span>
@@ -847,6 +849,8 @@ test('translates pending-score and reward controls while preserving account iden
     </div></div></section>`);
   });
   await expect(frame.locator('#mod-qmode option')).toHaveText(['기록만 남기기', '경고하기', '차단하기']);
+  await expect(frame.locator('#mod-qneed option')).toHaveText(['기록만 남기기', '켜기']);
+  await expect(frame.locator('#mod-qneed').locator('..').locator('b')).toHaveText('플레이 확인');
   expect(await frame.locator('#mod-qmode option').evaluateAll(options => options.map(option => option.value)))
     .toEqual(['medir', 'avisar', 'ban']);
   await expect(frame.locator('#mod-list > div > p.sub')).toHaveText('검토 대기 중인 기록 2개');
@@ -865,6 +869,7 @@ test('translates pending-score and reward controls while preserving account iden
   await expect(frame.locator('#mod-send')).toHaveText('지급하기');
   await popup.evaluate(() => chrome.storage.local.set({ enabled: false }));
   await expect(frame.locator('#mod-qmode option')).toHaveText(['medir', 'avisar', 'ban']);
+  await expect(frame.locator('#mod-qneed option')).toHaveText(['medir', 'on']);
   await expect(frame.locator('#mod-acc > .set-row .grow > small')).toHaveText('1.234 monedas · 2 tickets · 3 ×10 · 4 Pokémon · 1 shiny · Fire-uid');
   await expect(frame.locator('#mod-tms .mod-mons label')).toHaveText([' Psíquico', ' Rayo']);
 });
