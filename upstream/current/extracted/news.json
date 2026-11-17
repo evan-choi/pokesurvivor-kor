@@ -1600,6 +1600,10 @@
     ],
     "fix": [
       [
+        "Skins Dragonite cartero y Snorlax viajero, retocadas por su creador: al atacar ya no asoman trozos de la gorra o del sombrero por el borde.",
+        "Mail Carrier Dragonite and Wanderer Snorlax skins, touched up by their creator: bits of the cap or hat no longer peek out from the edge when attacking."
+      ],
+      [
         "Los Pokémon que empiezan ya evolucionados pegan por su lado desde el principio: Gallade, Lucario o Volcarona, con la fuerza de su primera fase, pegaban por el lado contrario hasta el nivel 40.",
         "Pokémon that start already evolved now hit with their own side from the start: Gallade, Lucario or Volcarona, with their first stage's strength, hit with the opposite side until level 40."
       ],
@@ -1636,9 +1640,39 @@
         "In a group, the end-screen «Against Arceus» time uses the same clock as the run time: it could come out longer than it really was."
       ]
     ],
+    "new": [
+      [
+        "Skins de la semana en otro orden: desde el viernes 20 salen todas mezcladas (las de esta semana, al final), con 7 nuevas: Kyogre abisal (con su forma Primigenia), Reshiram oscuro, Luxray cibernético, Scizor rey Unown, Tentacruel muerto, Koffing tóxico y el pack Groudon multiescamas, de Frisma32: una compra, 7 estilos para elegir en el Vestidor.",
+        "Weekly skins in a new order: from Friday the 20th they all come up shuffled (this week's ones at the end), with 7 new ones: Abyssal Kyogre (with its Primal form), Dark Reshiram, Cyber Luxray, Unown King Scizor, Dead Tentacruel, Toxic Koffing and the Multiscale Groudon pack by Frisma32: one purchase, 7 styles to pick from in the Wardrobe."
+      ]
+    ],
     "title": [
       "Más experiencia, Surf y arreglos",
       "More experience, Surf and fixes"
+    ]
+  },
+  "2026-11-17": {
+    "fix": [
+      [
+        "Monedas y tickets: al abrir el juego en otro aparato, en otra pestaña o con una copia antigua guardada en el navegador, ya no aparecen de más. Antes se veían monedas que no tenías y lo que comprabas con ellas se deshacía al guardar.",
+        "Coins and tickets: when you open the game on another device, in another tab or with an old copy saved in the browser, they no longer show up as more than you have. Before, you could see coins you didn't have, and whatever you bought with them was undone when saving."
+      ],
+      [
+        "Si acabas de conseguir monedas o tickets (un premio, el final de una partida), la tienda espera un momento a que se guarden antes de dejarte comprar, para que la compra no se deshaga.",
+        "If you have just earned coins or tickets (a reward, the end of a run), the shop waits a moment for them to be saved before letting you buy, so the purchase isn't undone."
+      ],
+      [
+        "Una mejora comprada sin monedas suficientes mientras jugabas al casino o abrías un huevo ya no se queda en pantalla para desaparecer después.",
+        "An upgrade bought without enough coins while playing the casino or opening an egg no longer stays on screen only to disappear later."
+      ],
+      [
+        "Ranking: en algunos navegadores tus marcas podían no contar; ahora cuentan.",
+        "Leaderboard: in some browsers your scores might not count; now they do."
+      ]
+    ],
+    "title": [
+      "Monedas y tickets bien al abrir el juego",
+      "Correct coins and tickets when opening the game"
     ]
   }
 }
