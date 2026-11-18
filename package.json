@@ -28,7 +28,7 @@
     "build:site": "node scripts/build-site.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "^1.65.0",
+    "@playwright/test": "^1.65.1",
     "es-hangul": "2.4.0",
     "fuse.js": "7.5.0"
   }
