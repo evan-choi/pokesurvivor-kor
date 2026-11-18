@@ -9304,6 +9304,23 @@
     "prototype": [],
     "type": "object"
   },
+  "e9c2335d4f931914": {
+    "count": 1,
+    "keys": [
+      "date",
+      "known",
+      "now",
+      "onSync",
+      "ready",
+      "skew",
+      "sync",
+      "synced",
+      "waiting"
+    ],
+    "name": null,
+    "prototype": [],
+    "type": "object"
+  },
   "ea23c20fc77daaca": {
     "count": 1,
     "keys": [

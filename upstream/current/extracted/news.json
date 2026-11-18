@@ -1666,8 +1666,32 @@
         "An upgrade bought without enough coins while playing the casino or opening an egg no longer stays on screen only to disappear later."
       ],
       [
+        "Tienda, misiones y desafío semanal: con la hora del aparato mal puesta salían los de otro día, y lo que comprabas ahí se deshacía. Ahora van siempre con la hora real, aunque el reloj esté mal.",
+        "Shop, missions and weekly challenge: with your device's clock set wrong, you saw another day's, and whatever you bought there was undone. They now always follow the real time, even if the clock is wrong."
+      ],
+      [
         "Ranking: en algunos navegadores tus marcas podían no contar; ahora cuentan.",
         "Leaderboard: in some browsers your scores might not count; now they do."
+      ],
+      [
+        "Las megaevoluciones, los Gigamax y algunos Pokémon más ya no dan vueltas sobre sí mismos cada vez que atacan o reciben un golpe (se notaba mucho con Mega Scolipede): ahora siguen mirando hacia donde atacan.",
+        "Mega Evolutions, Gigantamax forms and a few other Pokémon no longer spin around every time they attack or get hit (very noticeable with Mega Scolipede): they now keep facing where they attack."
+      ],
+      [
+        "La letra del juego: la «j» minúscula tiene ahora punto y rabo, como la «i» y la «g». Antes parecía una «J» mayúscula y se leía «meJora» o «RefleJos».",
+        "Game font: the lowercase “j” now has a dot and a tail, like the “i” and the “g”. Before, it looked like a capital “J”."
+      ],
+      [
+        "Grietas en el móvil: en algunos teléfonos, al entrar, la pantalla podía quedarse morada o negra (con la música sonando) y se perdía la partida. Ahora entrar gasta menos memoria y, si la pantalla deja de dibujarse, el juego la recupera solo; si no puede, la partida se guarda con lo ganado.",
+        "Rifts on mobile: on some phones, entering one could leave the screen stuck purple or black (with the music still playing) and the run was lost. Entering now uses less memory and, if the screen stops drawing, the game recovers it by itself; if it can't, the run is saved with what you earned."
+      ],
+      [
+        "Cooperativo: si la hora de tu aparato iba adelantada un par de horas o más, no se podía conectar con nadie («No se pudo conectar (reintentando…)»). Ahora conecta aunque el reloj esté mal puesto.",
+        "Co-op: if your device's clock was a couple of hours or more ahead, you couldn't connect with anyone (“Could not connect (retrying…)”). It now connects even if the clock is wrong."
+      ],
+      [
+        "Formas, megas y Gigamax: si su dibujo tardaba en cargar salían como una bola gris (pasaba con la Forma Origen de Giratina o con Articuno de Galar en una grieta). Ahora, mientras tanto, se ve su forma normal, y si la descarga se queda colgada se vuelve a pedir. En las cartas de forma y de evolución, lo que no cambia sale como «±0».",
+        "Forms, Megas and Gigantamax: if their sprite was slow to load they showed up as a grey ball (it happened with Giratina's Origin Forme or with Galarian Articuno in a rift). Now their regular form shows in the meantime, and a download that gets stuck is requested again. On form and evolution cards, stats that don't change show as “±0”."
       ]
     ],
     "title": [
