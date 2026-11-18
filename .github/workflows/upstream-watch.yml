@@ -5,6 +5,11 @@ on:
     - cron: '0 10 * * *'
       timezone: Asia/Seoul
   workflow_dispatch:
+    inputs:
+      test_notification:
+        description: 'Create a public test issue and assign it to the repository owner'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -15,6 +20,7 @@ concurrency:
 
 jobs:
   check:
+    if: inputs.test_notification != true
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -45,7 +51,8 @@ jobs:
   notify:
     needs: check
     if: >-
-      needs.check.outputs.report != '' &&
+      !cancelled() &&
+      (inputs.test_notification == true || needs.check.outputs.report != '') &&
       github.repository == 'evan-choi/pokesurvivor-kor' &&
       github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
@@ -53,24 +60,30 @@ jobs:
     permissions:
       issues: write
     steps:
-      - name: Assign one issue per upstream revision
+      - name: Create and assign the notification issue
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           ASSIGNEE: ${{ github.repository_owner }}
           REPORT: ${{ needs.check.outputs.report }}
+          TEST_NOTIFICATION: ${{ inputs.test_notification }}
         shell: bash
         run: |
-          before=$(jq -er '.before | select(test("^[A-Za-z0-9._-]+$"))' <<< "$REPORT")
-          after=$(jq -er '.after | select(test("^[A-Za-z0-9._-]+$"))' <<< "$REPORT")
-          fingerprint=$(jq -er '.fingerprint' <<< "$REPORT")
-          changed_files=$(jq -er '.sourceChanges[] | "- `\(.)`"' <<< "$REPORT")
-          title="PokéSurvivor 원본 업데이트 $after ($fingerprint)"
-          titles=$(gh api --paginate "repos/$GH_REPO/issues?state=all&per_page=100" \
-            --jq '.[] | select(.pull_request == null and .user.login == "github-actions[bot]") | .title')
-          if grep -Fxq -- "$title" <<< "$titles"; then
-            exit 0
+          run_url="$GITHUB_SERVER_URL/$GH_REPO/actions/runs/$GITHUB_RUN_ID"
+          if [[ "$TEST_NOTIFICATION" == 'true' ]]; then
+            title='[테스트] GitHub Mobile 봇 알림 확인'
+            body=$(printf 'Actions 봇의 Issue 배정 푸시를 확인하는 테스트입니다.\n\n[테스트 실행](%s)\n' "$run_url")
+          else
+            before=$(jq -er '.before | select(test("^[A-Za-z0-9._-]+$"))' <<< "$REPORT")
+            after=$(jq -er '.after | select(test("^[A-Za-z0-9._-]+$"))' <<< "$REPORT")
+            fingerprint=$(jq -er '.fingerprint' <<< "$REPORT")
+            changed_files=$(jq -er '.sourceChanges[] | "- `\(.)`"' <<< "$REPORT")
+            title="PokéSurvivor 원본 업데이트 $after ($fingerprint)"
+            titles=$(gh api --paginate "repos/$GH_REPO/issues?state=all&per_page=100" \
+              --jq '.[] | select(.pull_request == null and .user.login == "github-actions[bot]") | .title')
+            if grep -Fxq -- "$title" <<< "$titles"; then
+              exit 0
+            fi
+            body=$(printf '기준 %s → 원본 %s\n\n%s\n\n[검사 결과](%s)\n' "$before" "$after" "$changed_files" "$run_url")
           fi
-          body=$(printf '기준 %s → 원본 %s\n\n%s\n\n[검사 결과](%s/%s/actions/runs/%s)\n' \
-            "$before" "$after" "$changed_files" "$GITHUB_SERVER_URL" "$GH_REPO" "$GITHUB_RUN_ID")
           gh issue create --title "$title" --body "$body" --assignee "$ASSIGNEE"

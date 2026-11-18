@@ -40,6 +40,8 @@ npm run upstream:check
 
 GitHub Actions는 매일 오전 10시(KST)에 `npm run upstream:check-source`로 원본 파일의 SHA-256을 비교합니다. 변경이 있으면 동일한 원본 파일 조합당 공개 Issue를 하나 만들고 `evan-choi`에게 배정합니다. GitHub Mobile에서 [배정 알림](https://docs.github.com/en/subscriptions-and-notifications/get-started/configuring-notifications#managing-your-notification-settings-with-github-mobile)을 켜면 푸시로 받을 수 있습니다. Actions 탭의 **Check for PokéSurvivor updates**에서 수동으로도 실행할 수 있습니다.
 
+수동 실행에서 `test_notification`을 선택하면 원본 변경과 관계없이 Actions 봇이 공개 테스트 Issue를 생성하고 같은 계정에 배정합니다.
+
 번역과 호환성 검사를 마치면 기준을 갱신하고 함께 커밋합니다.
 
 ```sh
