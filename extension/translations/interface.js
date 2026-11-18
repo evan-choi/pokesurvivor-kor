@@ -1467,4 +1467,5 @@ globalThis.PSKO_MESSAGES = globalThis.PSKO_MESSAGES.concat([
   ["medir: sólo apunta · avisar: la marca no entra y sale el aviso «juega sin extensiones» · ban: además, la 2.ª vez, a Avisos (ban sólo si además hay números imposibles)","medir: sólo apunta · avisar: la marca no entra y sale el aviso «juega sin extensiones» · ban: además, la 2.ª vez, a Avisos (ban sólo si además hay números imposibles)","기록만 남기기 · 경고하기는 기록을 순위표에서 제외하고 ‘확장 프로그램을 끄고 플레이하세요’ 안내 표시 · 차단하기는 두 번째 적발 시 확인할 알림에 추가하며, 불가능한 수치까지 확인된 경우에만 계정 차단"],
   ["Prueba de juego","Prueba de juego","플레이 확인"],
   ["Una marca (desde 2 min) sin haber contestado bien ninguna pregunta sorpresa (un programa que no es el juego) · medir: sólo apunta · on: no entra","Una marca (desde 2 min) sin haber contestado bien ninguna pregunta sorpresa (un programa que no es el juego) · medir: sólo apunta · on: no entra","2분 이상 플레이한 기록 중 추가 확인 질문에 한 번도 맞게 답하지 못한 경우(게임 외 프로그램 사용) · 기록만 남기기 · 켜기는 순위표에서 제외"],
+  ["Comprobando la hora del servidor… prueba en un momento.", "Checking the server time… try again in a moment.", "서버 시간을 확인 중입니다. 잠시 후 다시 시도해 주세요."],
 ]);

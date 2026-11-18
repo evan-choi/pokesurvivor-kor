@@ -1,5 +1,5 @@
 {
-  "source": "https://pokesurvivor.com/js/app.min.js?v=63b179263b",
+  "source": "https://pokesurvivor.com/js/app.min.js?v=05f665510a",
   "entries": [
     {
       "spanish": "Con cuenta, el Casino Rocket y abrir huevos necesitan conexión, como la gacha. Los tickets que coges en una partida se guardan al acabarla; si el juego se cierra a mitad, te llegan al volver a entrar.",
@@ -217,9 +217,39 @@
       "korean": "카지노 이용이나 알 부화 중 코인이 부족한 상태에서 구매한 강화가 화면에 남았다가 나중에 사라지던 문제를 수정했습니다."
     },
     {
+      "spanish": "Tienda, misiones y desafío semanal: con la hora del aparato mal puesta salían los de otro día, y lo que comprabas ahí se deshacía. Ahora van siempre con la hora real, aunque el reloj esté mal.",
+      "english": "Shop, missions and weekly challenge: with your device's clock set wrong, you saw another day's, and whatever you bought there was undone. They now always follow the real time, even if the clock is wrong.",
+      "korean": "기기 시계가 틀리면 상점, 미션, 주간 도전에 다른 날짜의 내용이 표시되고 구매가 취소되던 문제를 수정했습니다. 이제 기기 시계와 관계없이 서버 시간을 기준으로 동작합니다."
+    },
+    {
       "spanish": "Ranking: en algunos navegadores tus marcas podían no contar; ahora cuentan.",
       "english": "Leaderboard: in some browsers your scores might not count; now they do.",
       "korean": "일부 브라우저에서 기록이 순위표에 반영되지 않던 문제를 수정했습니다."
+    },
+    {
+      "spanish": "Las megaevoluciones, los Gigamax y algunos Pokémon más ya no dan vueltas sobre sí mismos cada vez que atacan o reciben un golpe (se notaba mucho con Mega Scolipede): ahora siguen mirando hacia donde atacan.",
+      "english": "Mega Evolutions, Gigantamax forms and a few other Pokémon no longer spin around every time they attack or get hit (very noticeable with Mega Scolipede): they now keep facing where they attack.",
+      "korean": "메가진화나 거다이맥스를 한 포켓몬과 일부 다른 포켓몬이 공격하거나 맞을 때마다 제자리에서 돌던 문제를 수정했습니다. 특히 메가펜드라에서 두드러졌으며, 이제 공격하는 방향을 계속 바라봅니다."
+    },
+    {
+      "spanish": "La letra del juego: la «j» minúscula tiene ahora punto y rabo, como la «i» y la «g». Antes parecía una «J» mayúscula y se leía «meJora» o «RefleJos».",
+      "english": "Game font: the lowercase “j” now has a dot and a tail, like the “i” and the “g”. Before, it looked like a capital “J”.",
+      "korean": "게임 글꼴의 소문자 ‘j’에 ‘i’처럼 점을, ‘g’처럼 아래로 내려오는 획을 추가했습니다. 이전에는 대문자 ‘J’처럼 보였습니다."
+    },
+    {
+      "spanish": "Grietas en el móvil: en algunos teléfonos, al entrar, la pantalla podía quedarse morada o negra (con la música sonando) y se perdía la partida. Ahora entrar gasta menos memoria y, si la pantalla deja de dibujarse, el juego la recupera solo; si no puede, la partida se guarda con lo ganado.",
+      "english": "Rifts on mobile: on some phones, entering one could leave the screen stuck purple or black (with the music still playing) and the run was lost. Entering now uses less memory and, if the screen stops drawing, the game recovers it by itself; if it can't, the run is saved with what you earned.",
+      "korean": "일부 휴대전화에서 균열에 들어갈 때 음악은 계속 나오지만 화면이 보라색이나 검은색으로 멈춰 진행 중인 전투가 사라지는 문제가 있었습니다. 이제 진입 시 메모리를 덜 쓰고, 화면이 멈추면 게임이 자동으로 복구합니다. 복구할 수 없으면 진행 내용과 획득한 보상을 저장합니다."
+    },
+    {
+      "spanish": "Cooperativo: si la hora de tu aparato iba adelantada un par de horas o más, no se podía conectar con nadie («No se pudo conectar (reintentando…)»). Ahora conecta aunque el reloj esté mal puesto.",
+      "english": "Co-op: if your device's clock was a couple of hours or more ahead, you couldn't connect with anyone (“Could not connect (retrying…)”). It now connects even if the clock is wrong.",
+      "korean": "협동 플레이에서 기기 시계가 두 시간가량 또는 그 이상 빠르면 ‘연결하지 못했습니다 (다시 시도 중…)’가 표시되고 다른 플레이어와 연결되지 않았습니다. 이제 기기 시계가 틀려도 연결할 수 있습니다."
+    },
+    {
+      "spanish": "Formas, megas y Gigamax: si su dibujo tardaba en cargar salían como una bola gris (pasaba con la Forma Origen de Giratina o con Articuno de Galar en una grieta). Ahora, mientras tanto, se ve su forma normal, y si la descarga se queda colgada se vuelve a pedir. En las cartas de forma y de evolución, lo que no cambia sale como «±0».",
+      "english": "Forms, Megas and Gigantamax: if their sprite was slow to load they showed up as a grey ball (it happened with Giratina's Origin Forme or with Galarian Articuno in a rift). Now their regular form shows in the meantime, and a download that gets stuck is requested again. On form and evolution cards, stats that don't change show as “±0”.",
+      "korean": "폼을 바꾸거나 메가진화, 거다이맥스를 한 포켓몬의 이미지가 늦게 뜨면 회색 공으로 보이던 문제를 수정했습니다. 균열의 기라티나 오리진폼이나 프리져(가라르의 모습)에서 발생하던 문제입니다. 이제 이미지가 뜰 때까지 기본 모습이 표시되고, 내려받기가 멈추면 다시 시도합니다. 폼과 진화 카드에서 변화가 없는 능력치는 ‘±0’으로 표시합니다."
     },
     {
       "spanish": "Skins Dragonite cartero y Snorlax viajero, retocadas por su creador: al atacar ya no asoman trozos de la gorra o del sombrero por el borde.",
