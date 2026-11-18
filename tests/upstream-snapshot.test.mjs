@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { acceptUpstream, checkUpstream, compareSnapshots } from '../scripts/upstream-snapshot.mjs';
+import { acceptUpstream, checkUpstream, checkUpstreamSource, compareSnapshots } from '../scripts/upstream-snapshot.mjs';
 
 const html = '<script src="js/app.min.js?v=test1"></script><script src="js/core/locales.js?v=lang1"></script><link href="css/style.css?v=style1">';
 const extract = async directory => ({
@@ -58,6 +58,24 @@ test('failed downloads or extraction preserve the current snapshot and the last 
   await assert.rejects(checkUpstream({ root: options.root, extract, request: async () => new Response('', { status: 503 }) }), /HTTP 503/);
   assert.equal(await readFile(candidate, 'utf8'), previous);
   assert.equal(await readFile(path.join(options.root, 'upstream/current/source/app.min.js'), 'utf8'), 'first');
+});
+
+test('source monitoring catches same-version edits without replacing the update candidate', async t => {
+  const options = await fixture(t);
+  await checkUpstream(options);
+  await acceptUpstream(options);
+  const candidate = path.join(options.root, '_workspace/upstream-candidate/manifest.json');
+  const previous = await readFile(candidate, 'utf8');
+  const unchanged = await checkUpstreamSource(options);
+  assert.deepEqual(unchanged.sourceChanges, []);
+  await writeFile(path.join(options.from, 'app.min.js'), 'second');
+  const changed = await checkUpstreamSource(options);
+  assert.equal(changed.before, changed.after);
+  assert.deepEqual(changed.sourceChanges, ['source/app.min.js']);
+  assert.notEqual(changed.fingerprint, unchanged.fingerprint);
+  assert.deepEqual(await checkUpstreamSource(options), changed);
+  assert.equal(await readFile(candidate, 'utf8'), previous);
+  await assert.rejects(checkUpstreamSource({ root: options.root, request: async () => new Response('', { status: 503 }) }), /HTTP 503/);
 });
 
 test('accept rejects tampered files, stale comparisons and non-reproducible extraction', async t => {

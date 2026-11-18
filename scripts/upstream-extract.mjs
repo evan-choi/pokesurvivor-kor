@@ -3,7 +3,6 @@ import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import vm from 'node:vm';
-import { chromium } from '@playwright/test';
 
 export const EXTRACTOR_VERSION = 2;
 const require = createRequire(import.meta.url);
@@ -81,6 +80,7 @@ function staticData(ast, traverse, minimumOffset) {
 }
 
 async function runtimeData(sourceDirectory, decoded) {
+  const { chromium } = await import('@playwright/test');
   const registry = /var (_0x[\da-f]+)=Object\['create'\]\(null\);/.exec(decoded);
   if (!registry) throw new Error('Game module registry changed; update the snapshot extractor.');
   const html = await readFile(path.join(sourceDirectory, 'index.html'), 'utf8');

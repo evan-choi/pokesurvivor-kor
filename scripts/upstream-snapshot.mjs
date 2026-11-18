@@ -12,8 +12,8 @@ const assets = {
   'style.css': '/css/style.css',
 };
 const sections = ['locale', 'news', 'catalogs', 'modules', 'strings'];
-const snapshotFiles = ['source/index.html', ...Object.keys(assets).map(name => `source/${name}`),
-  ...sections.map(name => `extracted/${name}.json`)];
+const sourceFiles = ['source/index.html', ...Object.keys(assets).map(name => `source/${name}`)];
+const snapshotFiles = [...sourceFiles, ...sections.map(name => `extracted/${name}.json`)];
 const hash = value => createHash('sha256').update(value).digest('hex');
 
 function sorted(value) {
@@ -96,6 +96,41 @@ async function withLock(root, operation) {
   finally { await rm(lock, { recursive: true }); }
 }
 
+async function downloadGameSource({ from, request = fetch }) {
+  async function download(url, name) {
+    if (from) return readFile(path.join(from, name));
+    const response = await request(url, { cache: 'no-store', signal: AbortSignal.timeout(30_000) });
+    if (!response.ok) throw new Error(`원본 다운로드 실패 (HTTP ${response.status}). ${url}`);
+    return Buffer.from(await response.arrayBuffer());
+  }
+  const html = await download(sourceUrl, 'index.html');
+  const files = { 'source/index.html': { url: sourceUrl, data: html } };
+  const references = [...html.toString('utf8').matchAll(/(?:src|href)=["']([^"']+)["']/g)]
+    .map(match => new URL(match[1], sourceUrl));
+  for (const [name, pathname] of Object.entries(assets)) {
+    const matches = references.filter(url => url.origin === new URL(sourceUrl).origin && url.pathname === pathname);
+    if (matches.length !== 1 || !matches[0].searchParams.get('v')) {
+      throw new Error(`원본 HTML에서 버전이 지정된 파일을 하나만 찾을 수 있어야 합니다. ${pathname}`);
+    }
+    const url = matches[0].href;
+    files[`source/${name}`] = { url, data: await download(url, name) };
+  }
+  const gameVersion = new URL(files['source/app.min.js'].url).searchParams.get('v');
+  return { files, gameVersion };
+}
+
+export async function checkUpstreamSource({ root = projectRoot, from, request } = {}) {
+  const baseline = await verify(path.join(root, 'upstream/current'));
+  const { files, gameVersion } = await downloadGameSource({ from, request });
+  const hashes = sourceFiles.map(name => hash(files[name].data));
+  return {
+    before: baseline.gameVersion,
+    after: gameVersion,
+    sourceChanges: sourceFiles.filter((name, index) => baseline.files[name].sha256 !== hashes[index]),
+    fingerprint: hash(hashes.join('')).slice(0, 12),
+  };
+}
+
 export async function checkUpstream({ root = projectRoot, from, request = fetch, extract = extractSnapshot } = {}) {
   return withLock(root, async workspace => {
     const current = path.join(root, 'upstream/current');
@@ -105,24 +140,9 @@ export async function checkUpstream({ root = projectRoot, from, request = fetch,
     try {
       const source = path.join(staging, 'source');
       await mkdir(source);
-      async function download(name, url) {
-        if (from) return readFile(path.join(from, name));
-        const response = await request(url, { cache: 'no-store', signal: AbortSignal.timeout(30_000) });
-        if (!response.ok) throw new Error(`원본 다운로드 실패 (HTTP ${response.status}). ${url}`);
-        return Buffer.from(await response.arrayBuffer());
-      }
-      const html = await download('index.html', sourceUrl);
-      await writeFile(path.join(source, 'index.html'), html);
-      const urls = { 'index.html': sourceUrl };
-      const references = [...html.toString('utf8').matchAll(/(?:src|href)=["']([^"']+)["']/g)]
-        .map(match => new URL(match[1], sourceUrl));
-      for (const [name, pathname] of Object.entries(assets)) {
-        const matches = references.filter(url => url.origin === new URL(sourceUrl).origin && url.pathname === pathname);
-        if (matches.length !== 1 || !matches[0].searchParams.get('v')) {
-          throw new Error(`원본 HTML에서 버전이 지정된 파일을 하나만 찾을 수 있어야 합니다. ${pathname}`);
-        }
-        urls[name] = matches[0].href;
-        await writeFile(path.join(source, name), await download(name, urls[name]));
+      const { files: downloadedFiles, gameVersion } = await downloadGameSource({ from, request });
+      for (const [name, { data }] of Object.entries(downloadedFiles)) {
+        await writeFile(path.join(staging, name), data);
       }
       const extracted = await extract(source);
       await mkdir(path.join(staging, 'extracted'));
@@ -134,11 +154,11 @@ export async function checkUpstream({ root = projectRoot, from, request = fetch,
       for (const name of snapshotFiles) {
         const data = await readFile(path.join(staging, name));
         files[name] = { bytes: data.length, sha256: hash(data),
-          ...(name.startsWith('source/') ? { url: urls[path.basename(name)] } : {}) };
+          ...(downloadedFiles[name] ? { url: downloadedFiles[name].url } : {}) };
       }
       const manifest = {
         schemaVersion: 1, extractorVersion: EXTRACTOR_VERSION,
-        gameVersion: new URL(urls['app.min.js']).searchParams.get('v'),
+        gameVersion,
         capturedAt: new Date().toISOString(), sourceUrl,
         comparedWith: baseline === null ? null : hash(baseline), files,
       };
@@ -148,8 +168,7 @@ export async function checkUpstream({ root = projectRoot, from, request = fetch,
       const report = {
         before: previous?.gameVersion ?? null, after: manifest.gameVersion,
         baselineReextracted: baseline !== null && previous.extractorVersion !== EXTRACTOR_VERSION,
-        sourceChanges: snapshotFiles.filter(name => name.startsWith('source/') &&
-          previous?.files[name]?.sha256 !== files[name].sha256),
+        sourceChanges: sourceFiles.filter(name => previous?.files[name]?.sha256 !== files[name].sha256),
         changes: compareSnapshots(baselineData, extracted),
       };
       await writeFile(path.join(staging, 'manifest.json'), json(manifest));
@@ -195,10 +214,12 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       console.log(`${report.before ?? '기준 없음'} → ${report.after}`);
       console.log(`원본 변경 ${report.sourceChanges.length}개, 추출 데이터 변경 ${report.changes.length}개`);
       console.log(path.join(projectRoot, '_workspace/upstream-candidate/diff.json'));
+    } else if (command === 'check-source' && !flag) {
+      console.log(JSON.stringify(await checkUpstreamSource()));
     } else if (command === 'accept' && !flag) {
       console.log(`기준 스냅샷 저장 완료. ${await acceptUpstream()}`);
     } else {
-      throw new Error('사용법: npm run upstream:check [-- --from <원본 폴더>] 또는 npm run upstream:accept');
+      throw new Error('사용법: npm run upstream:check [-- --from <원본 폴더>], npm run upstream:check-source 또는 npm run upstream:accept');
     }
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }

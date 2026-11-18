@@ -1,0 +1,76 @@
+name: Check for PokéSurvivor updates
+
+on:
+  schedule:
+    - cron: '0 10 * * *'
+      timezone: Asia/Seoul
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: upstream-watch
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      report: ${{ steps.upstream.outputs.report }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+
+      - name: Compare official game files with the verified snapshot
+        id: upstream
+        shell: bash
+        run: |
+          report=$(npm run --silent upstream:check-source)
+          printf '%s\n' "$report"
+          changes=$(jq -er '.sourceChanges | length' <<< "$report")
+          if (( changes > 0 )); then
+            printf 'report=%s\n' "$report" >> "$GITHUB_OUTPUT"
+          fi
+
+  notify:
+    needs: check
+    if: >-
+      needs.check.outputs.report != '' &&
+      github.repository == 'evan-choi/pokesurvivor-kor' &&
+      github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      issues: write
+    steps:
+      - name: Assign one issue per upstream revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ASSIGNEE: ${{ github.repository_owner }}
+          REPORT: ${{ needs.check.outputs.report }}
+        shell: bash
+        run: |
+          before=$(jq -er '.before | select(test("^[A-Za-z0-9._-]+$"))' <<< "$REPORT")
+          after=$(jq -er '.after | select(test("^[A-Za-z0-9._-]+$"))' <<< "$REPORT")
+          fingerprint=$(jq -er '.fingerprint' <<< "$REPORT")
+          changed_files=$(jq -er '.sourceChanges[] | "- `\(.)`"' <<< "$REPORT")
+          title="PokéSurvivor 원본 업데이트 $after ($fingerprint)"
+          titles=$(gh api --paginate "repos/$GH_REPO/issues?state=all&per_page=100" \
+            --jq '.[] | select(.pull_request == null and .user.login == "github-actions[bot]") | .title')
+          if grep -Fxq -- "$title" <<< "$titles"; then
+            exit 0
+          fi
+          body=$(printf '기준 %s → 원본 %s\n\n%s\n\n[검사 결과](%s/%s/actions/runs/%s)\n' \
+            "$before" "$after" "$changed_files" "$GITHUB_SERVER_URL" "$GH_REPO" "$GITHUB_RUN_ID")
+          gh issue create --title "$title" --body "$body" --assignee "$ASSIGNEE"
